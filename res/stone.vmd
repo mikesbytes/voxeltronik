@@ -1,0 +1,44 @@
+# Example of the VTK model format
+
+faceGroup NORTH { # faceGroups are used to group faces. Cardinal directions are used for draw optimizations
+    face { # define a face
+        type: triangles
+        verts [ # defined x, y, z, x, y, z ...
+            0.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+
+            1.0, 1.0, 0.0,
+            0.0, 1.0, 0.0,
+            1.0, 0.0, 0.0
+
+        ]
+        uv [
+            1.0, 0.0,
+            0.0, 1.0,
+            1.0, 1.0,
+
+            ... 
+        ]
+    }
+}
+
+faceGroup SOUTH {
+
+}
+
+faceGroup EAST {
+
+}
+
+faceGroup WEST {
+
+}
+
+faceGroup TOP {
+
+}
+
+faceGroup BOTTOM {
+
+}

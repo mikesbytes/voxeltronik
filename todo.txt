@@ -1,0 +1,21 @@
+REFACTOR:
+Make real scene graph
+Convert to smart pointers
+Doxygen docs and comment source
+
+
+Input handling
+Cleanup!
+-Main function
+-World class
+"Player"
+
+DONE:
+Basic Terrain generation
+Make/destroy voxels
+Thread chunk rebuilding
+Mouse camera control
+Complex terrain generation
+Voxel type
+Texture map handling
+
