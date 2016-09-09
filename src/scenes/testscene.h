@@ -23,6 +23,7 @@
 #include "../camera.h"
 #include "../inputhandler.h"
 #include "../world.h"
+#include "../graphics/skybox.h"
 
 
 #include <SDL2/SDL.h>
@@ -52,6 +53,7 @@ protected:
     Camera camera;
     SDL_Event event;
     World world;
+	Skybox mSkybox;
     
     noise::module::Perlin noiseMod;
 

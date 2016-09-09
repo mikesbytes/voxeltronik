@@ -39,12 +39,17 @@ glm::mat4 Camera::getViewMatrix() {
     glm::mat4 pitchMat = glm::rotate(glm::mat4(), pitch, glm::vec3(1.0f, 0.0f, 0.0f));
     glm::mat4 yawMat = glm::rotate(glm::mat4(), yaw, glm::vec3(0.0f, 1.0f, 0.0f));
 
+	mAngleMatrix = pitchMat * yawMat;
     return pitchMat * yawMat * translationMat;
     //return translationMat;  
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
     return glm::infinitePerspective(1.5708f, linkedWindow->getAspect(), 1.0f);
+}
+
+glm::mat4 Camera::getAngleMatrix() {
+	return mAngleMatrix;
 }
 
 

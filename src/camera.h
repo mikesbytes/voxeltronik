@@ -28,6 +28,7 @@ class Camera {
 public:
     Camera();
     glm::mat4 getViewMatrix();
+	glm::mat4 getAngleMatrix();
     glm::mat4 getProjectionMatrix();
     void update(const float& dTime);
     
@@ -55,6 +56,7 @@ private:
     float moveDampening;
     float tiltDampening;
     Window* linkedWindow;
+	glm::mat4 mAngleMatrix;
 };
 
 }
