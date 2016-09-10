@@ -8,9 +8,12 @@ uniform mat4 proj, view, model; //transform matrix
 
 out vec3 texCoordInterp;
 out vec3 lightDataInterp;
+out vec4 eyeSpacePos;
 
 void main() {
-    gl_Position = proj * view * model * vec4(position, 1.0);
+	vec4 eyeSpacePosVert = view * model * vec4(position, 1.0);
+    gl_Position = proj * eyeSpacePosVert;
     texCoordInterp = texCoord;
     lightDataInterp = lightData;
+	eyeSpacePos = eyeSpacePosVert;
 }

@@ -59,7 +59,7 @@ void Window::setFOV(const float& angle) {
 }
 
 glm::mat4 Window::getProjectionMatrix() {
-    return glm::perspective(fov, getAspect(), 0.1f, 1000.0f);
+    return glm::perspective(glm::radians(fov), getAspect(), 0.1f, 500.0f);
 }
 
 }

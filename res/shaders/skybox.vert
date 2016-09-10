@@ -1,7 +1,6 @@
 #version 150
 
 in vec3 position;
-in vec3 color;
 
 out vec4 wSpacePos;
 
