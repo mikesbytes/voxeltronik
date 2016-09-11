@@ -19,11 +19,11 @@
 
 #pragma once
 
-#include "../scene.h"
-#include "../camera.h"
-#include "../inputhandler.h"
-#include "../world.h"
-#include "../graphics/skybox.h"
+#include "scene.h"
+#include "camera.h"
+#include "inputhandler.h"
+#include "world.h"
+#include "graphics/skybox.h"
 
 
 #include <SDL2/SDL.h>

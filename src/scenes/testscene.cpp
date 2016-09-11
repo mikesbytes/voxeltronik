@@ -16,11 +16,11 @@
  * =====================================================================================
  */
 #include "testscene.h"
-#include "../loadShader.h"
-#include "../game.h"
-#include "../tileset.h"
-#include "../world.h"
-#include "../mathplus.h"
+#include "loadShader.h"
+#include "game.h"
+#include "tileset.h"
+#include "world.h"
+#include "mathplus.h"
 
 
 #include <GL/glew.h>
@@ -124,9 +124,9 @@ void TestScene::init() {
     std::cout << std::endl;
 
     int chunkCount = 1;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            for (int k = 0; k < 10; k++) {
+            for (int k = 0; k < 30; k++) {
                 std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
                 world.generateChunk(i,j,k);
                 chunkCount++;

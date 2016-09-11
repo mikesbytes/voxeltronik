@@ -2,9 +2,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "../loadShader.h"
+#include "loadShader.h"
 
-#include "skybox.h"
+#include "graphics/skybox.h"
 
 namespace vtk {
 

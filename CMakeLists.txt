@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.6)
 project ("voxeltronik")
 file (GLOB_RECURSE SOURCES "src/*.cpp")
-include_directories("include")
+include_directories("./include")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 add_executable(vtk ${SOURCES})

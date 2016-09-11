@@ -1,7 +1,7 @@
 REFACTOR:
 Make real scene graph
 Convert to smart pointers
-Doxygen docs and comment source
+Document what I've got
 
 
 Input handling

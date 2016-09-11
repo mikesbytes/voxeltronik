@@ -22,8 +22,6 @@
 #include <map>
 #include <utility>
 
-#include "customnoise/gradientnoise.h"
-#include "customnoise/yturbulence.h"
 
 namespace vtk {
 
@@ -40,9 +38,7 @@ public:
     noise::module::Const const1Mod;
     noise::module::Const const0Mod;
     noise::module::Const constNeg1Mod;
-    YTurbulence terrainTurb;
     noise::module::Perlin terrainShape;
-    GradientNoise gradientMod;
 
     //variables (replace by config)
     double terrainScale;

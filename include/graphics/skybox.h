@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include "../camera.h"
+#include "camera.h"
 
 namespace vtk {
 
