@@ -19,6 +19,8 @@
 #include "terraingen.h"
 #include "chunk.h"
 #include "mathplus.h"
+#include "terrain/noise.h"
+#include "terrain/ygradient.h"
 
 #include <iostream>
 #include <time.h>
@@ -27,6 +29,9 @@
 namespace vtk {
 
 TerrainGen::TerrainGen() {
+	mNoise = new YGradient(0.0, 128.0);
+
+	mTerrainScale = 32.0;
 }
 
 void TerrainGen::generateChunk(Chunk* chunk) {
@@ -34,6 +39,15 @@ void TerrainGen::generateChunk(Chunk* chunk) {
     for (int i = 0; i < 16; i++) { //x
         for (int j = 0; j < 16; j++) { //y
             for (int k = 0; k < 16; k++) { //z
+				double nVal = mNoise->get3D(
+						(double)(chunk->chunkPos.x * 16 + i),
+						(double)(chunk->chunkPos.y * 16 + j),
+						(double)(chunk->chunkPos.z * 16 + k));
+				if (nVal <= 0.0) {
+					chunk->setVoxelType(i,j,k,1);
+				} else {
+					chunk->setVoxelType(i,j,k,0);
+				}
 				/*
                 glm::dvec3 pos((double)(chunk->chunkPos.x * 16 + i) * terrainScale,
                                (double)(chunk->chunkPos.y * 16 + j) * terrainScale,

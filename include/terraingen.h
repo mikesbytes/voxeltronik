@@ -18,10 +18,10 @@
 
 #pragma once
 
-#include <noise/noise.h>
 #include <map>
 #include <utility>
 
+#include "terrain/noisemodule.h"
 
 namespace vtk {
 
@@ -33,15 +33,11 @@ public:
 
     void generateChunk(Chunk* chunk);
 
-    //libnoise modules
-    noise::module::Select selectorMod;
-    noise::module::Const const1Mod;
-    noise::module::Const const0Mod;
-    noise::module::Const constNeg1Mod;
-    noise::module::Perlin terrainShape;
+protected:
+	NoiseModule* mNoise;
 
     //variables (replace by config)
-    double terrainScale;
+    double mTerrainScale;
 };
 
 }
