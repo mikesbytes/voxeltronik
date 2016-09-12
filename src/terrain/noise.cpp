@@ -1,6 +1,6 @@
 #include "terrain/noise.h"
 
-namespace vtk {
+namespace vtk::noise {
 
 Noise::Noise(const int64_t& seed) {
 	mScale = 32.0;

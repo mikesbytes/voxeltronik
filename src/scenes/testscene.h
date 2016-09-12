@@ -55,7 +55,6 @@ protected:
     World world;
 	Skybox mSkybox;
     
-    noise::module::Perlin noiseMod;
 
     //stuff
     float sensitivity;

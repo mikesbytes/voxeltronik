@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace vtk {
+namespace vtk::noise {
 
 class NoiseModule {
 public:

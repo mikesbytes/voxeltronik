@@ -1,6 +1,6 @@
 #include "terrain/ygradient.h"
 
-namespace vtk {
+namespace vtk::noise {
 
 YGradient::YGradient() {
 	mStart = 0.0;

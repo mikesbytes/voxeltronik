@@ -7,7 +7,7 @@
 #include "terrain/open_simplex_noise.h"
 #include "terrain/noisemodule.h"
 
-namespace vtk {
+namespace vtk::noise {
 
 class Noise : public NoiseModule {
 public:

@@ -20,6 +20,7 @@
 
 #include <map>
 #include <utility>
+#include <memory>
 
 #include "terrain/noisemodule.h"
 
@@ -34,7 +35,7 @@ public:
     void generateChunk(Chunk* chunk);
 
 protected:
-	NoiseModule* mNoise;
+	std::shared_ptr<noise::NoiseModule> mNoise;
 
     //variables (replace by config)
     double mTerrainScale;
