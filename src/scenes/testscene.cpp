@@ -70,7 +70,7 @@ void TestScene::init() {
     glUseProgram(shaders);
 
     camera.setPosition(glm::vec3(0.0f, 5.0f, 5.0f));
-    camera.setWindow(&linkedGame->window);
+    camera.setAspectRatio(linkedGame->window.getAspect());
 
     viewMatUni = glGetUniformLocation(shaders, "view");
     projMatUni = glGetUniformLocation(shaders, "proj");

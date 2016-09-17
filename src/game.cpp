@@ -18,7 +18,7 @@
 
 #include "game.h"
 #include "loadShader.h"
-#include "camera.h"
+#include "graphics/camera.h"
 #include "scene.h"
 
 //SPAGHETTI INCLUDES

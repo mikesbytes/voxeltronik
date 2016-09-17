@@ -66,21 +66,6 @@ void TerrainGen::generateChunk(Chunk* chunk) {
             }
         }
     }
-
-    //grass on top
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 16; j++) {
-            for (int k = 0; k < 16; k++) {
-                if (chunk->getVoxelType(i,j,k) != 0) {
-                    //if (chunk->getVoxelType(i,j+1,k) == 0) {
-                    //    chunk->setVoxelType(i,j,k,2);
-                    //}
-                }
-            }
-        }
-    }
-
-
 }
 
 }

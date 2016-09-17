@@ -1,19 +1,5 @@
 /*
- * =====================================================================================
- *
- *       Filename:  drawable.h
- *
- *    Description:  Drawable object
- *
- *        Version:  1.0
- *        Created:  05/20/2014 11:02:19 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
+ * Drawable class
  */
 
 #include "../camera.h"
@@ -24,18 +10,16 @@ namespace vtk {
 
 //Forward declarations
 class Shader;
+class RenderTask;
 
-///\brief Abstract base class that can 
-///   be drawn to a camera
 
 class Drawable {
 public:
     ///\brief Destructor
     virtual ~Drawable();
 
-    ///\brief Draw something from the viewpoint of a camera
-    ///\param camera Camera to draw with
-    virtual void draw(Camera& camera);
+	//Draw (called from rednertask)
+    virtual void draw(RenderTask& task);
 protected:
     std::shared_ptr<Shader> linkedShader;
 };

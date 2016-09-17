@@ -15,7 +15,7 @@
  *
  * =====================================================================================
  */
-#include "camera.h"
+#include "graphics/camera.h"
 #include "window.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,6 +32,8 @@ Camera::Camera() {
     yawDelta = 0.0f;
     moveDampening = 0.0f;
     tiltDampening = 0.0f;
+	mAspectRatio = 1.0f;
+	mFOV = 1.5608f;
 }
 
 glm::mat4 Camera::getViewMatrix() {
@@ -45,7 +47,7 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
-    return glm::infinitePerspective(1.5708f, linkedWindow->getAspect(), 1.0f);
+    return glm::infinitePerspective(mFOV, mAspectRatio, 0.1f);
 }
 
 glm::mat4 Camera::getAngleMatrix() {
@@ -61,7 +63,6 @@ void Camera::update(const float& dTime) {
     pitchDelta *=  dTime * tiltDampening;
     yawDelta *= dTime * tiltDampening;
     positionDelta *= dTime * moveDampening;
-
     {
         //reverse project for direction vector
         glm::vec4 rayClip(0.0f, 0.0f, -1.0f, 1.0f);
@@ -80,12 +81,12 @@ glm::vec3 Camera::getPosition() {
     return position;
 }
 
-glm::vec3 Camera::getAngleVector() {
-    return direction;
+void Camera::setAspectRatio(const float& aspect) {
+	mAspectRatio = aspect;
 }
 
-void Camera::setWindow(Window* window) {
-    linkedWindow = window;
+glm::vec3 Camera::getAngleVector() {
+    return direction;
 }
 
 void Camera::move(const glm::vec3& offset) {

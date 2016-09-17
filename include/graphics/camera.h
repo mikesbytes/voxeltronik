@@ -35,10 +35,9 @@ public:
     void setPosition(const glm::vec3& position);
     glm::vec3 getPosition();
 
+	void setAspectRatio(const float& aspect);
     //id setAngleVector(const glm::vec3& angleVector);
     glm::vec3 getAngleVector();
-
-    void setWindow(Window* window);
 
     void move(const glm::vec3& offset);
     void moveRelative(const glm::vec3& offset);
@@ -55,8 +54,9 @@ private:
     float yawDelta;
     float moveDampening;
     float tiltDampening;
-    Window* linkedWindow;
 	glm::mat4 mAngleMatrix;
+	float mAspectRatio;
+	float mFOV;
 };
 
 }

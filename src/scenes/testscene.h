@@ -20,7 +20,7 @@
 #pragma once
 
 #include "scene.h"
-#include "camera.h"
+#include "graphics/camera.h"
 #include "inputhandler.h"
 #include "world.h"
 #include "graphics/skybox.h"
