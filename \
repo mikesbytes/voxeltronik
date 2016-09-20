@@ -1,0 +1,45 @@
+#include <vector>
+#include <utility>
+
+#include "graphics/glstate.h"
+#include "graphics/shader.h"
+
+namespace vtk::gls {
+	
+	static GLuint activeShader(0);
+	static bool trackingEnabled(false);
+	static std::vector<std::pair<GLenum, bool> > flags;
+
+	int setShader(const GLuint& shaderID) {
+		if (activeShader == shaderID) return 0;
+		glUseProgram(shaderID);
+		activeShader = shaderID;
+	}
+
+	void setTracking(const bool& flag) {
+		trackingEnabled = flag;
+	}
+
+	void enableFlag(const GLenum& flag) {
+		if (trackingEnabled) {
+			GLboolean state;
+			glGetBooleanv(flag, &state);
+			if (!(bool)state) {
+				glEnable(flag);
+				if (trackingEnabled) {
+					flags.push_back(std::make_pair(flag,true));
+				}
+			}
+		} else {
+			glEnable(flag);
+		}
+	}
+	
+	void restoreState() {
+		for(auto& i : flags) {
+			if(i.second) glDisable(i.first);
+			else glDisable(i.first);
+		}
+		flags.clear();
+	}
+}

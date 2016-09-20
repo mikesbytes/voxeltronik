@@ -185,7 +185,6 @@ void TestScene::update(const float& dTime) {
 void TestScene::draw() {
 	mSkybox.draw(camera, linkedGame->window.getProjectionMatrix());
 
-    glEnable(GL_DEPTH_TEST);
     glUseProgram(shaders);
     glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
     world.draw();
@@ -194,6 +193,7 @@ void TestScene::draw() {
     glUseProgram(cursorShaders);
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void TestScene::look() {

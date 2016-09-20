@@ -19,6 +19,7 @@
 #include "game.h"
 #include "loadShader.h"
 #include "graphics/camera.h"
+#include "graphics/glstate.h"
 #include "scene.h"
 
 //SPAGHETTI INCLUDES
@@ -61,7 +62,7 @@ void Game::init() {
     glFrontFace(GL_CW);
 
     running = false;
-
+	gls::setTracking(true);
 }
 
 void Game::start() {

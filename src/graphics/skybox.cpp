@@ -5,6 +5,7 @@
 #include "loadShader.h"
 
 #include "graphics/skybox.h"
+#include "graphics/glstate.h"
 
 namespace vtk {
 
@@ -81,15 +82,15 @@ namespace vtk {
 		auto viewMat = camera.getAngleMatrix();
 		auto pos = camera.getPosition();
 	
-		
+		//gls::setShader(mShader);	
 		glUseProgram(mShader);
 		glUniformMatrix4fv(mViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
 		glUniformMatrix4fv(mProjMat, 1, GL_FALSE, glm::value_ptr(proj));
-
-		glDepthMask(GL_FALSE);
+		
+		gls::setFlag(GL_DEPTH_TEST, false);
 		glBindVertexArray(mVao);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glDepthMask(GL_TRUE);
+		gls::restoreState();
 	}
 
 }
