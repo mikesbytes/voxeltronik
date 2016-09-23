@@ -16,7 +16,9 @@ namespace vtk {
 
 namespace vtk::gls {
 
+	// set active shader
 	int setShader(const GLuint& shaderID);
+	// enable tracking of state changes
 	void setTracking(const bool& flag);
 	void setFlag(const GLenum& flag, const bool& newState);
 	void restoreState();

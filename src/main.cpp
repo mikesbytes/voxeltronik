@@ -2,12 +2,20 @@
 #include "scenes/testscene.h"
 #include "config.h"
 #include "mathplus.h"
+#include "spdlog/spdlog.h"
+#include "loggersetup.h"
 
 #include <iostream>
+#include <vector>
+#include <memory>
 
 
 int main (int argc, char *argv[])
 {
+	vtk::LoggerSetup lSetup;
+	lSetup.setup();
+	spdlog::get("general")->info("Starting Voxeltronik Engine...");
+
     auto conf = new Config;
     conf->loadConfigFromFile("res/config.conf");
     conf->addArgumentRule("-w", "graphics.res.x");

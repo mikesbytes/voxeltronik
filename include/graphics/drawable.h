@@ -2,7 +2,6 @@
  * Drawable class
  */
 
-#include "../camera.h"
 
 #include <memory>
 
@@ -15,13 +14,16 @@ class RenderTask;
 
 class Drawable {
 public:
-    ///\brief Destructor
     virtual ~Drawable();
 
 	//Draw (called from rednertask)
-    virtual void draw(RenderTask& task);
+    virtual void draw(RenderTask& task) = 0;
+
+	void setShader(std::shared_ptr<Shader>);
+	std::shared_ptr<Shader> getShader();
+
 protected:
-    std::shared_ptr<Shader> linkedShader;
+    std::shared_ptr<Shader> mLinkedShader;
 };
 
 }
