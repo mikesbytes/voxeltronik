@@ -18,7 +18,7 @@ std::string loadFileIntoString(const std::string& fName) {
 		spdlog::get("file")->info("Loaded file: {}", fName);
 		return contents;
 	}
-	spdlog::get("file")->warn("Unable to load: {}", fName);
+	spdlog::get("file")->warn("Unable to load: {}, returning empty string", fName);
 	return "";
 }
 

@@ -64,6 +64,7 @@ void TestScene::init() {
     glEnableVertexAttribArray(0);
 
     //shaders
+	mCursorShader.loadShaderFiles("res/shaders/test.vert.glsl", "res/shaders/test.frag.glsl");
     cursorShaders = LoadShaders("res/shaders/test.vert.glsl", "res/shaders/test.frag.glsl");
     shaders = LoadShaders("res/shaders/voxelvert.vert.glsl", "res/shaders/voxelfrag.frag.glsl");
 
@@ -190,7 +191,8 @@ void TestScene::draw() {
     world.draw();
     
     glDisable(GL_DEPTH_TEST);
-    glUseProgram(cursorShaders);
+    //glUseProgram(mCursorShader.mShaderID);
+	mCursorShader.activate();
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 	glEnable(GL_DEPTH_TEST);

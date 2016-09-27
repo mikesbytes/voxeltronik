@@ -18,5 +18,6 @@ namespace vtk {
 		auto fileLogger = std::make_shared<spdlog::logger>("file", begin(logSinks), end(logSinks));
 		spdlog::register_logger(generalLogger);
 		spdlog::register_logger(fileLogger);
+		spdlog::set_level(spdlog::level::debug);
 	}
 }

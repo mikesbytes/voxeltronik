@@ -24,6 +24,7 @@
 #include "inputhandler.h"
 #include "world.h"
 #include "graphics/skybox.h"
+#include "graphics/shader.h"
 
 
 #include <SDL2/SDL.h>
@@ -49,6 +50,7 @@ protected:
     unsigned vao;
     unsigned shaders;
     unsigned cursorShaders;
+	Shader mCursorShader;
     float dTime;
     Camera camera;
     SDL_Event event;
