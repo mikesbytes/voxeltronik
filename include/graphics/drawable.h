@@ -2,7 +2,7 @@
  * Drawable class
  */
 
-
+#pragma once
 #include <memory>
 
 namespace vtk {

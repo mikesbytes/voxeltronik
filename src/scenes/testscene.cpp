@@ -21,6 +21,7 @@
 #include "tileset.h"
 #include "world.h"
 #include "mathplus.h"
+#include "graphics/glstate.h"
 
 
 #include <GL/glew.h>
@@ -129,7 +130,7 @@ void TestScene::init() {
         for (int j = 0; j < 8; j++) {
             for (int k = 0; k < 8; k++) {
                 std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
-                world.generateChunk(i,j,k);
+                world.generateChunk(i-1,j,k);
                 chunkCount++;
             }
         }
@@ -186,12 +187,11 @@ void TestScene::update(const float& dTime) {
 void TestScene::draw() {
 	mSkybox.draw(camera, linkedGame->window.getProjectionMatrix());
 
-    glUseProgram(shaders);
+	gls::setShader(shaders);
     glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
     world.draw();
     
     glDisable(GL_DEPTH_TEST);
-    //glUseProgram(mCursorShader.mShaderID);
 	mCursorShader.activate();
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);

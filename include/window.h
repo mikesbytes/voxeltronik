@@ -22,23 +22,23 @@
 #include <utility>
 #include <glm/glm.hpp>
 
+#include "graphics/rendertarget.h"
+
 namespace vtk {
 
-class Window {
+class Window : public RenderTarget {
 public:
+	void activate();
     bool create();
     void setTitle(const std::string& title);
     void setResolution(const int& x, const int& y);
     std::pair<int, int> getResolution();
-    float getAspect();
     void setFOV(const float& angle);
     glm::mat4 getProjectionMatrix();
     SDL_Window* getWindow();
 
 protected:
     
-    int resX;
-    int resY;
     float fov;
 
     std::string title;

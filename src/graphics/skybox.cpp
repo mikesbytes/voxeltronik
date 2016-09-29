@@ -82,8 +82,7 @@ namespace vtk {
 		auto viewMat = camera.getAngleMatrix();
 		auto pos = camera.getPosition();
 	
-		//gls::setShader(mShader);	
-		glUseProgram(mShader);
+		gls::setShader(mShader);	
 		glUniformMatrix4fv(mViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
 		glUniformMatrix4fv(mProjMat, 1, GL_FALSE, glm::value_ptr(proj));
 		

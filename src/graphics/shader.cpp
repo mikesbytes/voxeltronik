@@ -1,12 +1,13 @@
 /*
  * Shader source
  */
+#include <glm/gtc/type_ptr.hpp>
+
 #include "graphics/shader.h"
 #include "graphics/glstate.h"
 #include "spdlog/spdlog.h"
 #include "fileutils.h"
 #include "loadShader.h"
-
 
 namespace vtk {
 
@@ -19,8 +20,8 @@ bool Shader::activate() {
 		spdlog::get("general")->warn("Attempted to load unloaded shader");
 		return false;
 	}
-	//gls::setShader(mShaderID);
-	glUseProgram(mShaderID);
+	gls::setShader(mShaderID);
+	//glUseProgram(mShaderID);
 	return true;
 }
 
@@ -68,6 +69,8 @@ bool Shader::loadShaderFiles(const std::string& vertShader,
  
     glDeleteShader(vShaderID);
     glDeleteShader(fShaderID);	
+
+	return true;
 }
 
 GLuint Shader::loadShader(const std::string& code, const GLenum& shaderType) {
@@ -87,6 +90,28 @@ GLuint Shader::loadShader(const std::string& code, const GLenum& shaderType) {
     glGetShaderInfoLog(id, infoLogLength, NULL, &shaderErrorMessage[0]);
 	spdlog::get("general")->debug("Shader errors: {}", &shaderErrorMessage[0]);
 	return id;
+}
+
+
+ShaderUniform Shader::getUniform(const std::string& name) {
+	return(ShaderUniform(glGetAttribLocation(mShaderID, name.c_str())));
+}
+
+ShaderUniform::ShaderUniform(const GLint& uniformID) :
+	mUniformID(uniformID)
+{
+
+}
+void ShaderUniform::set(const glm::mat4& data) {
+	glUniformMatrix4fv(mUniformID, 1, GL_FALSE, glm::value_ptr(data)); 
+}
+
+void ShaderUniform::set(const glm::vec4& data) {
+	glUniform4fv(mUniformID, 1, glm::value_ptr(data));
+}
+
+void ShaderUniform::set(const glm::vec3& data) {
+	glUniform3fv(mUniformID, 1, glm::value_ptr(data));
 }
 
 //namespace vtk
