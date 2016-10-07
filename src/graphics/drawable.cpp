@@ -2,6 +2,9 @@
 
 namespace vtk {
 
+Drawable::~Drawable() {
+
+}
 
 void Drawable::setShader(std::shared_ptr<Shader> shader) {
 	mLinkedShader = shader;

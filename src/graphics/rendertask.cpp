@@ -18,4 +18,15 @@ void RenderTask::draw() {
 	mDrawable.draw(*this);
 }
 
+Drawable& RenderTask::getDrawable() {
+	return mDrawable;
+}
+
+Camera& RenderTask::getCamera() {
+	return mCamera;
+}
+RenderTarget& RenderTask::getRenderTarget() {
+	return mRenderTarget;
+}
+
 }

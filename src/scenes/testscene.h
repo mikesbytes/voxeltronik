@@ -36,10 +36,10 @@ class Game;
 
 class TestScene : public Scene {
 public:
-    virtual void init(); // Called first time the scene is set
-    virtual void reInit(); // Called when switching from another scene
-    virtual void update(const float& dTime); //Logic
-    virtual void draw(); //Graphics
+    void init(); // Called first time the scene is set
+    void reInit(); // Called when switching from another scene
+    void update(const float& dTime); //Logic
+    void draw(); //Graphics
 
     //Game functions
     void look(); //look with camera
@@ -56,6 +56,7 @@ protected:
     SDL_Event event;
     World world;
 	Skybox mSkybox;
+	RenderTask* mSkyboxTask;
     
 
     //stuff

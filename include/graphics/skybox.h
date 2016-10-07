@@ -2,15 +2,17 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include "camera.h"
+#include "graphics/camera.h"
+#include "graphics/drawable.h"
+#include "graphics/rendertask.h"
 
 namespace vtk {
 
-	class Skybox {
+	class Skybox : public Drawable {
 	public:
 		Skybox();
 
-		void draw(Camera& camera, glm::mat4 proj);
+		void draw(RenderTask& task);
 	protected:
 		GLuint mVbo;
 		GLuint mVao;

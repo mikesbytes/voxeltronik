@@ -77,10 +77,12 @@ namespace vtk {
 		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
 	}
 
-	void Skybox::draw(Camera& camera, glm::mat4 proj) {
+	void Skybox::draw(RenderTask& task) {
+		auto camera = task.getCamera();
 		camera.getViewMatrix();
 		auto viewMat = camera.getAngleMatrix();
 		auto pos = camera.getPosition();
+		auto proj = camera.getProjectionMatrix();
 	
 		gls::setShader(mShader);	
 		glUniformMatrix4fv(mViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));

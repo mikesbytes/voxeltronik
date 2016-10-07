@@ -78,6 +78,7 @@ void TestScene::init() {
     projMatUni = glGetUniformLocation(shaders, "proj");
     modelMatUni = glGetUniformLocation(shaders, "model");
     world.modelMatUni = modelMatUni;
+	mSkyboxTask = new RenderTask(mSkybox, camera, linkedGame->window);
     
     glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
     glUniformMatrix4fv(projMatUni, 1, GL_FALSE, glm::value_ptr(linkedGame->window.getProjectionMatrix()));
@@ -185,7 +186,7 @@ void TestScene::update(const float& dTime) {
 }
 
 void TestScene::draw() {
-	mSkybox.draw(camera, linkedGame->window.getProjectionMatrix());
+	mSkyboxTask->draw();
 
 	gls::setShader(shaders);
     glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));

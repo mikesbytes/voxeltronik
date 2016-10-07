@@ -16,6 +16,10 @@ public:
 	RenderTask(Drawable& drawable, Camera& camera, RenderTarget& renderTarget);
 
 	void draw();
+
+	Drawable& getDrawable();
+	Camera& getCamera();
+	RenderTarget& getRenderTarget();
 		
 protected:
 	Drawable& mDrawable;
