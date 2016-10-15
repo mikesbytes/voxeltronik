@@ -21,7 +21,6 @@
 #include "voxelutils.h"
 #include "chunkrenderer.h"
 
-#include <unordered_map>
 #include <glm/glm.hpp>
 
 namespace vtk {
@@ -30,17 +29,22 @@ class World;
 
 class Chunk {
 public:
-    Chunk();
+    Chunk(World& world);
     bool isVoxelSolid(const int& x, const int& y, const int& z); //Is the voxel not a transparent type?
     void setVoxelType(const int& x, const int& y, const int& z, const unsigned& type);
     unsigned getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z);
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
 
-    std::array<unsigned, 4096> voxels;
-    World* linkedWorld;
-    unsigned chunkSize;
-    glm::ivec3 chunkPos;
+	void setPos(const glm::ivec3& pos);
+	glm::ivec3 getPos();
+	World& getWorld();
+
+
     ChunkRenderer renderer;
+protected:
+    std::array<unsigned, 4096> voxels;
+    World& mLinkedWorld;
+    glm::ivec3 mPos;
 };
 
 }

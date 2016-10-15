@@ -22,11 +22,12 @@
 
 namespace vtk {
 
-Chunk::Chunk() {
-    linkedWorld = nullptr;
-    chunkSize = 16;
-    chunkPos = glm::ivec3(0,0,0);
+Chunk::Chunk(World& world) :
+	mLinkedWorld(world)	
+{
+    mPos = glm::ivec3(0,0,0);
     renderer.linkedChunk = this;
+
     //fill voxels with 0
     for (unsigned i = 0; i < 4096; i++) {
         voxels[i] = 0;
@@ -34,12 +35,13 @@ Chunk::Chunk() {
 }
 
 bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
-    if (x < 0 || x > (int)chunkSize - 1 ||
-        y < 0 || y > (int)chunkSize - 1 ||
-        z < 0 || z > (int)chunkSize - 1 ) { //position is outside of the chunk
-        return linkedWorld->isVoxelSolid(chunkPos.x * 16 + x,
-                                         chunkPos.y * 16 + y,
-                                         chunkPos.z * 16 + z);
+    if (x < 0 || x > 15 ||
+        y < 0 || y > 15 ||
+        z < 0 || z > 15 ) 
+	{ //position is outside of the chunk
+        return mLinkedWorld.isVoxelSolid(mPos.x * 16 + x,
+                                         mPos.y * 16 + y,
+                                         mPos.z * 16 + z);
     }
 
     return (getVoxelType((unsigned)x,(unsigned)y,(unsigned)z) != 0);
@@ -65,9 +67,22 @@ unsigned Chunk::getVoxelType(const unsigned& x, const unsigned& y, const unsigne
 }
 
 glm::ivec3 Chunk::getWorldCoords(const int& x, const int& y, const int& z) {
-    return glm::ivec3(chunkPos.x * 16 + x,
-                      chunkPos.y * 16 + y,
-                      chunkPos.z * 16 + z);
+    return glm::ivec3(mPos.x * 16 + x,
+                      mPos.y * 16 + y,
+                      mPos.z * 16 + z);
+}
+
+void Chunk::setPos(const glm::ivec3& pos) {
+	mPos = pos;
+}
+
+
+glm::ivec3 Chunk::getPos() {
+	return mPos;
+}
+
+World& Chunk::getWorld() {
+	return mLinkedWorld;
 }
 
 }

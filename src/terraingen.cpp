@@ -38,14 +38,15 @@ TerrainGen::TerrainGen() {
 }
 
 void TerrainGen::generateChunk(Chunk* chunk) {
+	auto chunkPos = chunk->getPos();
     //first pass
     for (int i = 0; i < 16; i++) { //x
         for (int j = 0; j < 16; j++) { //y
             for (int k = 0; k < 16; k++) { //z
 				double nVal = mNoise->get3D(
-						(double)(chunk->chunkPos.x * 16 + i),
-						(double)(chunk->chunkPos.y * 16 + j),
-						(double)(chunk->chunkPos.z * 16 + k));
+						(double)(chunkPos.x * 16 + i),
+						(double)(chunkPos.y * 16 + j),
+						(double)(chunkPos.z * 16 + k));
 				if (nVal <= 0.0) {
 					chunk->setVoxelType(i,j,k,1);
 				} else {

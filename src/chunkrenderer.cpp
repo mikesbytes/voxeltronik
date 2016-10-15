@@ -207,6 +207,7 @@ void ChunkRenderer::updateGeometry() {
 }
 
 void ChunkRenderer::updateTexCoords() {
+	auto linkedWorld = linkedChunk->getWorld();
     for (auto& i : textureCoords)
         i.clear();
 
@@ -216,58 +217,58 @@ void ChunkRenderer::updateTexCoords() {
                 if (linkedChunk->isVoxelSolid(i,j,k)) {
                 if (!linkedChunk->isVoxelSolid(i+1,j,k)) {
                     //right face
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::TOPLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::TOPRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::BOTTOMRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[0], linkedChunk->getWorldCoords(i,j,k), Face3D::RIGHT, Corner2D::TOPRIGHT);
                 }
                 if (!linkedChunk->isVoxelSolid(i-1,j,k)) {
                     //left face
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::TOPLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::TOPRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::BOTTOMRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[1], linkedChunk->getWorldCoords(i,j,k), Face3D::LEFT, Corner2D::TOPRIGHT);
                 }
                 if (!linkedChunk->isVoxelSolid(i,j+1,k)) {
                 //top face
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::TOPLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::BOTTOMRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::TOPRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::BOTTOMRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[2], linkedChunk->getWorldCoords(i,j,k), Face3D::TOP, Corner2D::TOPLEFT);
                 }
                 if (!linkedChunk->isVoxelSolid(i,j-1,k)) {
                 //bottom face
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::TOPRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::BOTTOMRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::TOPLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::TOPLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[3], linkedChunk->getWorldCoords(i,j,k), Face3D::BOTTOM, Corner2D::BOTTOMRIGHT);
                 }
                 if (!linkedChunk->isVoxelSolid(i,j,k-1)) {
                 //back face
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::TOPLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::TOPRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::BOTTOMRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[4], linkedChunk->getWorldCoords(i,j,k), Face3D::BACK, Corner2D::TOPRIGHT);
 
                 }
                 if (!linkedChunk->isVoxelSolid(i,j,k+1)) {
                 //front face
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::BOTTOMRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::BOTTOMLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::TOPRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::TOPLEFT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::TOPRIGHT);
-                    linkedChunk->linkedWorld->voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::BOTTOMRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::BOTTOMLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::TOPLEFT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::TOPRIGHT);
+                    linkedWorld.voxelInfo.pushTexCoordFromWorldCoords(textureCoords[5], linkedChunk->getWorldCoords(i,j,k), Face3D::FRONT, Corner2D::BOTTOMLEFT);
                 }
                 }
             }

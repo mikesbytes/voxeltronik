@@ -92,13 +92,11 @@ bool World::makeChunk(const int& x, const int& y, const int& z) {
         return false;
     }
 
-    auto newChunk = new Chunk;
+    auto newChunk = new Chunk(*this);
     chunks[pos] = newChunk;
 
-    newChunk->chunkPos = posvec;
-    newChunk->chunkSize = 16;
+    newChunk->setPos(posvec);
 
-    newChunk->linkedWorld = this;
     //newChunk->renderer.linkedWorld = this;
 
     newChunk->renderer.init();
@@ -130,9 +128,9 @@ void World::queueChunkUpdate(const iPos& pos) {
 void World::draw() {
     for (auto& i : chunks) {
         glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3(
-                    (float)i.second->chunkPos.x * 16,
-                    (float)i.second->chunkPos.y * 16,
-                    (float)i.second->chunkPos.z * 16
+                    (float)i.second->getPos().x * 16,
+                    (float)i.second->getPos().y * 16,
+                    (float)i.second->getPos().z * 16
                     ));
         glUniformMatrix4fv(modelMatUni, 1, GL_FALSE, glm::value_ptr(modelMat));
         i.second->renderer.drawChunk();
