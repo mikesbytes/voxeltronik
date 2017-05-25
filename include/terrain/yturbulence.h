@@ -7,7 +7,7 @@
 
 #include "terrain/noisemodule.h"
 
-namespace vtk::noise {
+namespace vtk { namespace noise {
 
 class YTurbulence : public NoiseModule {
 public:
@@ -20,4 +20,4 @@ protected:
 	std::shared_ptr<NoiseModule> mModifier;
 	double mMultiplier;
 };
-}
+  }} // vtk::noise

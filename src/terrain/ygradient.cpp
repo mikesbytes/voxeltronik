@@ -1,6 +1,6 @@
 #include "terrain/ygradient.h"
 
-namespace vtk::noise {
+namespace vtk { namespace noise {
 
 YGradient::YGradient() {
 	mStart = 0.0;
@@ -26,4 +26,4 @@ double YGradient::get3D(const double& x, const double& y, const double& z) {
 	else if (factor <= 0.0) return -1.0;
 	return (factor * 2.0) - 1.0;
 }
-}
+  }}

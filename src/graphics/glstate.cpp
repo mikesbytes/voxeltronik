@@ -5,7 +5,7 @@
 #include "graphics/glstate.h"
 #include "graphics/shader.h"
 
-namespace vtk::gls {
+namespace vtk { namespace gls {
 	
 	static GLuint activeShader(0);
 	static bool trackingEnabled(false);
@@ -52,4 +52,4 @@ namespace vtk::gls {
 		}
 		flags.clear();
 	}
-}
+  }}

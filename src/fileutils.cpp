@@ -4,7 +4,7 @@
 #include "fileutils.h"
 #include "spdlog/spdlog.h"
 
-namespace vtk::file {
+namespace vtk { namespace file {
 
 std::string loadFileIntoString(const std::string& fName) {
 	std::ifstream in(fName, std::ios::in | std::ios::binary);
@@ -23,4 +23,4 @@ std::string loadFileIntoString(const std::string& fName) {
 }
 
 
-}
+  }}

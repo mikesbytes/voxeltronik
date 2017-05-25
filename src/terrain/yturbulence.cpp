@@ -2,7 +2,7 @@
 
 #include "terrain/yturbulence.h"
 
-namespace vtk::noise {
+namespace vtk { namespace noise {
 
 YTurbulence::YTurbulence(std::shared_ptr<NoiseModule> input, std::shared_ptr<NoiseModule> modifier) {
 	mInput = input;
@@ -20,4 +20,4 @@ double YTurbulence::get3D(const double&x, const double&y, const double&z) {
 	return mInput->get3D(x, y + mod, z);
 }
 
-}
+  }}

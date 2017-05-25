@@ -28,7 +28,6 @@
 
 
 #include <SDL2/SDL.h>
-#include <noise/noise.h>
 
 namespace vtk {
 

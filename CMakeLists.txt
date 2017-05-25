@@ -8,5 +8,5 @@ add_executable(vtk ${SOURCES})
 
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads REQUIRED)
-target_link_libraries(vtk SDL2 GL GLEW GLU noise ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(vtk SDL2 GL GLEW GLU ${CMAKE_THREAD_LIBS_INIT})
 

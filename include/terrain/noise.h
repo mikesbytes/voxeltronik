@@ -7,7 +7,7 @@
 #include "terrain/open_simplex_noise.h"
 #include "terrain/noisemodule.h"
 
-namespace vtk::noise {
+namespace vtk { namespace noise {
 
 class Noise : public NoiseModule {
 public:
@@ -23,4 +23,4 @@ protected:
 	struct osn_context* mCtx;
 };
 
-}
+  }} //vtk::noise

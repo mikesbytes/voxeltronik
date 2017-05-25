@@ -14,7 +14,7 @@ namespace vtk {
 	class Shader;
 }
 
-namespace vtk::gls {
+namespace vtk { namespace gls {
 
 	// set active shader
 	int setShader(const GLuint& shaderID);
@@ -23,4 +23,4 @@ namespace vtk::gls {
 	void setFlag(const GLenum& flag, const bool& newState);
 	void restoreState();
 
-}
+  }}

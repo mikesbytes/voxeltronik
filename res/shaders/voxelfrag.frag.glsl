@@ -1,4 +1,4 @@
-#version 440
+#version 430
 #extension GL_EXT_texture_array : enable
 
 in vec3 texCoordInterp;

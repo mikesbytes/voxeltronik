@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace vtk::noise {
+namespace vtk { namespace noise {
 
 class NoiseModule {
 public:
@@ -12,4 +12,4 @@ public:
 	virtual double get3D(const double& x, const double& y, const double& z) { return 0.0; }
 };
 
-}
+  }} //vtk::noise

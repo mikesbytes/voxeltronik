@@ -6,7 +6,7 @@
 
 #include "terrain/noisemodule.h"
 
-namespace vtk::noise {
+namespace vtk { namespace noise {
 
 class YGradient : public NoiseModule {
 public:
@@ -23,4 +23,4 @@ protected:
 	double mEnd;
 };
 
-}
+  }} //vtk::noise

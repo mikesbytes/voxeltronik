@@ -4,8 +4,8 @@
 
 #include <string>
 
-namespace vtk::file {
+namespace vtk { namespace file {
 
 std::string loadFileIntoString(const std::string& fName);
 
-}
+  }}
