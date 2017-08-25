@@ -20,6 +20,7 @@
 
 #include "voxelutils.h"
 #include "chunkrenderer.h"
+#include "graphics/chunkmesh.h"
 
 #include <glm/glm.hpp>
 

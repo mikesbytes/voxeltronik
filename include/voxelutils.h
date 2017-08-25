@@ -19,6 +19,7 @@
 #pragma once
 
 #include <tuple>
+#include <glm/glm.hpp>
 
 namespace vtk {
 
@@ -53,5 +54,22 @@ struct iPosEqual : public std::binary_function<iPos, iPos, bool> {
                 std::get<2>(a) == std::get<2>(b));
     }
 };
+
+// basic hash function for glm::ivec3
+struct ivec3Hash : public std::unary_function<iPos, std::size_t> {
+  std::size_t operator()(const glm::ivec3& k) const {
+        return k.x ^ k.y ^ k.z;
+    }
+};
+
+/*
+struct ivec3Equal : public std::binary_function<iPos, iPos, bool> {
+    bool operator()(const iPos& a, const iPos& b) const {
+        return (std::get<0>(a) == std::get<0>(b) &&
+                std::get<1>(a) == std::get<1>(b) &&
+                std::get<2>(a) == std::get<2>(b));
+    }
+};
+*/
 
 }

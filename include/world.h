@@ -22,6 +22,7 @@
 #include "voxelinfo.h"
 #include "voxelmath.h"
 #include "terraingen.h"
+#include "graphics/chunkmesh.h"
 
 #include <unordered_map>
 #include <vector>
@@ -54,6 +55,7 @@ public:
     void forceGlobalGeometryUpdate(); //Rebuilds all geometry. Don't do this.
 
     std::unordered_map<iPos, Chunk*, iPosHash, iPosEqual> chunks;
+    std::unordered_map<glm::ivec3, ChunkMesh, ivec3Hash> mChunkMeshes;
     std::vector<iPos> chunkUpdateQueue;
 
     unsigned chunkSize;

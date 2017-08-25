@@ -102,6 +102,8 @@ bool World::makeChunk(const int& x, const int& y, const int& z) {
     newChunk->renderer.init();
     newChunk->renderer.setChunkPosition(x,y,z);
 
+    mChunkMeshes.emplace(posvec, ChunkMesh(*this, posvec));
+ 
     return true;
 }
 
@@ -131,14 +133,27 @@ void World::queueChunkUpdate(const iPos& pos) {
 }
 
 void World::draw() {
+  /*
     for (auto& i : chunks) {
         glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3(
                     (float)i.second->getPos().x * 16,
                     (float)i.second->getPos().y * 16,
                     (float)i.second->getPos().z * 16
                     ));
+	
         glUniformMatrix4fv(modelMatUni, 1, GL_FALSE, glm::value_ptr(modelMat));
         i.second->renderer.drawChunk();
+    }
+  */
+    for (auto& i : mChunkMeshes) {
+        glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3(
+                    (float)i.first.x * 16,
+                    (float)i.first.y * 16,
+                    (float)i.first.z * 16
+                    ));
+	
+        glUniformMatrix4fv(modelMatUni, 1, GL_FALSE, glm::value_ptr(modelMat));
+        i.second.draw();
     }
 }
 
@@ -156,11 +171,19 @@ void World::update() {
 
 void World::forceGlobalGeometryUpdate() {
     int chunkCount = 1;
+    /*
     for (auto& i : chunks) {
         std::cout << "\rUpdating chunk geometry (" << chunkCount << "/" << chunks.size() << ")" << std::flush;
         i.second->renderer.updateGeometry();
         chunkCount++;
         //i.second->renderer.updateVertexData();
+    }
+    */
+    chunkCount = 1;
+    for (auto& i : mChunkMeshes) {
+      std::cout << "\rUpdating chunk geometry, but better (" << chunkCount << "/" << mChunkMeshes.size() << ")" << std::flush;
+      i.second.rebuildChunkGeometry();
+      ++chunkCount;
     }
 }
 

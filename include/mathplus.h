@@ -37,10 +37,12 @@ template <typename T> int signum(const T& val) {
     return (T(0) < val) - (val < T(0));
 }
 
+//floating point modulus
 template <typename T> T mod(const T& a, const T& b) {
     return fmod(fmod(a,b) + b, b);
 }
 
+// constrain a value to bounds
 template <typename T>
 T constrain(const T& value, const T& min, const T& max) {
     if (value <= min) return min;

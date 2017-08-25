@@ -9,8 +9,8 @@ namespace vtk {
   class ChunkMesh {
   public:
     ChunkMesh(World& world, glm::ivec3 linkedChunkPos);
-    void rebuildChunkGeometry(const unsigned& vao);
-    void rebuildChunkLighting(const unsigned& vao);
+    void rebuildChunkGeometry();
+    void rebuildChunkLighting();
     void draw();
 
   protected:
