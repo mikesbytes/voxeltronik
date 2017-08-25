@@ -17,7 +17,7 @@ public:
 	void buildVertices(Chunk& chunk);
 	void buildLighting(Chunk& chunk);
 protected:
-	
+	unsigned mVAO;
 };
 
 }

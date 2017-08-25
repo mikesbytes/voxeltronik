@@ -105,8 +105,6 @@ void TestScene::init() {
     handler.getEventSignal(SDL_QUIT       ).connect<Game     , &Game::stop     >(linkedGame);
     handler.getEventSignal(SDL_MOUSEMOTION).connect<TestScene, &TestScene::look>(this);
 
-
-
     world.voxelInfo.setTextureData(1, Face3D::RIGHT, Orientation2D::UP, 0.0f);
     world.voxelInfo.setTextureData(1, Face3D::LEFT, Orientation2D::UP, 0.0f);
     world.voxelInfo.setTextureData(1, Face3D::TOP, Orientation2D::UP, 0.0f);
@@ -186,17 +184,17 @@ void TestScene::update(const float& dTime) {
 }
 
 void TestScene::draw() {
-	mSkyboxTask->draw();
+    mSkyboxTask->draw();
 
-	gls::setShader(shaders);
+    gls::setShader(shaders);
     glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
     world.draw();
     
     glDisable(GL_DEPTH_TEST);
-	mCursorShader.activate();
+    mCursorShader.activate();
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void TestScene::look() {

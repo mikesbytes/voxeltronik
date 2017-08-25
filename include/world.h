@@ -43,6 +43,8 @@ public:
     bool makeChunk(const int& x, const int& y, const int& z);
     bool generateChunk(const int& x, const int& y, const int& z);
 
+    Chunk* getChunk(const glm::ivec3& pos);
+
     void queueChunkUpdate(const int& x, const int& y, const int& z);
     void queueChunkUpdate(const iPos& pos);
 

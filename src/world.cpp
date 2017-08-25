@@ -113,6 +113,11 @@ bool World::generateChunk(const int& x, const int& y, const int& z) {
     return chunkMade;
 }
 
+
+  Chunk* World::getChunk(const glm::ivec3& pos) {
+    return chunks[std::make_tuple(pos.x, pos.y, pos.z)];
+  }
+  
 void World::queueChunkUpdate(const int& x, const int& y, const int& z) {
     queueChunkUpdate(std::make_tuple(x,y,z));
 }
