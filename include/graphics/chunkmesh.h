@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <glm/glm.hpp>
+#include <vector>
 
 namespace vtk {
   class World;
@@ -12,6 +13,7 @@ namespace vtk {
     void rebuildChunkGeometry();
     void rebuildChunkLighting();
     void draw();
+    bool updateGeometry(); //puts the geometry into the VBOs because OGL can't into threading
 
   protected:
     //position of chunk since chunk does NOT have to exist to rebuild
@@ -21,10 +23,14 @@ namespace vtk {
     glm::ivec3 mLinkedChunkPos;
     World& mLinkedWorld;
 
+    std::vector<float> geometry;
+    bool mLocked;
+    bool mUpdated;
     unsigned mVAO;
     unsigned mGeometryTexVBO;
     unsigned mLightVBO;
     int mFaceCount;
+    int mGeometryFaceCount;
   };
   
 }

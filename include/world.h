@@ -57,6 +57,7 @@ public:
     std::unordered_map<iPos, Chunk*, iPosHash, iPosEqual> chunks;
     std::unordered_map<glm::ivec3, ChunkMesh, ivec3Hash> mChunkMeshes;
     std::vector<iPos> chunkUpdateQueue;
+    std::vector<glm::ivec3> mChunkGeometryUpdateQueue;
 
     unsigned chunkSize;
     float voxelSize;

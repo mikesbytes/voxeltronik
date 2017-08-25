@@ -159,14 +159,35 @@ void World::draw() {
 
 void World::update() {
     while (!chunkUpdateQueue.empty()) {
+      /*
         auto chunk = chunks[chunkUpdateQueue.back()];
         chunkUpdateQueue.pop_back(); 
         std::thread(&ChunkRenderer::updateGeometry, &chunk->renderer).detach();
+      */
+      auto& pos = chunkUpdateQueue.back();
+      auto posVec = glm::ivec3(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
+      auto& mesh = mChunkMeshes.find(posVec)->second;
+      chunkUpdateQueue.pop_back();
+      //mesh.rebuildChunkGeometry();
+      std::thread(&ChunkMesh::rebuildChunkGeometry, &mesh).detach();
+      mChunkGeometryUpdateQueue.push_back(posVec);
     }
 
+    /*
     for (auto& i : chunks) {
         i.second->renderer.updateVertexData();
     }
+
+    auto it = mChunkGeometryUpdateQueue.begin();
+    while (it != mChunkGeometryUpdateQueue.end()) {
+      if (mChunkMeshes.find(*it)->second.updateGeometry()) {
+	std::cout << "updated chunk " << it->x << "," << it->y << "," << it->z;
+	mChunkGeometryUpdateQueue.erase(it);
+      }
+      else ++it;
+    }
+    */
+
 }
 
 void World::forceGlobalGeometryUpdate() {
@@ -183,6 +204,7 @@ void World::forceGlobalGeometryUpdate() {
     for (auto& i : mChunkMeshes) {
       std::cout << "\rUpdating chunk geometry, but better (" << chunkCount << "/" << mChunkMeshes.size() << ")" << std::flush;
       i.second.rebuildChunkGeometry();
+      i.second.updateGeometry();
       ++chunkCount;
     }
 }

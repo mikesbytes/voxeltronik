@@ -7,12 +7,14 @@
 #include <vector>
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <iostream>
 
 
 namespace vtk {
   ChunkMesh::ChunkMesh(World& world, glm::ivec3 chunkPos) :
     mLinkedWorld(world),
-    mLinkedChunkPos(chunkPos)
+    mLinkedChunkPos(chunkPos),
+    mLocked(false)
   {
     glGenBuffers(1, &mGeometryTexVBO);
     glGenBuffers(1, &mLightVBO);
@@ -34,6 +36,8 @@ namespace vtk {
   }
 
   void ChunkMesh::rebuildChunkGeometry() {
+    if (mLocked) return;
+    mLocked = true;
     //get the chunk from position
     auto chunk = mLinkedWorld.getChunk(mLinkedChunkPos); 
 
@@ -102,7 +106,7 @@ namespace vtk {
     };
 
     // geometry format: x,y,z,u,v,i
-    std::vector<float> geometry;
+    geometry.clear();
     mFaceCount = 0;
     int chunkSize = 16; // TODO: make this not hardcoded
 
@@ -203,9 +207,8 @@ namespace vtk {
       }
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, mGeometryTexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * geometry.size(), geometry.data(), GL_STATIC_DRAW);
-    
+    mUpdated = true;
+    mLocked = false;
   }
 
   void ChunkMesh::rebuildChunkLighting() {
@@ -213,7 +216,19 @@ namespace vtk {
   }
 
   void ChunkMesh::draw() {
+    updateGeometry();
     glBindVertexArray(mVAO);
-    glDrawArrays(GL_TRIANGLES, 0, mFaceCount * 6);
+    glDrawArrays(GL_TRIANGLES, 0, mGeometryFaceCount * 6);
+  }
+
+  bool ChunkMesh::updateGeometry() {
+    if (mUpdated) {
+      mUpdated = false;
+      glBindBuffer(GL_ARRAY_BUFFER, mGeometryTexVBO);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(float) * geometry.size(), geometry.data(), GL_STATIC_DRAW);
+      mGeometryFaceCount = mFaceCount;
+      return true;
+    }
+    return false;
   }
 }

@@ -129,7 +129,7 @@ void TestScene::init() {
         for (int j = 0; j < 8; j++) {
             for (int k = 0; k < 8; k++) {
                 std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
-                world.generateChunk(i-1,j,k);
+                world.generateChunk(i,j,k);
                 chunkCount++;
             }
         }
