@@ -11,6 +11,7 @@ namespace vtk {
     ChunkMesh(World& world, glm::ivec3 linkedChunkPos);
     void rebuildChunkGeometry(const unsigned& vao);
     void rebuildChunkLighting(const unsigned& vao);
+    void draw();
 
   protected:
     //position of chunk since chunk does NOT have to exist to rebuild
@@ -21,8 +22,9 @@ namespace vtk {
     World& mLinkedWorld;
 
     unsigned mVAO;
-    unsigned mGemetryTexVBO;
+    unsigned mGeometryTexVBO;
     unsigned mLightVBO;
+    int mFaceCount;
   };
   
 }
