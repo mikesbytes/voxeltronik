@@ -40,7 +40,7 @@ void TestScene::init() {
     tiles.buildTexture();
     tiles.updateTextureAt(0, "res/stone.png");
     tiles.updateTextureAt(1, "res/dirt.png");
-    tiles.updateTextureAt(2, "res/grass.png");
+    tiles.updateTextureAt(2, "res/test.png");
 
     //define vertices
     float vertices[] {
@@ -125,9 +125,9 @@ void TestScene::init() {
     std::cout << std::endl;
 
     int chunkCount = 1;
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 32; i++) {
         for (int j = 0; j < 8; j++) {
-            for (int k = 0; k < 8; k++) {
+            for (int k = 0; k < 32; k++) {
                 std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
                 world.generateChunk(i,j,k);
                 chunkCount++;
@@ -135,7 +135,7 @@ void TestScene::init() {
         }
     }
 
-    world.forceGlobalGeometryUpdate();
+    //world.forceGlobalGeometryUpdate();
 
     voxelType = 1;
 }

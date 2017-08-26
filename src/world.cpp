@@ -24,6 +24,7 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
+
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -36,6 +37,7 @@ World::World() {
     voxelSize = 1.0f;
     voxelInfo.linkedWorld = this;
     voxelMath.linkedWorld = this;
+    rebuildThreadActive = false;
 }
 
 bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
@@ -111,6 +113,17 @@ bool World::generateChunk(const int& x, const int& y, const int& z) {
     bool chunkMade = makeChunk(x,y,z);
     if (chunkMade) {
         terrain.generateChunk(chunks[std::make_tuple(x,y,z)]);
+	//queue this chunk for geometry update
+	queueChunkUpdate(x,y,z);
+
+	//queue the neighboring 6 chunks. the queue functions throws them out
+	// if they don't exist
+	queueChunkUpdate(x+1,y,z);
+	queueChunkUpdate(x-1,y,z);
+	queueChunkUpdate(x,y+1,z);
+	queueChunkUpdate(x,y-1,z);
+	queueChunkUpdate(x,y,z+1);
+	queueChunkUpdate(x,y,z-1);
     }
     return chunkMade;
 }
@@ -158,12 +171,28 @@ void World::draw() {
 }
 
 void World::update() {
-    while (!chunkUpdateQueue.empty()) {
+  if (!rebuildThreadActive && !chunkUpdateQueue.empty( )) {
+    auto updatefunc = [&]() {
+      while (!chunkUpdateQueue.empty()) {
+	auto& pos = chunkUpdateQueue.back();
+	auto posVec = glm::ivec3(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
+	auto& mesh = mChunkMeshes.find(posVec)->second;
+	chunkUpdateQueue.pop_back();
+	mesh.rebuildChunkGeometry();
+	mChunkGeometryUpdateQueue.push_back(posVec);
+      }
+      rebuildThreadActive = false;
+    };
+ 
+    rebuildThreadActive = true;
+    std::thread(updatefunc).detach();
+
+  }
       /*
+    while (!chunkUpdateQueue.empty()) {
         auto chunk = chunks[chunkUpdateQueue.back()];
         chunkUpdateQueue.pop_back(); 
         std::thread(&ChunkRenderer::updateGeometry, &chunk->renderer).detach();
-      */
       auto& pos = chunkUpdateQueue.back();
       auto posVec = glm::ivec3(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
       auto& mesh = mChunkMeshes.find(posVec)->second;
@@ -173,7 +202,6 @@ void World::update() {
       mChunkGeometryUpdateQueue.push_back(posVec);
     }
 
-    /*
     for (auto& i : chunks) {
         i.second->renderer.updateVertexData();
     }

@@ -67,6 +67,7 @@ public:
     TerrainGen terrain;
     VoxelInfo voxelInfo;
     VoxelMath voxelMath;
+    bool rebuildThreadActive;
 };
 
 }
