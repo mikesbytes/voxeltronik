@@ -41,70 +41,64 @@ World::World() {
 }
 
 bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
-    auto chunkPos = std::make_tuple(floor((float)x / (float)chunkSize), 
+  auto chunkPos = glm::ivec3(floor((float)x / (float)chunkSize), 
                                     floor((float)y / (float)chunkSize), 
                                     floor((float)z / (float)chunkSize));
-    if (chunks.find(chunkPos) == chunks.end()) { //block is in nonexistant chunk
+    if (mChunks.find(chunkPos) == mChunks.end()) { //block is in nonexistant chunk
         return true;
     }
 
-    int relPosX = x - std::get<0>(chunkPos) * chunkSize;
-    int relPosY = y - std::get<1>(chunkPos) * chunkSize;
-    int relPosZ = z - std::get<2>(chunkPos) * chunkSize;
+    int relPosX = x - chunkPos.x * chunkSize;
+    int relPosY = y - chunkPos.y * chunkSize;
+    int relPosZ = z - chunkPos.z * chunkSize;
 
-    return chunks[chunkPos]->isVoxelSolid(relPosX, relPosY, relPosZ);
+    return mChunks[chunkPos]->isVoxelSolid(relPosX, relPosY, relPosZ);
 }
 
 bool World::setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& updateChunk) {
-    auto chunkPos = std::make_tuple(floor((float)x / (float)chunkSize), floor((float)y / (float)chunkSize), floor((float)z / (float)chunkSize));
-    if (chunks.find(chunkPos) == chunks.end()) { //block is in nonexistant chunk
+  auto chunkPos = glm::ivec3(floor((float)x / (float)chunkSize), floor((float)y / (float)chunkSize), floor((float)z / (float)chunkSize));
+    if (mChunks.find(chunkPos) == mChunks.end()) { //block is in nonexistant chunk
         return false;
     }
 
-    int relPosX = x - std::get<0>(chunkPos) * chunkSize;
-    int relPosY = y - std::get<1>(chunkPos) * chunkSize;
-    int relPosZ = z - std::get<2>(chunkPos) * chunkSize;
+    int relPosX = x - chunkPos.x * chunkSize;
+    int relPosY = y - chunkPos.y * chunkSize;
+    int relPosZ = z - chunkPos.z * chunkSize;
 
-    chunks[chunkPos]->setVoxelType(relPosX, relPosY, relPosZ, type);
+    mChunks[chunkPos]->setVoxelType(relPosX, relPosY, relPosZ, type);
     if (updateChunk) queueChunkUpdate(chunkPos);
     return true;
 }
 
 unsigned World::getVoxelType(const glm::ivec3& pos) {
-    auto chunkPos = std::make_tuple(floor((float)pos.x / (float)chunkSize), 
+  auto chunkPos = glm::ivec3(floor((float)pos.x / (float)chunkSize), 
                                     floor((float)pos.y / (float)chunkSize), 
                                     floor((float)pos.z / (float)chunkSize));
-    if (chunks.find(chunkPos) == chunks.end()) {
+    if (mChunks.find(chunkPos) == mChunks.end()) {
         return 0;
     }
 
-    int relPosX = pos.x - std::get<0>(chunkPos) * chunkSize;
-    int relPosY = pos.y - std::get<1>(chunkPos) * chunkSize;
-    int relPosZ = pos.z - std::get<2>(chunkPos) * chunkSize;
+    int relPosX = pos.x - chunkPos.x * chunkSize;
+    int relPosY = pos.y - chunkPos.y * chunkSize;
+    int relPosZ = pos.z - chunkPos.z * chunkSize;
 
-    return chunks[chunkPos]->getVoxelType((unsigned)relPosX, (unsigned)relPosY, (unsigned)relPosZ);
+    return mChunks[chunkPos]->getVoxelType((unsigned)relPosX, (unsigned)relPosY, (unsigned)relPosZ);
 }
 
 
 bool World::makeChunk(const int& x, const int& y, const int& z) {
-    auto pos = std::make_tuple(x, y, z);
-    auto posvec = glm::ivec3(x, y, z);
+    auto pos = glm::ivec3(x, y, z);
 
-    if (chunks.find(pos) != chunks.end()) { //chunk already exists
+    if (mChunks.find(pos) != mChunks.end()) { //chunk already exists
         return false;
     }
 
     auto newChunk = new Chunk(*this);
-    chunks[pos] = newChunk;
+    mChunks[pos] = newChunk;
 
-    newChunk->setPos(posvec);
+    newChunk->setPos(pos);
 
-    //newChunk->renderer.linkedWorld = this;
-
-    newChunk->renderer.init();
-    newChunk->renderer.setChunkPosition(x,y,z);
-
-    mChunkMeshes.emplace(posvec, ChunkMesh(*this, posvec));
+    mChunkMeshes.emplace(pos, ChunkMesh(*this, pos));
  
     return true;
 }
@@ -112,7 +106,7 @@ bool World::makeChunk(const int& x, const int& y, const int& z) {
 bool World::generateChunk(const int& x, const int& y, const int& z) {
     bool chunkMade = makeChunk(x,y,z);
     if (chunkMade) {
-        terrain.generateChunk(chunks[std::make_tuple(x,y,z)]);
+      terrain.generateChunk(getChunk(glm::ivec3(x,y,z)));
 	//queue this chunk for geometry update
 	queueChunkUpdate(x,y,z);
 
@@ -130,19 +124,22 @@ bool World::generateChunk(const int& x, const int& y, const int& z) {
 
 
   Chunk* World::getChunk(const glm::ivec3& pos) {
-    return chunks[std::make_tuple(pos.x, pos.y, pos.z)];
+    auto chunk = mChunks.find(pos)->second;
+    if (chunk) return chunk;
+    else return nullptr;
   }
   
 void World::queueChunkUpdate(const int& x, const int& y, const int& z) {
-    queueChunkUpdate(std::make_tuple(x,y,z));
+  queueChunkUpdate(glm::ivec3(x,y,z));
 }
 
-void World::queueChunkUpdate(const iPos& pos) {
-    if (chunks.find(pos) == chunks.end()) return; //chunk doesn't exist
-    for (auto& i : chunkUpdateQueue) {
+  void World::queueChunkUpdate(const glm::ivec3& pos) {
+    if (mChunks.find(pos) == mChunks.end()) return; //chunk doesn't exist
+    for (auto& i : mChunkUpdateQueue) {
         if (i == pos) return; //chunk is already in queue, we don't need to update multiple times
     }
-    chunkUpdateQueue.push_back(pos);
+
+    mChunkUpdateQueue.push_front(pos);
 }
 
 void World::draw() {
@@ -171,15 +168,13 @@ void World::draw() {
 }
 
 void World::update() {
-  if (!rebuildThreadActive && !chunkUpdateQueue.empty( )) {
+  if (!rebuildThreadActive && !mChunkUpdateQueue.empty( )) {
     auto updatefunc = [&]() {
-      while (!chunkUpdateQueue.empty()) {
-	auto& pos = chunkUpdateQueue.back();
-	auto posVec = glm::ivec3(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
-	auto& mesh = mChunkMeshes.find(posVec)->second;
-	chunkUpdateQueue.pop_back();
+      while (!mChunkUpdateQueue.empty()) {
+	auto& pos = mChunkUpdateQueue.back();
+	auto& mesh = mChunkMeshes.find(pos)->second;
+	mChunkUpdateQueue.pop_back();
 	mesh.rebuildChunkGeometry();
-	mChunkGeometryUpdateQueue.push_back(posVec);
       }
       rebuildThreadActive = false;
     };

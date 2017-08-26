@@ -26,6 +26,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <deque>
 #include <glm/glm.hpp>
 
 namespace vtk {
@@ -47,16 +48,17 @@ public:
     Chunk* getChunk(const glm::ivec3& pos);
 
     void queueChunkUpdate(const int& x, const int& y, const int& z);
-    void queueChunkUpdate(const iPos& pos);
+    void queueChunkUpdate(const glm::ivec3& pos);
 
     void draw();
     void update();
 
     void forceGlobalGeometryUpdate(); //Rebuilds all geometry. Don't do this.
 
-    std::unordered_map<iPos, Chunk*, iPosHash, iPosEqual> chunks;
+    std::unordered_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
     std::unordered_map<glm::ivec3, ChunkMesh, ivec3Hash> mChunkMeshes;
     std::vector<iPos> chunkUpdateQueue;
+    std::deque<glm::ivec3> mChunkUpdateQueue;
     std::vector<glm::ivec3> mChunkGeometryUpdateQueue;
 
     unsigned chunkSize;
