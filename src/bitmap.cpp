@@ -17,7 +17,7 @@
  */
 
 #include "bitmap.h"
-#include "stb_image.c"
+#include "stb_image.h"
 
 namespace vtk {
 

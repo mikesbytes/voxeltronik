@@ -26,6 +26,7 @@
 #include "graphics/skybox.h"
 #include "graphics/shader.h"
 
+#include "nanovg.h"
 
 #include <SDL2/SDL.h>
 
@@ -49,14 +50,15 @@ protected:
     unsigned vao;
     unsigned shaders;
     unsigned cursorShaders;
-	Shader mCursorShader;
+    Shader mCursorShader;
     float dTime;
+    float mFPS;
     Camera camera;
     SDL_Event event;
     World world;
 	Skybox mSkybox;
 	RenderTask* mSkyboxTask;
-    
+	NVGcontext* vg; //nanovg context
 
     //stuff
     float sensitivity;

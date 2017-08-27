@@ -76,14 +76,13 @@ void Game::start() {
 void Game::loop() {
 
 
-  std::chrono::steady_clock::time_point lastFrameTime = std::chrono::steady_clock::now();
+  auto lastFrameTime = std::chrono::steady_clock::now();
 
     while (running) {
         //time
-      std::chrono::steady_clock::time_point curTime = std::chrono::steady_clock::now();
-      auto timeSpan = std::chrono::duration_cast<std::chrono::duration<float>>(curTime - lastFrameTime);
-        lastFrameTime = curTime;
-        float dTime = timeSpan.count();
+        int dTimeMS = SDL_GetTicks() - lastFrameTime;
+        lastFrameTime = SDL_GetTicks();
+        float dTime = (float)dTimeMS / 1000.0f;
 
         activeScene->update(dTime);
         

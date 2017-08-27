@@ -23,7 +23,7 @@
 namespace vtk {
 
 Chunk::Chunk(World& world) :
-	mLinkedWorld(world)	
+	mLinkedWorld(world)
 {
     mPos = glm::ivec3(0,0,0);
     renderer.linkedChunk = this;

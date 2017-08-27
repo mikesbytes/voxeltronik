@@ -47,8 +47,8 @@ public:
 
     Chunk* getChunk(const glm::ivec3& pos);
 
-    void queueChunkUpdate(const int& x, const int& y, const int& z);
-    void queueChunkUpdate(const glm::ivec3& pos);
+    void queueChunkUpdate(const int& x, const int& y, const int& z, const bool& back = false);
+    void queueChunkUpdate(const glm::ivec3& pos, const bool& back = false);
 
     void draw();
     void update();

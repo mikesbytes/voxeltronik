@@ -30,6 +30,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "nanovg.h"
+#define NANOVG_GL3_IMPLEMENTATION
+#include "nanovg_gl.h"
+
 #include <iostream>
 
 namespace vtk {
@@ -83,6 +87,10 @@ void TestScene::init() {
     glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
     glUniformMatrix4fv(projMatUni, 1, GL_FALSE, glm::value_ptr(linkedGame->window.getProjectionMatrix()));
 
+    //nanovg
+    vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
+    nvgCreateFont(vg, "mono", "res/fonts/DejaVuSansMono.ttf");
+
     SDL_SetRelativeMouseMode(SDL_TRUE);
     sensitivity = linkedGame->getConfig()->getValue<float>("controls.mouse.sensitivity", 5.0f);
 
@@ -125,9 +133,9 @@ void TestScene::init() {
     std::cout << std::endl;
 
     int chunkCount = 1;
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 8; j++) {
-            for (int k = 0; k < 32; k++) {
+            for (int k = 0; k < 16; k++) {
                 std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
                 world.generateChunk(i,j,k);
                 chunkCount++;
@@ -150,6 +158,8 @@ void TestScene::update(const float& dTime) {
     handler.update();
     world.update();
 
+    mFPS = 1.0f/dTime;
+    
     if (handler.isActionDown("Move Forward" )) camera.moveRelative(glm::vec3 (0.0f,  0.0f,  1.0f) * dTime * 4.0f);
     if (handler.isActionDown("Move Backward")) camera.moveRelative(glm::vec3( 0.0f,  0.0f, -1.0f) * dTime * 4.0f);
     if (handler.isActionDown("Move Left"    )) camera.moveRelative(glm::vec3(-1.0f,  0.0f,  0.0f) * dTime * 4.0f);
@@ -194,6 +204,19 @@ void TestScene::draw() {
     mCursorShader.activate();
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    nvgBeginFrame(vg, 1920, 1080, 1);
+
+    nvgFontSize(vg, 14.0f);
+    nvgFontFace(vg, "mono");
+    nvgFillColor(vg, nvgRGBA(0, 0, 0, 190));
+
+    std::string fpsString = std::to_string(mFPS);
+    nvgText(vg, 5, 19, fpsString.data(), NULL);
+
+    nvgEndFrame(vg);
+    glFrontFace(GL_CW);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 }
 

@@ -66,7 +66,7 @@ bool World::setVoxelType(const int& x, const int& y, const int& z, const unsigne
     int relPosZ = z - chunkPos.z * chunkSize;
 
     mChunks[chunkPos]->setVoxelType(relPosX, relPosY, relPosZ, type);
-    if (updateChunk) queueChunkUpdate(chunkPos);
+    if (updateChunk) queueChunkUpdate(chunkPos, true);
     return true;
 }
 
@@ -129,17 +129,21 @@ bool World::generateChunk(const int& x, const int& y, const int& z) {
     else return nullptr;
   }
   
-void World::queueChunkUpdate(const int& x, const int& y, const int& z) {
+  void World::queueChunkUpdate(const int& x, const int& y, const int& z, const bool& back) {
   queueChunkUpdate(glm::ivec3(x,y,z));
 }
 
-  void World::queueChunkUpdate(const glm::ivec3& pos) {
+  void World::queueChunkUpdate(const glm::ivec3& pos, const bool& back) {
     if (mChunks.find(pos) == mChunks.end()) return; //chunk doesn't exist
     for (auto& i : mChunkUpdateQueue) {
         if (i == pos) return; //chunk is already in queue, we don't need to update multiple times
     }
 
-    mChunkUpdateQueue.push_front(pos);
+    if (back) {
+      mChunkUpdateQueue.push_back(pos);
+    } else {
+      mChunkUpdateQueue.push_front(pos);
+    }
 }
 
 void World::draw() {
