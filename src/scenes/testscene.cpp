@@ -133,9 +133,9 @@ void TestScene::init() {
     std::cout << std::endl;
 
     int chunkCount = 1;
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            for (int k = 0; k < 16; k++) {
+            for (int k = 0; k < 8; k++) {
                 std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
                 world.generateChunk(i,j,k);
                 chunkCount++;
@@ -223,7 +223,7 @@ void TestScene::draw() {
 void TestScene::look() {
     int x, y; //mouse change
     SDL_GetRelativeMouseState(&x, &y);
-    camera.rotate((float)x * dTime * sensitivity * 0.01f, (float)y * dTime * sensitivity * 0.01f);
+    camera.rotate((float)x * sensitivity * 0.001f, (float)y * sensitivity * 0.001f);
     //camera.rotate((float)x, (float)y);
 }
 

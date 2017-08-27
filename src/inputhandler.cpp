@@ -17,7 +17,7 @@
  */
 
 #include "inputhandler.h"
-
+#include <iostream>
 namespace vtk {
 
 void InputHandler::update() {

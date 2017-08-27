@@ -44,6 +44,8 @@ protected:
     Uint32 mouseButtons;
     const Uint8* keys;
     SDL_Event event;
+    Sint32 mMouseXRel;
+    Sint32 mMouseYRel;
 };
 
 }
