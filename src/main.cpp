@@ -15,18 +15,19 @@ int main (int argc, char *argv[])
 	vtk::LoggerSetup lSetup;
 	lSetup.setup();
 	spdlog::get("general")->info("Starting Voxeltronik Engine...");
+	spdlog::get("general");
 
-    auto conf = new Config;
-    conf->loadConfigFromFile("res/config.conf");
-    conf->addArgumentRule("-w", "graphics.res.x");
-    conf->addArgumentRule("-h", "graphics.res.y");
-    conf->loadConfigFromArguments(argc, argv);    
+	auto conf = new Config;
+	conf->loadConfigFromFile("res/config.conf");
+	conf->addArgumentRule("-w", "graphics.res.x");
+	conf->addArgumentRule("-h", "graphics.res.y");
+	conf->loadConfigFromArguments(argc, argv);
 
-    vtk::Game game;
-    game.setConfig(conf);
-    game.init();
-    game.setScene(new vtk::TestScene);
-    game.start();
+	vtk::Game game;
+	game.setConfig(conf);
+	game.init();
+	game.setScene(new vtk::TestScene);
+	game.start();
 
-    return 0;
+	return 0;
 }
