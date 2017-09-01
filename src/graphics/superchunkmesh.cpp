@@ -11,6 +11,3 @@ bool SuperChunkMesh::addMesh(ChunkMesh* mesh) {
 }
 
 }
-longFunctionThatDoesStuff(objectWithLongName.x,
-			  objectWithLongName.y,
-			  objectWithLongName.z);

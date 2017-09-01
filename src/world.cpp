@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  world.cpp
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  04/03/2014 09:53:00 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (),
- *   Organization:
- *
- * =====================================================================================
- */
 #include "world.h"
 #include "chunk.h"
 
@@ -31,10 +14,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace vtk {
-
-{
-	asd;
-}
 
 World::World() {
 	chunkSize = 16;
@@ -151,18 +130,6 @@ void World::queueChunkUpdate(const glm::ivec3& pos, const bool& back) {
 }
 
 void World::draw() {
-	/*
-	  for (auto& i : chunks) {
-	  glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3(
-	  (float)i.second->getPos().x * 16,
-	  (float)i.second->getPos().y * 16,
-	  (float)i.second->getPos().z * 16
-	  ));
-
-	  glUniformMatrix4fv(modelMatUni, 1, GL_FALSE, glm::value_ptr(modelMat));
-	  i.second->renderer.drawChunk();
-	  }
-	*/
 	for (auto& i : mChunkMeshes) {
 		glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3((float)i.first.x * 16,
 		                                                           (float)i.first.y * 16,
@@ -190,46 +157,10 @@ void World::update() {
 		std::thread(updatefunc).detach();
 
 	}
-	/*
-	  while (!chunkUpdateQueue.empty()) {
-	  auto chunk = chunks[chunkUpdateQueue.back()];
-	  chunkUpdateQueue.pop_back();
-	  std::thread(&ChunkRenderer::updateGeometry, &chunk->renderer).detach();
-	  auto& pos = chunkUpdateQueue.back();
-	  auto posVec = glm::ivec3(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
-	  auto& mesh = mChunkMeshes.find(posVec)->second;
-	  chunkUpdateQueue.pop_back();
-	  //mesh.rebuildChunkGeometry();
-	  std::thread(&ChunkMesh::rebuildChunkGeometry, &mesh).detach();
-	  mChunkGeometryUpdateQueue.push_back(posVec);
-	  }
-
-	  for (auto& i : chunks) {
-	  i.second->renderer.updateVertexData();
-	  }
-
-	  auto it = mChunkGeometryUpdateQueue.begin();
-	  while (it != mChunkGeometryUpdateQueue.end()) {
-	  if (mChunkMeshes.find(*it)->second.updateGeometry()) {
-	  std::cout << "updated chunk " << it->x << "," << it->y << "," << it->z;
-	  mChunkGeometryUpdateQueue.erase(it);
-	  }
-	  else ++it;
-	  }
-	*/
-
 }
 
 void World::forceGlobalGeometryUpdate() {
 	int chunkCount = 1;
-	/*
-	  for (auto& i : chunks) {
-	  std::cout << "\rUpdating chunk geometry (" << chunkCount << "/" << chunks.size() << ")" << std::flush;
-	  i.second->renderer.updateGeometry();
-	  chunkCount++;
-	  //i.second->renderer.updateVertexData();
-	  }
-	*/
 	chunkCount = 1;
 	for (auto& i : mChunkMeshes) {
 		std::cout << "\rUpdating chunk geometry, but better (" << chunkCount << "/" << mChunkMeshes.size() << ")" << std::flush;
