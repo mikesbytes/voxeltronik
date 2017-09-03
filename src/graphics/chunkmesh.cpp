@@ -217,9 +217,11 @@ void ChunkMesh::rebuildChunkLighting() {
 }
 
 void ChunkMesh::draw() {
-	updateGeometry();
-	glBindVertexArray(mVAO);
-	glDrawArrays(GL_TRIANGLES, 0, mGeometryFaceCount * 6);
+	if (mFaceCount > 0) {
+		updateGeometry();
+		glBindVertexArray(mVAO);
+		glDrawArrays(GL_TRIANGLES, 0, mGeometryFaceCount * 6);
+	}
 }
 
 bool ChunkMesh::updateGeometry() {
