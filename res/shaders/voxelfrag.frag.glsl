@@ -24,8 +24,8 @@ float getFogFactor(float fogCoord) {
 void main() {
 	//fog calculations
 
-    vec4 texel = texture2DArray(texture, texCoordInterp);
-    outColor = texel; //* vec4(lightDataInterp, 1.0f);
+    //vec4 texel = texture2DArray(texture, texCoordInterp);
+    outColor = vec4(1.0f, 1.0f, 1.0f, 1.0f); //texel; //* vec4(lightDataInterp, 1.0f);
 
 	float fogCoord = abs(eyeSpacePos.z/eyeSpacePos.w);
 	outColor = mix(outColor, fogColor, getFogFactor(fogCoord));

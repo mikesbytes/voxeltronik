@@ -12,6 +12,13 @@
 
 int main (int argc, char *argv[])
 {
+	//testing	
+	unsigned uTopModel [] = { 0,0,0,0,0,0 };
+	uTopModel[0] = (uTopModel[0] << 4) | unsigned(8);
+	uTopModel[0] = (uTopModel[0] << 4) | unsigned(6);
+	std::cout << "Extracted: " << unsigned((uTopModel[0] >> 4)&((1<<4)-1)) <<
+		", " << unsigned((uTopModel[0] >> 0)&((1<<4)-1));
+
 	vtk::LoggerSetup lSetup;
 	lSetup.setup();
 	spdlog::get("general")->info("Starting Voxeltronik Engine...");

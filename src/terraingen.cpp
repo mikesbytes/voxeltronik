@@ -31,8 +31,8 @@ namespace vtk {
 
 TerrainGen::TerrainGen() {
 	std::shared_ptr<noise::NoiseModule> noise = std::make_shared<noise::Noise>(6969696);
-	std::shared_ptr<noise::NoiseModule> yGrad = std::make_shared<noise::YGradient>(0.0, 128.0);
-	mNoise = std::make_shared<noise::YTurbulence>(yGrad, noise, 40.0);
+	std::shared_ptr<noise::NoiseModule> yGrad = std::make_shared<noise::YGradient>(0.0, 10.0);
+	mNoise = yGrad; //std::make_shared<noise::YTurbulence>(yGrad, noise, 40.0);
 
 	mTerrainScale = 32.0;
 }
