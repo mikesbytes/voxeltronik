@@ -32,7 +32,7 @@ namespace vtk {
 TerrainGen::TerrainGen() {
 	std::shared_ptr<noise::NoiseModule> noise = std::make_shared<noise::Noise>(6969696);
 	std::shared_ptr<noise::NoiseModule> yGrad = std::make_shared<noise::YGradient>(0.0, 128.0);
-	mNoise = std::make_shared<noise::YTurbulence>(yGrad, noise, 40.0);
+	mNoise = std::make_shared<noise::YTurbulence>(yGrad, noise, 60.0);
 
 	mTerrainScale = 32.0;
 }
@@ -52,18 +52,6 @@ void TerrainGen::generateChunk(Chunk* chunk) {
 				} else {
 					chunk->setVoxelType(i,j,k,0);
 				}
-				/*
-                glm::dvec3 pos((double)(chunk->chunkPos.x * 16 + i) * terrainScale,
-                               (double)(chunk->chunkPos.y * 16 + j) * terrainScale,
-                               (double)(chunk->chunkPos.z * 16 + k) * terrainScale);
-                if (selectorMod.GetValue(pos.x, pos.y, pos.z) <= 0.0) {
-                    if (selectorMod.GetValue(pos.x, (double)(chunk->chunkPos.y * 16 + j + 1) * terrainScale, pos.z) >= 0.0) {
-                        chunk->setVoxelType(i,j,k,2);
-                    } else {
-                        chunk->setVoxelType(i,j,k,1);
-                    }
-                }
-				*/
             }
         }
     }
