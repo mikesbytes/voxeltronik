@@ -19,6 +19,7 @@ ChunkMesh::ChunkMesh(World& world, glm::ivec3 chunkPos) :
 {
 	glGenBuffers(1, &mGeometryTexVBO);
 	glGenBuffers(1, &mLightVBO);
+	glGenBuffers(1, &mFaceAttribsVBO);
 
 	glGenVertexArrays(1, &mVAO);
 
@@ -26,10 +27,16 @@ ChunkMesh::ChunkMesh(World& world, glm::ivec3 chunkPos) :
 
 	glBindBuffer(GL_ARRAY_BUFFER, mGeometryTexVBO);
 
-
 	//vertices
-	glVertexAttribPointer(0, 1, GL_UNSIGNED_INT, GL_FALSE, 0, NULL);
+	glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, GL_FALSE, 0);
 	glEnableVertexAttribArray(0);
+
+
+	//face attribs
+	glBindBuffer(GL_ARRAY_BUFFER, mFaceAttribsVBO);
+
+	glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, GL_FALSE, 0);
+	glEnableVertexAttribArray(1);
 
 	//tex uv coords
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 4*sizeof(unsigned), (void*)(1*sizeof(unsigned)));
@@ -41,35 +48,6 @@ void ChunkMesh::rebuildChunkGeometry() {
 	mLocked = true;
 	//get the chunk from position
 	auto chunk = mLinkedWorld.getChunk(mLinkedChunkPos); 
-
-	unsigned uTopModel [] = { 0,0,0,0,0,0 };
-	//single vertex
-	uTopModel[0] = (uTopModel[0] << 4) | unsigned(0);
-	uTopModel[0] = (uTopModel[0] << 4) | unsigned(15);
-	uTopModel[0] = (uTopModel[0] << 4) | unsigned(0);
-
-	uTopModel[1] = (uTopModel[1] << 4) | unsigned(15);
-	uTopModel[1] = (uTopModel[1] << 4) | unsigned(15);
-	uTopModel[1] = (uTopModel[1] << 4) | unsigned(0);
-
-	uTopModel[2] = (uTopModel[2] << 4) | unsigned(0);
-	uTopModel[2] = (uTopModel[2] << 4) | unsigned(15);
-	uTopModel[2] = (uTopModel[2] << 4) | unsigned(15);
-
-	uTopModel[3] = (uTopModel[3] << 4) | unsigned(15);
-	uTopModel[3] = (uTopModel[3] << 4) | unsigned(15);
-	uTopModel[3] = (uTopModel[3] << 4) | unsigned(15);
-
-	uTopModel[4] = (uTopModel[4] << 4) | unsigned(0);
-	uTopModel[4] = (uTopModel[4] << 4) | unsigned(15);
-	uTopModel[4] = (uTopModel[4] << 4) | unsigned(15);
-
-	uTopModel[5] = (uTopModel[5] << 4) | unsigned(15);
-	uTopModel[5] = (uTopModel[5] << 4) | unsigned(15);
-	uTopModel[5] = (uTopModel[5] << 4) | unsigned(0);
-	//unsigned((uTopModel[0] >> 8)&((1<<4)-1)); extract x, y ,z
-	//unsigned((uTopModel[0] >> 4)&((1<<4)-1));
-	//unsigned((uTopModel[0] >> 0)&((1<<4)-1));
 	
 	//temporary until I finish mesh providers
 	float texUV [] = {
@@ -134,9 +112,11 @@ void ChunkMesh::rebuildChunkGeometry() {
 		0.0f, 0.0f, 0.0f, //bl
 		0.0f, 1.0f, 1.0f //tr
 	};
-
+	
 	// geometry format: x,y,z,u,v,i
 	geometry.clear();
+	mGeometry.clear();
+	mFaceAttribs.clear();
 	mFaceCount = 0;
 	int chunkSize = 16; // TODO: make this not hardcoded
 
@@ -145,12 +125,30 @@ void ChunkMesh::rebuildChunkGeometry() {
 		for (int j = 0; j < chunkSize; ++j) {
 			for (int k = 0; k < chunkSize; ++k) {
 				if (chunk->isVoxelSolid(i,j,k)) {
-					if (!chunk->isVoxelSolid(i,j+1,k)) {
+
+					//build face attrib
+					// 0b00000000000000000xxxxxyyyyyzzzzz
+					unsigned faceAttrib = 0;
+					faceAttrib = faceAttrib | i;
+					faceAttrib = (faceAttrib << 5) | j;
+					faceAttrib = (faceAttrib << 5) | k;
+
+					//lambda expression for adding vertices
+					auto addFaceModel = [&](int faceIndex) {
+						auto mesh = mVoxelModel.getFaceMesh(faceIndex);
 						++mFaceCount;
 						for (int l = 0; l < 6; ++l) {
-							mGeometry.push_back(uTopModel[l]);
+							mGeometry.push_back(mesh[l]);
+							mFaceAttribs.push_back(faceAttrib);
 						}
-					}
+					};
+
+					if (!chunk->isVoxelSolid(i,j+1,k)) addFaceModel(0); // T
+					if (!chunk->isVoxelSolid(i,j-1,k)) addFaceModel(1); // B
+					if (!chunk->isVoxelSolid(i,j,k+1)) addFaceModel(2); // N
+					if (!chunk->isVoxelSolid(i,j,k-1)) addFaceModel(3); // S
+					if (!chunk->isVoxelSolid(i+1,j,k)) addFaceModel(4); // E
+					if (!chunk->isVoxelSolid(i-1,j,k)) addFaceModel(5); // W
 				}
 			}
 		}
@@ -253,7 +251,6 @@ void ChunkMesh::rebuildChunkGeometry() {
 		}
 	}
 	*/
-	std::cout << mGeometry[1];
 	mUpdated = true;
 	mLocked = false;
 }
@@ -275,7 +272,10 @@ bool ChunkMesh::updateGeometry() {
 		mUpdated = false;
 		glBindBuffer(GL_ARRAY_BUFFER, mGeometryTexVBO);
 		//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * geometry.size(), geometry.data(), GL_STATIC_DRAW);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mGeometry.size(), mGeometry.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned) * mGeometry.size(), mGeometry.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, mFaceAttribsVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned) * mFaceAttribs.size(), mFaceAttribs.data(), GL_STATIC_DRAW);
 		mGeometryFaceCount = mFaceCount;
 		return true;
 	}

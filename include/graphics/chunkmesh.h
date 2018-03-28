@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+#include "graphics/voxelmodel.h"
+
 namespace vtk {
 class World;
 
@@ -25,13 +27,16 @@ protected:
 
 	std::vector<float> geometry;
 	std::vector<unsigned> mGeometry;
+	std::vector<unsigned> mFaceAttribs;
 	bool mLocked;
 	bool mUpdated;
 	unsigned mVAO;
 	unsigned mGeometryTexVBO;
 	unsigned mLightVBO;
+	unsigned mFaceAttribsVBO;
 	int mFaceCount;
 	int mGeometryFaceCount;
+	VoxelModel mVoxelModel;
 };
   
 }
