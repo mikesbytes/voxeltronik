@@ -45,12 +45,8 @@ public:
     void look(); //look with camera
 
 protected:
-    unsigned vertVBO;
-    unsigned texVBO;
     unsigned vao;
     unsigned shaders;
-    unsigned cursorShaders;
-    Shader mCursorShader;
     float dTime;
     float mFPS;
     Camera camera;

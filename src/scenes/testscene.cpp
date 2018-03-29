@@ -46,31 +46,7 @@ void TestScene::init() {
 	tiles.updateTextureAt(1, "res/dirt.png");
 	tiles.updateTextureAt(2, "res/test.png");
 
-	//define vertices
-	float vertices[] {
-		-0.01f,  0.01f, 0.0f,
-			0.01f, -0.01f, 0.0f,
-			-0.01f, -0.01f, 0.0f,
-			-0.01f,  0.01f, 0.0f,
-			0.01f,  0.01f, 0.0f,
-			0.01f, -0.01f, 0.0f
-			};
-
-
-	glGenBuffers(1, &vertVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, vertVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vertVBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	glEnableVertexAttribArray(0);
-
 	//shaders
-	mCursorShader.loadShaderFiles("res/shaders/test.vert.glsl", "res/shaders/test.frag.glsl");
-	cursorShaders = LoadShaders("res/shaders/test.vert.glsl", "res/shaders/test.frag.glsl");
 	shaders = LoadShaders("res/shaders/voxelvert.vert.glsl", "res/shaders/voxelfrag.frag.glsl");
 
 	glUseProgram(shaders);
@@ -91,6 +67,7 @@ void TestScene::init() {
 	vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
 	nvgCreateFont(vg, "mono", "res/fonts/DejaVuSansMono.ttf");
 
+	//sdl mouse settings
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	sensitivity = linkedGame->getConfig()->getValue<float>("controls.mouse.sensitivity", 5.0f);
 
@@ -196,16 +173,17 @@ void TestScene::update(const float& dTime) {
 void TestScene::draw() {
 	mSkyboxTask->draw();
 
+	//draw world TODO: move this to rendertasks
 	gls::setShader(shaders);
 	glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
 	world.draw();
 
 	glDisable(GL_DEPTH_TEST);
-	mCursorShader.activate();
-	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	nvgBeginFrame(vg, 1920, 1080, 1);
+	int nvgWidth = 1920;
+	int nvgHeight = 1080;
+	
+	nvgBeginFrame(vg, nvgWidth, nvgHeight, 1);
 
 	nvgFontSize(vg, 14.0f);
 	nvgFontFace(vg, "mono");
@@ -213,6 +191,11 @@ void TestScene::draw() {
 
 	std::string fpsString = std::to_string(mFPS);
 	nvgText(vg, 5, 19, fpsString.data(), NULL);
+
+	nvgBeginPath(vg);
+	nvgRect(vg, ((float)nvgWidth / 2.0f) - 15.0f, ((float)nvgHeight / 2.0f) - 15.0f, 30.0f, 30.0f);
+	nvgFillColor(vg, nvgRGBA(153, 0, 204, 80));
+	nvgFill(vg);
 
 	nvgEndFrame(vg);
 	glFrontFace(GL_CW);

@@ -29,7 +29,7 @@ void main() {
 	 vec3 final_position = pos_unpacked + offset_unpacked;
     vec4 eyeSpacePosVert = view * model * vec4(final_position, 1.0);
     gl_Position = proj * eyeSpacePosVert;
-    texCoordInterp = vec3(uv_unpacked, 0.0f);//texCoord;
+    texCoordInterp = vec3(uv_unpacked, 2.0f);//texCoord;
     lightDataInterp = vec3(1.0f, 1.0f, 1.0f);
     eyeSpacePos = eyeSpacePosVert;
 }
