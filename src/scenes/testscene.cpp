@@ -51,7 +51,7 @@ void TestScene::init() {
 
 	glUseProgram(shaders);
 
-	camera.setPosition(glm::vec3(0.0f, 5.0f, 5.0f));
+	camera.setPosition(glm::vec3(0.0f, 64.0f, 0.0f));
 	camera.setAspectRatio(linkedGame->window.getAspect());
 
 	viewMatUni = glGetUniformLocation(shaders, "view");
@@ -109,6 +109,7 @@ void TestScene::init() {
 
 	std::cout << std::endl;
 
+	/*
 	int chunkCount = 1;
 	for (int i = 0; i < 32; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -119,6 +120,7 @@ void TestScene::init() {
 			}
 		}
 	}
+	*/
 
 	//world.forceGlobalGeometryUpdate();
 
@@ -168,6 +170,20 @@ void TestScene::update(const float& dTime) {
 	}
 
 	//camera.moveRelative(camMovement * dTime);
+
+	//generate chunks with camera (doesn't work very well :|)
+	int radius = 2;
+	auto cPos = camera.getPosition();
+	glm::ivec3 cPosI = (cPos / 16.0f);
+	for (int y = -radius; y <= radius; ++y) {
+		for (int x = -radius; x <= radius; ++x) {
+			if(x*x + y*y <= radius*radius) {
+				for (int i = 0; i < 8; ++i)
+					world.generateChunk(cPosI.x + x, i, cPosI.z + y);
+			}
+		}
+	}
+	
 }
 
 void TestScene::draw() {

@@ -1,5 +1,6 @@
 #include "world.h"
 #include "chunk.h"
+#include "threadpool.h"
 
 #include <cmath>
 #include <iostream>
@@ -154,8 +155,7 @@ void World::update() {
 		};
 
 		rebuildThreadActive = true;
-		std::thread(updatefunc).detach();
-
+		ThreadPool::getInstance().addJob(updatefunc);
 	}
 }
 
