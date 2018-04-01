@@ -59,6 +59,7 @@ protected:
     //stuff
     float sensitivity;
     glm::vec3 camMovement;
+	glm::vec3 mCamLastLoadPosition;
     bool placeVoxel;
     unsigned voxelType;
 

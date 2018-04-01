@@ -12,7 +12,7 @@ class World;
 class ChunkMesh {
 public:
 	ChunkMesh(World& world, glm::ivec3 linkedChunkPos);
-	void rebuildChunkGeometry();
+	bool rebuildChunkGeometry();
 	void rebuildChunkLighting();
 	void draw();
 	bool updateGeometry(); //puts the geometry into the VBOs because OGL can't into threading

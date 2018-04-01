@@ -23,7 +23,8 @@
 namespace vtk {
 
 Chunk::Chunk(World& world) :
-	mLinkedWorld(world)
+	mLinkedWorld(world),
+	mLoaded(false)
 {
     mPos = glm::ivec3(0,0,0);
     renderer.linkedChunk = this;
@@ -32,6 +33,11 @@ Chunk::Chunk(World& world) :
     for (unsigned i = 0; i < 4096; i++) {
         voxels[i] = 0;
     }
+    mLoaded = true;
+}
+
+bool Chunk::isLoaded() {
+	return mLoaded;
 }
 
 bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {

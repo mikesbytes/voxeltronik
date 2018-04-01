@@ -51,6 +51,7 @@ void TestScene::init() {
 
 	glUseProgram(shaders);
 
+	mCamLastLoadPosition = glm::vec3(0.0f, 64.0f, 0.0f);
 	camera.setPosition(glm::vec3(0.0f, 64.0f, 0.0f));
 	camera.setAspectRatio(linkedGame->window.getAspect());
 
@@ -115,12 +116,13 @@ void TestScene::init() {
 		for (int j = 0; j < 8; j++) {
 			for (int k = 0; k < 32; k++) {
 				std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
-				world.generateChunk(i,j,k);
+				world.queueChunkLoad(glm::ivec3(i,j,k));
 				chunkCount++;
 			}
 		}
 	}
 	*/
+	world.queueChunkLoadsAroundPoint(glm::vec3(0.0,0.0,0.0), 16);
 
 	//world.forceGlobalGeometryUpdate();
 
@@ -139,12 +141,12 @@ void TestScene::update(const float& dTime) {
 
 	mFPS = 1.0f/dTime;
 
-	if (handler.isActionDown("Move Forward" )) camera.moveRelative(glm::vec3 (0.0f,  0.0f,  1.0f) * dTime * 4.0f);
-	if (handler.isActionDown("Move Backward")) camera.moveRelative(glm::vec3( 0.0f,  0.0f, -1.0f) * dTime * 4.0f);
-	if (handler.isActionDown("Move Left"    )) camera.moveRelative(glm::vec3(-1.0f,  0.0f,  0.0f) * dTime * 4.0f);
-	if (handler.isActionDown("Move Right"   )) camera.moveRelative(glm::vec3( 1.0f,  0.0f,  0.0f) * dTime * 4.0f);
-	if (handler.isActionDown("Move Up"      )) camera.move(glm::vec3( 0.0f,  1.0f,  0.0f) * dTime * 4.0f);
-	if (handler.isActionDown("Move Down"    )) camera.move(glm::vec3( 0.0f,  -1.0f,  0.0f) * dTime * 4.0f);
+	if (handler.isActionDown("Move Forward" )) camera.moveRelative(glm::vec3 (0.0f,  0.0f,  1.0f) * dTime * 16.0f);
+	if (handler.isActionDown("Move Backward")) camera.moveRelative(glm::vec3( 0.0f,  0.0f, -1.0f) * dTime * 16.0f);
+	if (handler.isActionDown("Move Left"    )) camera.moveRelative(glm::vec3(-1.0f,  0.0f,  0.0f) * dTime * 16.0f);
+	if (handler.isActionDown("Move Right"   )) camera.moveRelative(glm::vec3( 1.0f,  0.0f,  0.0f) * dTime * 16.0f);
+	if (handler.isActionDown("Move Up"      )) camera.move(glm::vec3( 0.0f,  1.0f,  0.0f) * dTime * 8.0f);
+	if (handler.isActionDown("Move Down"    )) camera.move(glm::vec3( 0.0f,  -1.0f,  0.0f) * dTime * 8.0f);
 
 	if (handler.isActionDown("Select Type 1")) voxelType = 1;
 	if (handler.isActionDown("Select Type 2")) voxelType = 2;
@@ -171,7 +173,14 @@ void TestScene::update(const float& dTime) {
 
 	//camera.moveRelative(camMovement * dTime);
 
+
+	float distance = glm::distance(camera.getPosition(), mCamLastLoadPosition);
+	if (distance >= 16.0f) {
+		mCamLastLoadPosition = camera.getPosition();
+		world.queueChunkLoadsAroundPoint(camera.getPosition(), 16);
+	}
 	//generate chunks with camera (doesn't work very well :|)
+	/*
 	int radius = 2;
 	auto cPos = camera.getPosition();
 	glm::ivec3 cPosI = (cPos / 16.0f);
@@ -179,10 +188,11 @@ void TestScene::update(const float& dTime) {
 		for (int x = -radius; x <= radius; ++x) {
 			if(x*x + y*y <= radius*radius) {
 				for (int i = 0; i < 8; ++i)
-					world.generateChunk(cPosI.x + x, i, cPosI.z + y);
+					world.queueChunkLoad((glm::ivec3)cPos + glm::ivec3(x, i, y));
 			}
 		}
 	}
+	*/
 	
 }
 

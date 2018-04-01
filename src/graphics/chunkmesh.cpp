@@ -39,13 +39,17 @@ ChunkMesh::ChunkMesh(World& world, glm::ivec3 chunkPos) :
 	glEnableVertexAttribArray(1);
 }
 
-void ChunkMesh::rebuildChunkGeometry() {
+bool ChunkMesh::rebuildChunkGeometry() {
 	// check if it's currently rebuilding
-	if (mLocked) return;
+	if (mLocked) return true;
 	mLocked = true;
 
 	//get the chunk from position
-	auto chunk = mLinkedWorld.getChunk(mLinkedChunkPos); 
+	auto chunk = mLinkedWorld.getChunk(mLinkedChunkPos);
+	if (!chunk->isLoaded()) {
+		mLocked = false; //unlock the builder before returning
+		return false;
+	}
 	
 	// geometry format: x,y,z,u,v,i
 	mGeometry.clear();
@@ -87,6 +91,7 @@ void ChunkMesh::rebuildChunkGeometry() {
 	}
 	mUpdated = true;
 	mLocked = false;
+	return true;
 }
 
 void ChunkMesh::rebuildChunkLighting() {

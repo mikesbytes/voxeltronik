@@ -42,23 +42,29 @@ public:
 
     unsigned getVoxelType(const glm::ivec3& pos);
 
-    bool makeChunk(const int& x, const int& y, const int& z);
+	Chunk* makeChunk(const int& x, const int& y, const int& z, bool insertAfter = true);
     bool generateChunk(const int& x, const int& y, const int& z);
+	bool insertChunk(Chunk* chunk);
 
     Chunk* getChunk(const glm::ivec3& pos);
 
     void queueChunkUpdate(const int& x, const int& y, const int& z, const bool& back = false);
     void queueChunkUpdate(const glm::ivec3& pos, const bool& back = false);
 
+	void queueChunkLoad(const glm::ivec3& pos);
+
     void draw();
     void update();
 
     void forceGlobalGeometryUpdate(); //Rebuilds all geometry. Don't do this.
 
+	void queueChunkLoadsAroundPoint(const glm::vec3& point, const int& chunkRadius);
+
     std::unordered_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
     std::unordered_map<glm::ivec3, ChunkMesh, ivec3Hash> mChunkMeshes;
     std::vector<iPos> chunkUpdateQueue;
     std::deque<glm::ivec3> mChunkUpdateQueue;
+	std::deque<glm::ivec3> mChunkLoadQueue;
 
     unsigned chunkSize;
     float voxelSize;
@@ -69,6 +75,7 @@ public:
     VoxelInfo voxelInfo;
     VoxelMath voxelMath;
     bool rebuildThreadActive;
+	bool mLoadThreadActive;
 };
 
 }

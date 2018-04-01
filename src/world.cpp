@@ -22,6 +22,7 @@ World::World() {
 	voxelInfo.linkedWorld = this;
 	voxelMath.linkedWorld = this;
 	rebuildThreadActive = false;
+	mLoadThreadActive = false;
 }
 
 bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
@@ -36,6 +37,7 @@ bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
 	int relPosY = y - chunkPos.y * chunkSize;
 	int relPosZ = z - chunkPos.z * chunkSize;
 
+	if (!mChunks[chunkPos]->isLoaded()) return true;
 	return mChunks[chunkPos]->isVoxelSolid(relPosX, relPosY, relPosZ);
 }
 
@@ -70,27 +72,28 @@ unsigned World::getVoxelType(const glm::ivec3& pos) {
 }
 
 
-bool World::makeChunk(const int& x, const int& y, const int& z) {
+Chunk* World::makeChunk(const int& x, const int& y, const int& z, bool insertAfter) {
 	auto pos = glm::ivec3(x, y, z);
 
 	if (mChunks.find(pos) != mChunks.end()) { //chunk already exists
-		return false;
+		return mChunks[pos]; 
 	}
 
 	auto newChunk = new Chunk(*this);
-	mChunks[pos] = newChunk;
-
 	newChunk->setPos(pos);
 
-	mChunkMeshes.emplace(pos, ChunkMesh(*this, pos));
+	if (insertAfter) {
+		mChunks[pos] = newChunk;
+		mChunkMeshes.emplace(pos, ChunkMesh(*this, pos));
+	}
 
-	return true;
+	return newChunk;
 }
 
 bool World::generateChunk(const int& x, const int& y, const int& z) {
-	bool chunkMade = makeChunk(x,y,z);
-	if (chunkMade) {
-		terrain.generateChunk(getChunk(glm::ivec3(x,y,z)));
+	auto chunkMade = makeChunk(x,y,z, false);
+	if (chunkMade != nullptr) {
+		terrain.generateChunk(chunkMade);
 		//queue this chunk for geometry update
 		queueChunkUpdate(x,y,z);
 
@@ -103,7 +106,14 @@ bool World::generateChunk(const int& x, const int& y, const int& z) {
 		queueChunkUpdate(x,y,z+1);
 		queueChunkUpdate(x,y,z-1);
 	}
+	insertChunk(chunkMade);
 	return chunkMade;
+}
+
+bool World::insertChunk(Chunk* chunk) {
+	mChunks[chunk->getPos()] = chunk;
+	mChunkMeshes.emplace(chunk->getPos(), ChunkMesh(*this, chunk->getPos()));
+	return true;
 }
 
 
@@ -130,6 +140,16 @@ void World::queueChunkUpdate(const glm::ivec3& pos, const bool& back) {
 	}
 }
 
+void World::queueChunkLoad(const glm::ivec3 &pos) {
+	if (mChunks.find(pos) != mChunks.end()) return; //chunk already exists
+	for (auto& i : mChunkLoadQueue) {
+		if (i == pos) return;
+	}
+
+	makeChunk(pos.x, pos.y, pos.z);
+	mChunkLoadQueue.push_back(pos);
+}
+
 void World::draw() {
 	for (auto& i : mChunkMeshes) {
 		glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3((float)i.first.x * 16,
@@ -149,13 +169,28 @@ void World::update() {
 				auto& pos = mChunkUpdateQueue.back();
 				auto& mesh = mChunkMeshes.find(pos)->second;
 				mChunkUpdateQueue.pop_back();
-				mesh.rebuildChunkGeometry();
+				if (!mesh.rebuildChunkGeometry())
+					queueChunkUpdate(pos, false);
 			}
 			rebuildThreadActive = false;
 		};
 
 		rebuildThreadActive = true;
 		ThreadPool::getInstance().addJob(updatefunc);
+	}
+
+	if (!mLoadThreadActive && !mChunkLoadQueue.empty()) {
+		auto loadFunc = [&]() {
+			while (!mChunkLoadQueue.empty()) {
+				auto& pos = mChunkLoadQueue.back();
+				generateChunk(pos.x, pos.y, pos.z);
+				mChunkLoadQueue.pop_back();
+			}
+			mLoadThreadActive = false;
+		};
+
+		mLoadThreadActive = true;
+		ThreadPool::getInstance().addJob(loadFunc);
 	}
 }
 
@@ -170,4 +205,18 @@ void World::forceGlobalGeometryUpdate() {
 	}
 }
 
+void World::queueChunkLoadsAroundPoint(const glm::vec3 &point, const int &chunkRadius) {
+	glm::ivec3 chunkPoint = point / 16.0f;
+	for (int z = -chunkRadius; z <= chunkRadius; ++z) {
+		for (int x = -chunkRadius; x <= chunkRadius; ++x) {
+			if (z*z + x*x <= chunkRadius * chunkRadius) {
+				for (int y = 0; y < 8; ++y) {
+					queueChunkLoad(glm::ivec3(x + chunkPoint.x, y, z + chunkPoint.z));
+				}
+			}
+		}
+	}
 }
+
+}
+
