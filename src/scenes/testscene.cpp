@@ -44,7 +44,7 @@ void TestScene::init() {
 	tiles.buildTexture();
 	tiles.updateTextureAt(0, "res/stone.png");
 	tiles.updateTextureAt(1, "res/dirt.png");
-	tiles.updateTextureAt(2, "res/test.png");
+	tiles.updateTextureAt(2, "res/grass.png");
 
 	//shaders
 	shaders = LoadShaders("res/shaders/voxelvert.vert.glsl", "res/shaders/voxelfrag.frag.glsl");
@@ -105,23 +105,16 @@ void TestScene::init() {
 	world.voxelInfo.setTextureData(2, Face3D::FRONT, Orientation2D::UP, 1.0f);
 	world.voxelInfo.setTextureData(2, Face3D::BACK, Orientation2D::UP, 1.0f);
 
+
+	world.voxelInfo.setAllTextureIndexes(1, 0);
+	world.voxelInfo.setAllTextureIndexes(2, 1);
+	world.voxelInfo.setTextureIndex(2, FaceDirection::TOP, 2);
+
 	//world.voxelInfo.setTransparent(1, false);
 	//world.voxelInfo.setTransparent(2, false);
 
 	std::cout << std::endl;
 
-	/*
-	int chunkCount = 1;
-	for (int i = 0; i < 32; i++) {
-		for (int j = 0; j < 8; j++) {
-			for (int k = 0; k < 32; k++) {
-				std::cout << "\rGenerating chunks (" << chunkCount << "/" << 8*8*8 << ")" << std::flush;
-				world.queueChunkLoad(glm::ivec3(i,j,k));
-				chunkCount++;
-			}
-		}
-	}
-	*/
 	world.queueChunkLoadsAroundPoint(glm::vec3(0.0,0.0,0.0), 16);
 
 	//world.forceGlobalGeometryUpdate();
@@ -171,28 +164,11 @@ void TestScene::update(const float& dTime) {
 		placeVoxel = false;
 	}
 
-	//camera.moveRelative(camMovement * dTime);
-
-
 	float distance = glm::distance(camera.getPosition(), mCamLastLoadPosition);
 	if (distance >= 16.0f) {
 		mCamLastLoadPosition = camera.getPosition();
 		world.queueChunkLoadsAroundPoint(camera.getPosition(), 16);
 	}
-	//generate chunks with camera (doesn't work very well :|)
-	/*
-	int radius = 2;
-	auto cPos = camera.getPosition();
-	glm::ivec3 cPosI = (cPos / 16.0f);
-	for (int y = -radius; y <= radius; ++y) {
-		for (int x = -radius; x <= radius; ++x) {
-			if(x*x + y*y <= radius*radius) {
-				for (int i = 0; i < 8; ++i)
-					world.queueChunkLoad((glm::ivec3)cPos + glm::ivec3(x, i, y));
-			}
-		}
-	}
-	*/
 	
 }
 

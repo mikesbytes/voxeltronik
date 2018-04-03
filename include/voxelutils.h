@@ -23,6 +23,15 @@
 
 namespace vtk {
 
+enum class FaceDirection {
+	TOP = 0,
+	BOTTOM = 1,
+	NORTH = 2,
+	SOUTH = 3,
+	EAST = 4,
+	WEST = 5
+};
+
 typedef std::tuple<unsigned, unsigned, unsigned> uPos; //used for voxel positions
 
 struct uPosHash : public std::unary_function<uPos, std::size_t> {
@@ -58,7 +67,11 @@ struct iPosEqual : public std::binary_function<iPos, iPos, bool> {
 // basic hash function for glm::ivec3
 struct ivec3Hash : public std::unary_function<iPos, std::size_t> {
   std::size_t operator()(const glm::ivec3& k) const {
-        return k.x ^ k.y ^ k.z;
+	  std::size_t seed = 3;
+	  for(int i = 0; i < 3; ++i) {
+		  seed ^= k[i] + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	  }
+	  return seed;
     }
 };
 

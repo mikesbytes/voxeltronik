@@ -34,7 +34,7 @@ public:
 	bool isLoaded();
 
     bool isVoxelSolid(const int& x, const int& y, const int& z); //Is the voxel not a transparent type?
-    void setVoxelType(const int& x, const int& y, const int& z, const unsigned& type);
+	void setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& update = false);
     unsigned getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z);
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
 
@@ -48,7 +48,7 @@ protected:
     std::array<unsigned, 4096> voxels;
     World& mLinkedWorld;
     glm::ivec3 mPos;
-	bool mLoaded;
+	std::atomic<bool> mLoaded;
 };
 
 }

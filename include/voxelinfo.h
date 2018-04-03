@@ -52,6 +52,7 @@ enum class Orientation2D {
 struct VoxelData{
     std::map<Face3D, float> faceTextureIndices;
     std::map<Face3D, Orientation2D> faceOrientation;
+	std::map<FaceDirection, unsigned> faceTextures;
 
     bool transparent;
 };
@@ -63,11 +64,15 @@ public:
     void pushTexCoordFromWorldCoords(std::vector<float>& data, const glm::ivec3& pos, const Face3D& face, const Corner2D& corner);
     void pushTexCoordFromVoxelID(std::vector<float>& data, const unsigned& id, const Face3D& face, const Corner2D& corner);
     float getTexIndexFromID(const unsigned& id, const Face3D& face);
+	unsigned getTextureIndex(const unsigned& id, const FaceDirection& face);
+	void setTextureIndex(const unsigned& id, const FaceDirection& face, const unsigned& index);
+
+	void setAllTextureIndexes(const unsigned& id, const unsigned& index);
     
     void setTextureData(const unsigned& id, const Face3D& face, const Orientation2D& orientation, const float& textureIndex);
 
     void setTransparent(const unsigned& id, const bool& transparent);
-    bool isTransparent(const unsigned& id);
+	bool isTransparent(const unsigned& id);
 
     std::pair<float, float> getTexCoordFromID(const unsigned& id, const Face3D& face, const Corner2D& corner);
 

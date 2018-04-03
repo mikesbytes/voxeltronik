@@ -23,6 +23,7 @@
 #include "voxelmath.h"
 #include "terraingen.h"
 #include "graphics/chunkmesh.h"
+#include "cuckoohash_map.hh"
 
 #include <unordered_map>
 #include <vector>
@@ -60,7 +61,8 @@ public:
 
 	void queueChunkLoadsAroundPoint(const glm::vec3& point, const int& chunkRadius);
 
-    std::unordered_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
+	//std::unordered_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
+	cuckoohash_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
     std::unordered_map<glm::ivec3, ChunkMesh, ivec3Hash> mChunkMeshes;
     std::vector<iPos> chunkUpdateQueue;
     std::deque<glm::ivec3> mChunkUpdateQueue;

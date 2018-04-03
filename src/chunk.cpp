@@ -37,7 +37,7 @@ Chunk::Chunk(World& world) :
 }
 
 bool Chunk::isLoaded() {
-	return mLoaded;
+	return mLoaded.load();
 }
 
 bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
@@ -45,7 +45,7 @@ bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
         y < 0 || y > 15 ||
         z < 0 || z > 15 ) 
 	{ //position is outside of the chunk
-        return mLinkedWorld.isVoxelSolid(mPos.x * 16 + x,
+		return mLinkedWorld.isVoxelSolid(mPos.x * 16 + x,
                                          mPos.y * 16 + y,
                                          mPos.z * 16 + z);
     }
@@ -53,7 +53,7 @@ bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
     return (getVoxelType((unsigned)x,(unsigned)y,(unsigned)z) != 0);
 }
 
-void Chunk::setVoxelType(const int& x, const int& y, const int& z, const unsigned& type) {
+void Chunk::setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& update) {
     auto index = x + 16 * (y + 16 * z);
     if (index > 4095) {
         std::cout << "CHUNK ACCESS ERROR (set voxel): Out of range, doing nothing\n";
@@ -61,6 +61,8 @@ void Chunk::setVoxelType(const int& x, const int& y, const int& z, const unsigne
     }
     voxels[index] = type;
 
+    if (!update) return;
+    mLinkedWorld.queueChunkUpdate(mPos);
 }
 
 unsigned Chunk::getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z) {

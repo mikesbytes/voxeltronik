@@ -30,7 +30,7 @@ bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
 	                           floor((float)y / (float)chunkSize),
 	                           floor((float)z / (float)chunkSize));
 	auto chunk = getChunk(chunkPos);
-	if (!chunk) //block is in nonexistant chunk
+	if (chunk) //block is in nonexistant chunk
 		return true;
 
 	int relPosX = x - chunkPos.x * chunkSize;
@@ -58,9 +58,11 @@ unsigned World::getVoxelType(const glm::ivec3& pos) {
 	auto chunkPos = glm::ivec3(floor((float)pos.x / (float)chunkSize),
 	                           floor((float)pos.y / (float)chunkSize),
 	                           floor((float)pos.z / (float)chunkSize));
-	Chunk* chunk = getChunk(chunkPos);
-	if (!chunk) return 0;
-	
+	Chunk* chunk;
+	if (!mChunks.find(chunkPos, chunk)) {
+		return 0;
+	}
+
 	int relPosX = pos.x - chunkPos.x * chunkSize;
 	int relPosY = pos.y - chunkPos.y * chunkSize;
 	int relPosZ = pos.z - chunkPos.z * chunkSize;
@@ -113,7 +115,7 @@ bool World::insertChunk(Chunk* chunk) {
 
 Chunk* World::getChunk(const glm::ivec3& pos) {
 	Chunk* chunk;
-	if (mChunks.find(pos, chunk) && chunk->isLoaded()) return chunk;
+	if (mChunks.find(pos, chunk)) return chunk;
 	else return nullptr;
 }
 

@@ -65,17 +65,21 @@ bool ChunkMesh::rebuildChunkGeometry() {
 					//build face attrib
 					// 0b00000000000000000xxxxxyyyyyzzzzz
 					unsigned faceAttrib = 0;
-					faceAttrib = faceAttrib | i;
+					faceAttrib = (faceAttrib << 5) | i;
 					faceAttrib = (faceAttrib << 5) | j;
 					faceAttrib = (faceAttrib << 5) | k;
 
 					//lambda expression for adding vertices
 					auto addFaceModel = [&](int faceIndex) {
 						auto mesh = mVoxelModel.getFaceMesh(faceIndex);
+						unsigned texIndex = mLinkedWorld.voxelInfo.getTextureIndex(chunk->getVoxelType(i,j,k),
+						                                                           static_cast<FaceDirection>(faceIndex));
+						unsigned faceAttribT = faceAttrib | (texIndex << 15); // pack texture index into faceAttrib
+
 						++mFaceCount;
 						for (int l = 0; l < 6; ++l) {
 							mGeometry.push_back(mesh[l]);
-							mFaceAttribs.push_back(faceAttrib);
+							mFaceAttribs.push_back(faceAttribT);
 						}
 					};
 

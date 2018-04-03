@@ -110,6 +110,24 @@ std::pair<float, float> VoxelInfo::getTexCoordFromID(const unsigned& id, const F
     return std::make_pair(0.0f, 0.0f);
 }
 
+unsigned VoxelInfo::getTextureIndex(const unsigned int &id, const FaceDirection &face) {
+	return voxelDataMap[id].faceTextures[face];
+}
+
+void VoxelInfo::setTextureIndex(const unsigned int &id, const FaceDirection &face, const unsigned int &index) {
+	voxelDataMap[id].faceTextures[face] = index;
+}
+
+void VoxelInfo::setAllTextureIndexes(const unsigned int &id, const unsigned int &index) {
+	auto& textures = voxelDataMap[id].faceTextures;
+	textures[FaceDirection::TOP] = index;
+	textures[FaceDirection::BOTTOM] = index;
+	textures[FaceDirection::NORTH] = index;
+	textures[FaceDirection::SOUTH] = index;
+	textures[FaceDirection::EAST] = index;
+	textures[FaceDirection::WEST] = index;
+}
+
 void VoxelInfo::setTextureData(const unsigned& id, const Face3D& face, const Orientation2D& orientation, const float& textureIndex) {
     voxelDataMap[id].faceOrientation[face] = orientation;
     voxelDataMap[id].faceTextureIndices[face] = textureIndex;
