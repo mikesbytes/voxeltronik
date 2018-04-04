@@ -48,5 +48,9 @@ void ThreadPool::addJob(std::function<void ()> newJob) {
 	}
 	mCondition.notify_one();
 }
+
+int ThreadPool::threadCount() {
+	return mThreads.size();
+}
 			
 }

@@ -29,6 +29,7 @@ namespace vtk {
 class World;
 
 class Chunk {
+	friend class World;
 public:
     Chunk(World& world);
 	bool isLoaded();
@@ -45,10 +46,14 @@ public:
 
     ChunkRenderer renderer;
 protected:
+	void setQueuedForMeshRebuild(const bool& rebuild = true);
+	bool isQueuedForMeshRebuild();
+
     std::array<unsigned, 4096> voxels;
     World& mLinkedWorld;
     glm::ivec3 mPos;
 	std::atomic<bool> mLoaded;
+	std::atomic<bool> mQueuedForMeshRebuild;
 };
 
 }

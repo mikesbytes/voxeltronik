@@ -63,6 +63,10 @@ protected:
     bool placeVoxel;
     unsigned voxelType;
 
+	bool mNoclip;
+	bool mNoclipDebounce;
+	glm::vec3 mVelocity;
+
     //controls
     InputHandler handler;
 

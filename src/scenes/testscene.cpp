@@ -86,6 +86,7 @@ void TestScene::init() {
 	handler.setAction("Delete Voxel",  conf->getValue<std::string>("controls.bindings.action.delvoxel",   "Mouse Right"));
 	handler.setAction("Select Type 1", conf->getValue<std::string>("controls.bindings.typesel.type1",     "1"        ));
 	handler.setAction("Select Type 2", conf->getValue<std::string>("controls.bindings.typesel.type2",     "2"        ));
+	handler.setAction("Toggle Noclip", conf->getValue<std::string>("controls.bindings.noclip", "V"));
 
 	//set signals for handler
 	handler.getEventSignal(SDL_QUIT       ).connect<Game     , &Game::stop     >(linkedGame);
@@ -120,6 +121,8 @@ void TestScene::init() {
 	//world.forceGlobalGeometryUpdate();
 
 	voxelType = 1;
+	mNoclip = true;
+	mNoclipDebounce = false;
 }
 
 void TestScene::reInit() {
@@ -138,11 +141,18 @@ void TestScene::update(const float& dTime) {
 	if (handler.isActionDown("Move Backward")) camera.moveRelative(glm::vec3( 0.0f,  0.0f, -1.0f) * dTime * 16.0f);
 	if (handler.isActionDown("Move Left"    )) camera.moveRelative(glm::vec3(-1.0f,  0.0f,  0.0f) * dTime * 16.0f);
 	if (handler.isActionDown("Move Right"   )) camera.moveRelative(glm::vec3( 1.0f,  0.0f,  0.0f) * dTime * 16.0f);
-	if (handler.isActionDown("Move Up"      )) camera.move(glm::vec3( 0.0f,  1.0f,  0.0f) * dTime * 8.0f);
-	if (handler.isActionDown("Move Down"    )) camera.move(glm::vec3( 0.0f,  -1.0f,  0.0f) * dTime * 8.0f);
+	if (handler.isActionDown("Move Up"      ) && mNoclip) camera.move(glm::vec3( 0.0f,  1.0f,  0.0f) * dTime * 8.0f);
+	if (handler.isActionDown("Move Down"    ) && mNoclip) camera.move(glm::vec3( 0.0f,  -1.0f,  0.0f) * dTime * 8.0f);
 
 	if (handler.isActionDown("Select Type 1")) voxelType = 1;
 	if (handler.isActionDown("Select Type 2")) voxelType = 2;
+	if (!mNoclipDebounce && handler.isActionDown("Toggle Noclip")) {
+		mNoclipDebounce = true;
+		mNoclip = !mNoclip;
+		std::cout << mNoclip << "\n" << std::flush;
+	} else {
+		//mNoclipDebounce = false;
+	}
 
 	//place voxel testing
 	if ((handler.isActionDown("Place Voxel") || handler.isActionDown("Delete Voxel")) && !placeVoxel) {
@@ -169,7 +179,22 @@ void TestScene::update(const float& dTime) {
 		mCamLastLoadPosition = camera.getPosition();
 		world.queueChunkLoadsAroundPoint(camera.getPosition(), 16);
 	}
-	
+
+	//player "physics"
+	if (!mNoclip) {
+		mVelocity = glm::vec3(0.0f, mVelocity.y + (-9.8f * dTime), 0.0f);
+		// check ground collision
+		glm::ivec3 cameraIPos = camera.getPosition();
+		cameraIPos.y = cameraIPos.y - 2;
+		if (world.isVoxelSolid(cameraIPos.x, cameraIPos.y, cameraIPos.z)) {
+			std::cout << cameraIPos.y << "\n" << std::flush;
+			auto newCameraPos = camera.getPosition();
+			newCameraPos.y = (float)cameraIPos.y + 2.8f;
+			camera.setPosition(newCameraPos);
+			mVelocity.y = 0.0f;
+		}
+		camera.move(mVelocity * dTime);
+	}
 }
 
 void TestScene::draw() {

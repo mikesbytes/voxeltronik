@@ -106,7 +106,7 @@ bool World::generateChunk(const int& x, const int& y, const int& z) {
 
 bool World::insertChunk(Chunk* chunk) {
 	mChunks.insert(chunk->getPos(), chunk);
-	mChunkMeshes.emplace(chunk->getPos(), ChunkMesh(*this, chunk->getPos()));
+	mChunkMeshes.insert(chunk->getPos(), new ChunkMesh(*this, chunk->getPos()));
 	return true;
 }
 
@@ -117,21 +117,20 @@ Chunk* World::getChunk(const glm::ivec3& pos) {
 	else return nullptr;
 }
 
-void World::queueChunkUpdate(const int& x, const int& y, const int& z, const bool& back) {
+void World::queueChunkUpdate(const int& x, const int& y, const int& z, const bool& highpriority) {
 	queueChunkUpdate(glm::ivec3(x,y,z));
 }
 
-void World::queueChunkUpdate(const glm::ivec3& pos, const bool& back) {
-	if (!getChunk(pos)) return; //chunk doesn't exist
-	for (auto& i : mChunkUpdateQueue) {
-		if (i == pos) return; //chunk is already in queue, we don't need to update multiple times
-	}
+void World::queueChunkUpdate(const glm::ivec3& pos, const bool& highpriority) {
+	auto chunk = getChunk(pos);
+	if (!chunk || chunk->isQueuedForMeshRebuild()) return;
+	chunk->setQueuedForMeshRebuild(true);
 
-	if (back) {
-		mChunkUpdateQueue.push_back(pos);
-	} else {
-		mChunkUpdateQueue.push_front(pos);
+	if (highpriority) { // queue for higher rebuild priority
+		mMeshUpdateQueueSoon.enqueue(pos);
+		return;
 	}
+	mMeshUpdateQueue.enqueue(pos);
 }
 
 void World::queueChunkLoad(const glm::ivec3 &pos) {
@@ -145,28 +144,53 @@ void World::queueChunkLoad(const glm::ivec3 &pos) {
 }
 
 void World::draw() {
-	for (auto& i : mChunkMeshes) {
+	auto lt = mChunkMeshes.lock_table();
+	for (const auto& i : lt) {
 		glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3((float)i.first.x * 16,
 		                                                           (float)i.first.y * 16,
 		                                                           (float)i.first.z * 16
 		                                                           ));
 
 		glUniformMatrix4fv(modelMatUni, 1, GL_FALSE, glm::value_ptr(modelMat));
-		i.second.draw();
+		i.second->draw();
 	}
 }
 
 void World::update() {
-	if (!rebuildThreadActive && !mChunkUpdateQueue.empty( )) {
+	//if the rebuild thread is not active and there are meshes to be updated
+	if (!rebuildThreadActive && (mMeshUpdateQueueSoon.size_approx() > 0 ||
+	                              mMeshUpdateQueue.size_approx() > 0)) {
 		auto updatefunc = [&]() {
+			glm::ivec3 pos;
+			while (mMeshUpdateQueueSoon.try_dequeue(pos)) {
+				ChunkMesh* mesh;
+				mChunkMeshes.find(pos, mesh);
+				if (mesh) {
+					mesh->rebuildChunkGeometry();
+				}
+				getChunk(pos)->setQueuedForMeshRebuild(false);
+			}
+			
+			while (mMeshUpdateQueue.try_dequeue(pos)) {
+				ChunkMesh* mesh;
+				mChunkMeshes.find(pos, mesh);
+				if (mesh) {
+					mesh->rebuildChunkGeometry();
+				}
+				getChunk(pos)->setQueuedForMeshRebuild(false);
+			}
+			rebuildThreadActive = false;
+			/*
 			while (!mChunkUpdateQueue.empty()) {
 				auto& pos = mChunkUpdateQueue.back();
-				auto& mesh = mChunkMeshes.find(pos)->second;
+				ChunkMesh* mesh;
+				mChunkMeshes.find(pos, mesh);
 				mChunkUpdateQueue.pop_back();
-				if (!mesh.rebuildChunkGeometry())
+				if (!mesh->rebuildChunkGeometry())
 					queueChunkUpdate(pos);
 			}
 			rebuildThreadActive = false;
+			*/
 		};
 
 		rebuildThreadActive = true;
@@ -189,6 +213,7 @@ void World::update() {
 }
 
 void World::forceGlobalGeometryUpdate() {
+	/*
 	int chunkCount = 1;
 	chunkCount = 1;
 	for (auto& i : mChunkMeshes) {
@@ -197,6 +222,7 @@ void World::forceGlobalGeometryUpdate() {
 		i.second.updateGeometry();
 		++chunkCount;
 	}
+	*/
 }
 
 void World::queueChunkLoadsAroundPoint(const glm::vec3 &point, const int &chunkRadius) {

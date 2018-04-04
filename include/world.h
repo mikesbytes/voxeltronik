@@ -23,7 +23,9 @@
 #include "voxelmath.h"
 #include "terraingen.h"
 #include "graphics/chunkmesh.h"
+
 #include "cuckoohash_map.hh"
+#include "concurrentqueue.h"
 
 #include <unordered_map>
 #include <vector>
@@ -35,6 +37,7 @@ namespace vtk {
 class Chunk;
 
 class World {
+	friend class Chunk;
 public:
     World();
     bool isVoxelSolid(const int& x, const int& y, const int& z);
@@ -49,8 +52,8 @@ public:
 
     Chunk* getChunk(const glm::ivec3& pos);
 
-    void queueChunkUpdate(const int& x, const int& y, const int& z, const bool& back = false);
-    void queueChunkUpdate(const glm::ivec3& pos, const bool& back = false);
+    void queueChunkUpdate(const int& x, const int& y, const int& z, const bool& highpriority = false);
+    void queueChunkUpdate(const glm::ivec3& pos, const bool& highpriority = false);
 
 	void queueChunkLoad(const glm::ivec3& pos);
 
@@ -63,10 +66,14 @@ public:
 
 	//std::unordered_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
 	cuckoohash_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
-    std::unordered_map<glm::ivec3, ChunkMesh, ivec3Hash> mChunkMeshes;
+    cuckoohash_map<glm::ivec3, ChunkMesh*, ivec3Hash> mChunkMeshes;
     std::vector<iPos> chunkUpdateQueue;
     std::deque<glm::ivec3> mChunkUpdateQueue;
 	std::deque<glm::ivec3> mChunkLoadQueue;
+
+	// mesh update queues
+	moodycamel::ConcurrentQueue<glm::ivec3> mMeshUpdateQueue; // regular one
+	moodycamel::ConcurrentQueue<glm::ivec3> mMeshUpdateQueueSoon; // high priority one
 
     unsigned chunkSize;
     float voxelSize;

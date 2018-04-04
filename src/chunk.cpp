@@ -24,7 +24,8 @@ namespace vtk {
 
 Chunk::Chunk(World& world) :
 	mLinkedWorld(world),
-	mLoaded(false)
+	mLoaded(false),
+	mQueuedForMeshRebuild(false)
 {
     mPos = glm::ivec3(0,0,0);
     renderer.linkedChunk = this;
@@ -91,6 +92,14 @@ glm::ivec3 Chunk::getPos() {
 
 World& Chunk::getWorld() {
 	return mLinkedWorld;
+}
+
+void Chunk::setQueuedForMeshRebuild(const bool& rebuild) {
+	mQueuedForMeshRebuild = rebuild;
+}
+
+bool Chunk::isQueuedForMeshRebuild() {
+	return mQueuedForMeshRebuild.load();
 }
 
 }

@@ -4,3 +4,6 @@
 [submodule "libcuckoo"]
 	path = libcuckoo
 	url = https://github.com/efficient/libcuckoo.git
+[submodule "external/concurrentqueue"]
+	path = external/concurrentqueue
+	url = https://github.com/cameron314/concurrentqueue.git

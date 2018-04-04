@@ -27,6 +27,8 @@ public:
 	void addThreads(const int& count); // add new threads to the pool
 	void addJob(std::function<void()> newJob); // add a job to the pool
 
+	int threadCount();
+
 private:
 	void threadIdle();
 
