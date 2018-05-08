@@ -180,17 +180,6 @@ void World::update() {
 				getChunk(pos)->setQueuedForMeshRebuild(false);
 			}
 			rebuildThreadActive = false;
-			/*
-			while (!mChunkUpdateQueue.empty()) {
-				auto& pos = mChunkUpdateQueue.back();
-				ChunkMesh* mesh;
-				mChunkMeshes.find(pos, mesh);
-				mChunkUpdateQueue.pop_back();
-				if (!mesh->rebuildChunkGeometry())
-					queueChunkUpdate(pos);
-			}
-			rebuildThreadActive = false;
-			*/
 		};
 
 		rebuildThreadActive = true;
@@ -210,19 +199,6 @@ void World::update() {
 		mLoadThreadActive = true;
 		ThreadPool::getInstance().addJob(loadFunc);
 	}
-}
-
-void World::forceGlobalGeometryUpdate() {
-	/*
-	int chunkCount = 1;
-	chunkCount = 1;
-	for (auto& i : mChunkMeshes) {
-		std::cout << "\rUpdating chunk geometry, but better (" << chunkCount << "/" << mChunkMeshes.size() << ")" << std::flush;
-		i.second.rebuildChunkGeometry();
-		i.second.updateGeometry();
-		++chunkCount;
-	}
-	*/
 }
 
 void World::queueChunkLoadsAroundPoint(const glm::vec3 &point, const int &chunkRadius) {

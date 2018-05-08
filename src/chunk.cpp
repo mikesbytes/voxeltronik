@@ -81,6 +81,13 @@ glm::ivec3 Chunk::getWorldCoords(const int& x, const int& y, const int& z) {
                       mPos.z * 16 + z);
 }
 
+unsigned Chunk::getLightLevel(const glm::ivec3 &pos) {
+	if (isVoxelSolid(pos.x, pos.y, pos.z)) {
+		return 0;
+	}
+	return 15;
+}
+
 void Chunk::setPos(const glm::ivec3& pos) {
 	mPos = pos;
 }

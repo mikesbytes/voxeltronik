@@ -54,6 +54,7 @@ bool ChunkMesh::rebuildChunkGeometry() {
 	// geometry format: x,y,z,u,v,i
 	mGeometry.clear();
 	mFaceAttribs.clear();
+
 	mFaceCount = 0;
 	int chunkSize = 16;
 	

@@ -38,6 +38,7 @@ public:
 	void setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& update = false);
     unsigned getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z);
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
+	unsigned getLightLevel(const glm::ivec3& pos);
 
 	void setPos(const glm::ivec3& pos);
 	glm::ivec3 getPos();

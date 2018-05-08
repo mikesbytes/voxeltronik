@@ -4,6 +4,7 @@ file (GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 include_directories("./include" "libcuckoo/libcuckoo")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-O2")
+set(CMAKE_C_FLAGS "-fPIC")
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 add_executable(vtk ${SOURCES})
 

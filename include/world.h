@@ -1,27 +1,10 @@
-/*
- * =====================================================================================
- *
- *       Filename:  world.h
- *
- *    Description:  World manages and draws chunks
- *
- *        Version:  1.0
- *        Created:  04/03/2014 09:48:12 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #pragma once
 
 #include "voxelutils.h"
 #include "voxelinfo.h"
 #include "voxelmath.h"
 #include "terraingen.h"
+#include "heightmap.h"
 #include "graphics/chunkmesh.h"
 
 #include "cuckoohash_map.hh"
@@ -60,20 +43,22 @@ public:
     void draw();
     void update();
 
-    void forceGlobalGeometryUpdate(); //Rebuilds all geometry. Don't do this.
 
 	void queueChunkLoadsAroundPoint(const glm::vec3& point, const int& chunkRadius);
 
 	//std::unordered_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
-	cuckoohash_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
-    cuckoohash_map<glm::ivec3, ChunkMesh*, ivec3Hash> mChunkMeshes;
-    std::vector<iPos> chunkUpdateQueue;
-    std::deque<glm::ivec3> mChunkUpdateQueue;
+	cuckoohash_map<glm::ivec3, Chunk*, ivec3Hash> mChunks; //chunks
+	cuckoohash_map<glm::ivec3, ChunkMesh*, ivec3Hash> mChunkMeshes; //meshes
+	cuckoohash_map<glm::ivec2, HeightMap*, ivec2Hash> mHeightMaps; //heightmaps
+	
 	std::deque<glm::ivec3> mChunkLoadQueue;
 
 	// mesh update queues
 	moodycamel::ConcurrentQueue<glm::ivec3> mMeshUpdateQueue; // regular one
 	moodycamel::ConcurrentQueue<glm::ivec3> mMeshUpdateQueueSoon; // high priority one
+
+	//heightmap update queue
+	moodycamel::ConcurrentQueue<glm::ivec2> mHeightMapUpdateQueue;
 
     unsigned chunkSize;
     float voxelSize;
