@@ -28,6 +28,7 @@ protected:
 	std::vector<float> geometry;
 	std::vector<unsigned> mGeometry;
 	std::vector<unsigned> mFaceAttribs;
+	std::vector<unsigned> mLighting;
 	bool mLocked;
 	bool mUpdated;
 	unsigned mVAO;

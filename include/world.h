@@ -35,6 +35,8 @@ public:
 
     Chunk* getChunk(const glm::ivec3& pos);
 
+	HeightMap* getHeightMap(const glm::ivec2& pos);
+
     void queueChunkUpdate(const int& x, const int& y, const int& z, const bool& highpriority = false);
     void queueChunkUpdate(const glm::ivec3& pos, const bool& highpriority = false);
 

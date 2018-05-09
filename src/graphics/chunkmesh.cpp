@@ -25,18 +25,20 @@ ChunkMesh::ChunkMesh(World& world, glm::ivec3 chunkPos) :
 
 	glBindVertexArray(mVAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mGeometryTexVBO);
-
 	//vertices
+	glBindBuffer(GL_ARRAY_BUFFER, mGeometryTexVBO);
 	glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, GL_FALSE, 0);
 	glEnableVertexAttribArray(0);
 
-
 	//face attribs
 	glBindBuffer(GL_ARRAY_BUFFER, mFaceAttribsVBO);
-
 	glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, GL_FALSE, 0);
 	glEnableVertexAttribArray(1);
+
+	//light
+	glBindBuffer(GL_ARRAY_BUFFER, mLightVBO);
+	glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, GL_FALSE, 0);
+	glEnableVertexAttribArray(2);
 }
 
 bool ChunkMesh::rebuildChunkGeometry() {
@@ -76,11 +78,13 @@ bool ChunkMesh::rebuildChunkGeometry() {
 						unsigned texIndex = mLinkedWorld.voxelInfo.getTextureIndex(chunk->getVoxelType(i,j,k),
 						                                                           static_cast<FaceDirection>(faceIndex));
 						unsigned faceAttribT = faceAttrib | (texIndex << 15); // pack texture index into faceAttrib
+						unsigned lightVal = 0xFFFFFFFF;
 
 						++mFaceCount;
 						for (int l = 0; l < 6; ++l) {
 							mGeometry.push_back(mesh[l]);
 							mFaceAttribs.push_back(faceAttribT);
+							mLighting.push_back(lightVal);
 						}
 					};
 
@@ -114,6 +118,8 @@ void ChunkMesh::draw() {
 bool ChunkMesh::updateGeometry() {
 	if (mUpdated) {
 		mUpdated = false;
+
+		//upload geometry, face attribs, and lighting
 		glBindBuffer(GL_ARRAY_BUFFER, mGeometryTexVBO);
 		glBufferData(GL_ARRAY_BUFFER,
 		             sizeof(unsigned) * mGeometry.size(),
@@ -124,6 +130,12 @@ bool ChunkMesh::updateGeometry() {
 		glBufferData(GL_ARRAY_BUFFER,
 		             sizeof(unsigned) * mFaceAttribs.size(),
 		             mFaceAttribs.data(),
+		             GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, mLightVBO);
+		glBufferData(GL_ARRAY_BUFFER,
+		             sizeof(unsigned) * mLighting.size(),
+		             mLighting.data(),
 		             GL_STATIC_DRAW);
 
 		mGeometryFaceCount = mFaceCount;

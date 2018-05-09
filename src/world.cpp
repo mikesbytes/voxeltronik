@@ -42,7 +42,10 @@ bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
 }
 
 bool World::setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& updateChunk) {
-	auto chunkPos = glm::ivec3(floor((float)x / (float)chunkSize), floor((float)y / (float)chunkSize), floor((float)z / (float)chunkSize));
+	auto chunkPos = glm::ivec3(floor((float)x / (float)chunkSize),
+	                           floor((float)y / (float)chunkSize),
+	                           floor((float)z / (float)chunkSize));
+
 	auto chunk = getChunk(chunkPos);
 	if (!chunk) return false;
 
@@ -117,6 +120,20 @@ Chunk* World::getChunk(const glm::ivec3& pos) {
 	else return nullptr;
 }
 
+HeightMap* World::getHeightMap(const glm::ivec2& pos) {
+	HeightMap* heightMap;
+
+	//return heightmap if it already exists
+	if (mHeightMaps.find(pos, heightMap)) {
+		return heightMap;
+	}
+
+	//else make a new one, add to map, and return
+	heightMap = new HeightMap(pos);
+	mHeightMaps.insert(pos, heightMap);
+	return heightMap;
+}
+
 void World::queueChunkUpdate(const int& x, const int& y, const int& z, const bool& highpriority) {
 	queueChunkUpdate(glm::ivec3(x,y,z));
 }
@@ -145,6 +162,8 @@ void World::queueChunkLoad(const glm::ivec3 &pos) {
 
 void World::draw() {
 	auto lt = mChunkMeshes.lock_table();
+
+	//naively iterate through all chunks and draw them
 	for (const auto& i : lt) {
 		glm::mat4 modelMat = glm::translate(glm::mat4(), glm::vec3((float)i.first.x * 16,
 		                                                           (float)i.first.y * 16,
