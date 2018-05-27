@@ -2,6 +2,7 @@
 
 #include <tuple>
 #include <glm/glm.hpp>
+#include <array>
 
 namespace vtk {
 
@@ -15,6 +16,25 @@ enum class FaceDirection : unsigned int {
 };
 
 typedef std::tuple<unsigned, unsigned, unsigned> uPos; //used for voxel positions
+
+/*
+//TODO: move this to cpp file
+constexpr glm::ivec3 FaceDirectionToVec(const FaceDirection& direction) {
+	switch(direction) {
+	case FaceDirection::TOP:
+		return glm::ivec3(0,1,0);
+	case FaceDirection::BOTTOM:
+		return glm::ivec3(0,-1,0);
+	case FaceDirection::NORTH:
+		return glm::ivec3(0,0,1);
+	case FaceDirection::SOUTH:
+		return glm::ivec3(0,0,-1);
+	case FaceDirection::EAST:
+		return glm::ivec3(1,0,0);
+	case FaceDirection::WEST:
+		return glm::ivec3(-1,0,0);
+}
+*/
 
 struct uPosHash : public std::unary_function<uPos, std::size_t> {
 	std::size_t operator()(const uPos& k) const {
