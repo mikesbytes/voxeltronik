@@ -5,7 +5,7 @@
 
 namespace vtk {
 
-enum class FaceDirection {
+enum class FaceDirection : unsigned int {
 	TOP = 0,
 	BOTTOM = 1,
 	NORTH = 2,

@@ -88,6 +88,13 @@ unsigned Chunk::getLightLevel(const glm::ivec3 &pos) {
 	return 15;
 }
 
+unsigned Chunk::getLightPacked(const glm::ivec3 &pos) {
+	if (isVoxelSolid(pos.x, pos.y, pos.z)) {
+		return 0xFF000000;
+	}
+	return 0xFFFFFFFF;
+}
+
 void Chunk::setPos(const glm::ivec3& pos) {
 	mPos = pos;
 }

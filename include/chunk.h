@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  chunk.h
- *
- *    Description:  Stores chunk information
- *
- *        Version:  1.0
- *        Created:  04/03/2014 07:23:43 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #pragma once
 
 #include "voxelutils.h"
@@ -39,6 +21,7 @@ public:
     unsigned getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z);
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
 	unsigned getLightLevel(const glm::ivec3& pos);
+	unsigned getLightPacked(const glm::ivec3& pos);
 
 	void setPos(const glm::ivec3& pos);
 	glm::ivec3 getPos();

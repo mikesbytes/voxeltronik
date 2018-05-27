@@ -55,6 +55,7 @@ bool ChunkMesh::rebuildChunkGeometry() {
 	
 	// geometry format: x,y,z,u,v,i
 	mGeometry.clear();
+	mLighting.clear();
 	mFaceAttribs.clear();
 
 	mFaceCount = 0;
@@ -65,6 +66,15 @@ bool ChunkMesh::rebuildChunkGeometry() {
 			for (int k = 0; k < chunkSize; ++k) {
 				if (chunk->isVoxelSolid(i,j,k)) {
 
+					std::array<unsigned, 14> surrounding_light;
+					surrounding_light[2] = 0x000000FF;
+					surrounding_light[11] = 0xFF000000;
+					surrounding_light[8] = 0xFFFFFFFF;
+					surrounding_light[5] = 0xFFFFFFFF;
+					surrounding_light[7] = 0xFFFFFFFF;
+					surrounding_light[6] = 0xFFFFFFFF;
+					
+					
 					//build face attrib
 					// 0b00000000000000000xxxxxyyyyyzzzzz
 					unsigned faceAttrib = 0;
@@ -73,27 +83,42 @@ bool ChunkMesh::rebuildChunkGeometry() {
 					faceAttrib = (faceAttrib << 5) | k;
 
 					//lambda expression for adding vertices
-					auto addFaceModel = [&](int faceIndex) {
-						auto mesh = mVoxelModel.getFaceMesh(faceIndex);
-						unsigned texIndex = mLinkedWorld.voxelInfo.getTextureIndex(chunk->getVoxelType(i,j,k),
-						                                                           static_cast<FaceDirection>(faceIndex));
+					auto addFaceModel = [&](FaceDirection faceDirection) {
+						auto mesh = mVoxelModel.getFaceMesh(static_cast<unsigned>(faceDirection));
+						static std::vector<unsigned> faceLighting;
+						faceLighting.clear();
+						mVoxelModel.getFaceLighting(faceLighting, faceDirection, surrounding_light, 0);
+						unsigned texIndex = mLinkedWorld.voxelInfo.getTextureIndex(chunk->getVoxelType(i,j,k), faceDirection);
 						unsigned faceAttribT = faceAttrib | (texIndex << 15); // pack texture index into faceAttrib
-						unsigned lightVal = 0xFFFFFFFF;
+						unsigned lightVal = 0x000000FF;
 
 						++mFaceCount;
 						for (int l = 0; l < 6; ++l) {
 							mGeometry.push_back(mesh[l]);
 							mFaceAttribs.push_back(faceAttribT);
-							mLighting.push_back(lightVal);
+							mLighting.push_back(faceLighting[0]);
 						}
 					};
 
-					if (!chunk->isVoxelSolid(i,j+1,k)) addFaceModel(0); // T
-					if (!chunk->isVoxelSolid(i,j-1,k)) addFaceModel(1); // B
-					if (!chunk->isVoxelSolid(i,j,k+1)) addFaceModel(2); // N
-					if (!chunk->isVoxelSolid(i,j,k-1)) addFaceModel(3); // S
-					if (!chunk->isVoxelSolid(i+1,j,k)) addFaceModel(4); // E
-					if (!chunk->isVoxelSolid(i-1,j,k)) addFaceModel(5); // W
+
+					if (!chunk->isVoxelSolid(i,j+1,k)) {
+						addFaceModel(FaceDirection::TOP); // T
+					}
+					if (!chunk->isVoxelSolid(i,j-1,k)) {
+						addFaceModel(FaceDirection::BOTTOM); // B
+					}
+					if (!chunk->isVoxelSolid(i,j,k+1)) {
+						addFaceModel(FaceDirection::NORTH); // N
+					}
+					if (!chunk->isVoxelSolid(i,j,k-1)) {
+						addFaceModel(FaceDirection::SOUTH); // S
+					}
+					if (!chunk->isVoxelSolid(i+1,j,k)) {
+						addFaceModel(FaceDirection::EAST); // E
+					}
+					if (!chunk->isVoxelSolid(i-1,j,k)) {
+						addFaceModel(FaceDirection::WEST); // W
+					}
 				}
 			}
 		}

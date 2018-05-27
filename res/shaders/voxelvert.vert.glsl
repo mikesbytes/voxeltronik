@@ -32,10 +32,15 @@ void main() {
 	light_unpacked.z = float((light >> 8u) & 255u) / 255.0f;
 	light_unpacked.w = float((light) & 255u) / 255.0f;
 
+	vec3 sun_color = vec3(1.0f, 1.0f, 1.0f) * light_unpacked.w;
+	vec3 light_color = vec3(max(light_unpacked.x, sun_color.x),
+	                        max(light_unpacked.y, sun_color.y),
+	                        max(light_unpacked.z, sun_color.z));
+
 	vec3 final_position = pos_unpacked + offset_unpacked;
 	vec4 eyeSpacePosVert = view * model * vec4(final_position, 1.0);
 	gl_Position = proj * eyeSpacePosVert;
 	texCoordInterp = vec3(uv_unpacked, tex_index);//texCoord;
-	lightDataInterp = vec3(light_unpacked.x, light_unpacked.y, light_unpacked.z);
+	lightDataInterp = light_color;
 	eyeSpacePos = eyeSpacePosVert;
 }
