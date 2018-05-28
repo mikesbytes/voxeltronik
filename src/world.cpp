@@ -129,7 +129,7 @@ HeightMap* World::getHeightMap(const glm::ivec2& pos) {
 	}
 
 	//else make a new one, add to map, and return
-	heightMap = new HeightMap(pos);
+	heightMap = new HeightMap(pos, *this);
 	mHeightMaps.insert(pos, heightMap);
 	return heightMap;
 }
@@ -143,6 +143,8 @@ void World::queueChunkUpdate(const glm::ivec3& pos, const bool& highpriority) {
 	if (!chunk || chunk->isQueuedForMeshRebuild()) return;
 	chunk->setQueuedForMeshRebuild(true);
 
+	mHeightMapUpdateQueue.enqueue(glm::ivec2(pos.x, pos.z));
+	
 	if (highpriority) { // queue for higher rebuild priority
 		mMeshUpdateQueueSoon.enqueue(pos);
 		return;
@@ -181,6 +183,12 @@ void World::update() {
 	                              mMeshUpdateQueue.size_approx() > 0)) {
 		auto updatefunc = [&]() {
 			glm::ivec3 pos;
+			glm::ivec2 hm_pos;
+			while (mHeightMapUpdateQueue.try_dequeue(hm_pos)) {
+				auto heightMap = getHeightMap(hm_pos);
+				heightMap->flushUpdates();
+			}
+			
 			while (mMeshUpdateQueueSoon.try_dequeue(pos)) {
 				ChunkMesh* mesh;
 				mChunkMeshes.find(pos, mesh);
@@ -198,6 +206,7 @@ void World::update() {
 				}
 				getChunk(pos)->setQueuedForMeshRebuild(false);
 			}
+
 			rebuildThreadActive = false;
 		};
 

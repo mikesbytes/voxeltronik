@@ -51,7 +51,7 @@ bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
                                          mPos.z * 16 + z);
     }
 
-    return (getVoxelType((unsigned)x,(unsigned)y,(unsigned)z) != 0);
+    return !mLinkedWorld.voxelInfo.isTransparent(getVoxelType((unsigned)x, (unsigned)y, (unsigned)z));
 }
 
 void Chunk::setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& update) {
@@ -93,6 +93,10 @@ unsigned Chunk::getLightPacked(const glm::ivec3 &pos) {
 		return 0x00000000;
 	}
 	return 0xFFFFFFFF;
+}
+
+HeightMap* Chunk::getHeightMap() {
+	return mLinkedWorld.getHeightMap(glm::ivec2(mPos.x,mPos.z));
 }
 
 void Chunk::setPos(const glm::ivec3& pos) {

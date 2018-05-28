@@ -151,7 +151,13 @@ void VoxelModel::getFaceLighting(std::vector<unsigned>& lighting, const FaceDire
 	for (auto& i : face_vec) {
 		//TODO: Find a more elegant solution that a big switch case with if statements
 		//TODO: handle interpolation for verts that aren't on an edge
-		
+
+		/*
+A brief explanation of the following code
+it looks at the position of each vertice in the face mesh, checks which corner it is
+closeest too, and then ges the average of the 4 adjacent light values with the
+average4 lambda
+		 */
 		unsigned vx = (i >> 8) & 0xF;
 		unsigned vy = (i >> 4) & 0xF;
 		unsigned vz = i & 0xF;

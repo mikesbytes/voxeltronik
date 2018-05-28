@@ -111,8 +111,9 @@ void TestScene::init() {
 	world.voxelInfo.setAllTextureIndexes(2, 1);
 	world.voxelInfo.setTextureIndex(2, FaceDirection::TOP, 2);
 
-	//world.voxelInfo.setTransparent(1, false);
-	//world.voxelInfo.setTransparent(2, false);
+	world.voxelInfo.setTransparent(0, true);
+	world.voxelInfo.setTransparent(1, false);
+	world.voxelInfo.setTransparent(2, false);
 
 	std::cout << std::endl;
 

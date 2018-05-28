@@ -1,11 +1,15 @@
 #include "heightmap.h"
+#include "world.h"
 
 namespace vtk {
 
-HeightMap::HeightMap(const glm::ivec2& pos) :
-	mPos(pos)
+HeightMap::HeightMap(const glm::ivec2& pos, World& world) :
+	mPos(pos),
+	mWorld(world)
 {
-	
+	for (int i = 0; i < mHeights.size(); ++i) {
+		mHeights[i] = 0x7FFFFFFF;
+	}
 }
 
 glm::ivec2 HeightMap::getPos() {
@@ -18,15 +22,33 @@ int HeightMap::getHeight(const glm::ivec2 &pos) {
 }
 
 bool HeightMap::pushUpdate(const glm::ivec3 &pos, const bool &destroyed) {
-	return mUpdateQueue.try_enqueue(pos);
+	return mUpdateQueue.try_enqueue(std::make_pair(pos, destroyed));
 }
 
 void HeightMap::flushUpdates() {
-	glm::ivec3 pos;
-	while (mUpdateQueue.try_dequeue(pos)) {
+	std::pair<glm::ivec3, bool> updateItem;
+	while (mUpdateQueue.try_dequeue(updateItem)) {
+		glm::ivec3& pos = updateItem.first;
 		int index = pos.x + (16 * pos.y);
-		mHeights[index] = pos.z;
+		int height = getHeight(glm::ivec2(pos.x, pos.z));
+		if (updateItem.second) { // if destroyed
+			if(height <= pos.y) { // if voxel is at the top of the heightmap
+				// search downward until the next solid voxel is reached
+				glm::ivec3 searchPos(pos.x + (mPos.x * 16), pos.y, pos.z + (mPos.y * 16));
+				while(mWorld.isVoxelSolid(searchPos.x, searchPos.y, searchPos.z)) {
+					--searchPos.y;
+				}
+				setHeight(searchPos);
+			}
+		} else { // if placed
+			if (height < pos.y)
+				setHeight(pos);
+		}
 	}
+}
+
+void HeightMap::setHeight(const glm::ivec3& pos) {
+	mHeights[pos.x + (16 * pos.z)] = pos.y;
 }
 
 }

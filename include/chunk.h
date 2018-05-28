@@ -9,6 +9,7 @@
 namespace vtk {
 
 class World;
+class HeightMap;
 
 class Chunk {
 	friend class World;
@@ -22,6 +23,7 @@ public:
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
 	unsigned getLightLevel(const glm::ivec3& pos);
 	unsigned getLightPacked(const glm::ivec3& pos);
+	HeightMap* getHeightMap();
 
 	void setPos(const glm::ivec3& pos);
 	glm::ivec3 getPos();

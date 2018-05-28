@@ -22,6 +22,7 @@
 #include "terrain/noise.h"
 #include "terrain/ygradient.h"
 #include "terrain/yturbulence.h"
+#include "heightmap.h"
 
 #include <iostream>
 #include <time.h>
@@ -56,7 +57,9 @@ void TerrainGen::generateChunk(Chunk* chunk) {
 						} else {// block above is air
 							chunk->setVoxelType(i,j,k,1);
 					}
+					chunk->getHeightMap()->pushUpdate(glm::ivec3(i,(chunkPos.y * 16) + j, k),false);
 				} else {
+					chunk->getHeightMap()->pushUpdate(glm::ivec3(i,(chunkPos.y * 16) + j, k), true);
 					chunk->setVoxelType(i,j,k,0);
 				}
             }
