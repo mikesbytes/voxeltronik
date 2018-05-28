@@ -106,7 +106,7 @@ std::vector<unsigned>& VoxelModel::getFaceMesh(const int& face) {
 	return mGeometry[face];
 }
 
-void VoxelModel::getFaceLighting(std::vector<unsigned>& lighting, const FaceDirection& face, const std::array<unsigned, 14>& surrounding_light, const unsigned& zero_weight) {
+void VoxelModel::getFaceLighting(std::vector<unsigned>& lighting, const FaceDirection& face, const std::array<unsigned, 27>& surrounding_light, const unsigned& zero_weight) {
 
 	auto blend = [](unsigned a, unsigned b, unsigned weight) {
 		unsigned aw = 7 - weight;
@@ -125,54 +125,199 @@ void VoxelModel::getFaceLighting(std::vector<unsigned>& lighting, const FaceDire
 			         ((((b) & 0xFF) * bw) / 7u), 255u);
 		return newLight;
 		    };
+
+	auto average4 = [](unsigned a, unsigned b, unsigned c, unsigned d) {
+		                unsigned avg = (((a >> 24) & 0xFF) +
+		                                ((b >> 24) & 0xFF) +
+		                                ((c >> 24) & 0xFF) +
+		                                ((d >> 24) & 0xFF)) / 4;
+		                avg = (avg << 8) | (((a >> 16) & 0xFF) +
+										    ((b >> 16) & 0xFF) +
+										    ((c >> 16) & 0xFF) +
+										    ((d >> 16) & 0xFF)) / 4;
+		                avg = (avg << 8) | (((a >> 8) & 0xFF) +
+										    ((b >> 8) & 0xFF) +
+										    ((c >> 8) & 0xFF) +
+										    ((d >> 8) & 0xFF)) / 4;
+		                avg = (avg << 8) | ((a & 0xFF) +
+										    (b & 0xFF) +
+										    (c & 0xFF) +
+										    (d & 0xFF)) / 4;
+
+		                return avg;
+	                };
 	
 	auto& face_vec = mGeometry.at(static_cast<unsigned>(face));
 	for (auto& i : face_vec) {
+		//TODO: Find a more elegant solution that a big switch case with if statements
+		//TODO: handle interpolation for verts that aren't on an edge
+		
 		unsigned vx = (i >> 8) & 0xF;
 		unsigned vy = (i >> 4) & 0xF;
 		unsigned vz = i & 0xF;
 		switch(face) {
 		case FaceDirection::TOP:
-
-			//std::cout << vx << ", " << vz << "\n";
 			if (vx > 7) {
 				if (vz > 7) {
-					std::cout << "hit\n";
-					lighting.push_back(surrounding_light[4]); //4
+					lighting.push_back(average4(surrounding_light[22],
+					                            surrounding_light[23],
+					                            surrounding_light[25],
+					                            surrounding_light[26]));
 				} else {
-					lighting.push_back(surrounding_light[1]); //1
+					lighting.push_back(average4(surrounding_light[22],
+					                            surrounding_light[23],
+					                            surrounding_light[19],
+					                            surrounding_light[20]));
 				}
 			} else {
 				if (vz > 7) {
-					lighting.push_back(surrounding_light[3]); //3
+					lighting.push_back(average4(surrounding_light[22],
+					                            surrounding_light[21],
+					                            surrounding_light[24],
+					                            surrounding_light[25]));
 				} else {
-					lighting.push_back(surrounding_light[0]); //0
+					lighting.push_back(average4(surrounding_light[22],
+					                            surrounding_light[18],
+					                            surrounding_light[19],
+					                            surrounding_light[21]));
 				}
 			}
-			/*
-			lighting.push_back(blend(surrounding_light[2],
-			                         surrounding_light[4],
-			                         (vx + vy - 14u) / 2u));
-			*/
 			break;
 
 		case FaceDirection::BOTTOM:
-			lighting.push_back(surrounding_light[11]);
+			if (vx > 7) {
+				if (vz > 7) {
+					lighting.push_back(average4(surrounding_light[4],
+					                            surrounding_light[5],
+					                            surrounding_light[7],
+					                            surrounding_light[8]));
+				} else {
+					lighting.push_back(average4(surrounding_light[4],
+					                            surrounding_light[5],
+					                            surrounding_light[1],
+					                            surrounding_light[2]));
+				}
+			} else {
+				if (vz > 7) {
+					lighting.push_back(average4(surrounding_light[4],
+					                            surrounding_light[3],
+					                            surrounding_light[6],
+					                            surrounding_light[7]));
+				} else {
+					lighting.push_back(average4(surrounding_light[4],
+					                            surrounding_light[3],
+					                            surrounding_light[0],
+					                            surrounding_light[1]));
+				}
+			}
 			break;
 		case FaceDirection::NORTH:
-			lighting.push_back(surrounding_light[8]);
+			if (vx > 7) {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[16],
+					                            surrounding_light[17],
+					                            surrounding_light[25],
+					                            surrounding_light[26]));
+				} else {
+					lighting.push_back(average4(surrounding_light[16],
+					                            surrounding_light[17],
+					                            surrounding_light[7],
+					                            surrounding_light[8]));
+				}
+			} else {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[16],
+					                            surrounding_light[15],
+					                            surrounding_light[24],
+					                            surrounding_light[25]));
+				} else {
+					lighting.push_back(average4(surrounding_light[16],
+					                            surrounding_light[15],
+					                            surrounding_light[6],
+					                            surrounding_light[7]));
+				}
+			}
 			break;
 		case FaceDirection::SOUTH:
-			lighting.push_back(surrounding_light[5]);
+			if (vx > 7) {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[10],
+					                            surrounding_light[11],
+					                            surrounding_light[19],
+					                            surrounding_light[20]));
+				} else {
+					lighting.push_back(average4(surrounding_light[10],
+					                            surrounding_light[11],
+					                            surrounding_light[1],
+					                            surrounding_light[2]));
+				}
+			} else {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[10],
+					                            surrounding_light[9],
+					                            surrounding_light[18],
+					                            surrounding_light[19]));
+				} else {
+					lighting.push_back(average4(surrounding_light[10],
+					                            surrounding_light[9],
+					                            surrounding_light[0],
+					                            surrounding_light[1]));
+				}
+			}
 			break;
 		case FaceDirection::EAST:
-			lighting.push_back(surrounding_light[7]);
+			if (vz > 7) {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[14],
+					                            surrounding_light[17],
+					                            surrounding_light[23],
+					                            surrounding_light[26]));
+				} else {
+					lighting.push_back(average4(surrounding_light[14],
+					                            surrounding_light[17],
+					                            surrounding_light[5],
+					                            surrounding_light[8]));
+				}
+			} else {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[14],
+					                            surrounding_light[11],
+					                            surrounding_light[20],
+					                            surrounding_light[23]));
+				} else {
+					lighting.push_back(average4(surrounding_light[14],
+					                            surrounding_light[11],
+					                            surrounding_light[2],
+					                            surrounding_light[5]));
+				}
+			}
 			break;
 		case FaceDirection::WEST:
-			lighting.push_back(surrounding_light[6]);
-			break;
-		default:
-			lighting.push_back(0xFFFFFFFF);
+			if (vz > 7) {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[12],
+					                            surrounding_light[15],
+					                            surrounding_light[21],
+					                            surrounding_light[24]));
+				} else {
+					lighting.push_back(average4(surrounding_light[12],
+					                            surrounding_light[15],
+					                            surrounding_light[3],
+					                            surrounding_light[6]));
+				}
+			} else {
+				if (vy > 7) {
+					lighting.push_back(average4(surrounding_light[12],
+					                            surrounding_light[9],
+					                            surrounding_light[18],
+					                            surrounding_light[21]));
+				} else {
+					lighting.push_back(average4(surrounding_light[12],
+					                            surrounding_light[9],
+					                            surrounding_light[0],
+					                            surrounding_light[3]));
+				}
+			}
 			break;
 		}
 	}

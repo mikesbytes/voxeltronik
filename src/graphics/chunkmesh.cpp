@@ -66,21 +66,13 @@ bool ChunkMesh::rebuildChunkGeometry() {
 			for (int k = 0; k < chunkSize; ++k) {
 				if (chunk->isVoxelSolid(i,j,k)) {
 					glm::ivec3 lpos(i,j,k);
-					std::array<unsigned, 14> surrounding_light;
-					surrounding_light[0] = chunk->getLightPacked(glm::ivec3(i-1,j+1,k-1));
-					surrounding_light[1] = chunk->getLightPacked(glm::ivec3(i+1,j+1,k-1));
-					surrounding_light[2] = chunk->getLightPacked(glm::ivec3(i,j+1,k));
-					surrounding_light[3] = chunk->getLightPacked(glm::ivec3(i-1,j+1,k+1));
-					surrounding_light[4] = chunk->getLightPacked(glm::ivec3(i+1,j+1,k+1));
-					surrounding_light[5] = chunk->getLightPacked(glm::ivec3(i,j,k-1));
-					surrounding_light[6] = chunk->getLightPacked(glm::ivec3(i-1,j,k));
-					surrounding_light[7] = chunk->getLightPacked(glm::ivec3(i+1,j,k));
-					surrounding_light[8] = chunk->getLightPacked(glm::ivec3(i,j,k+1));
-					surrounding_light[9] = chunk->getLightPacked(glm::ivec3(i-1,j-1,-1));
-					surrounding_light[10] = chunk->getLightPacked(glm::ivec3(i+1,j-1,k-1));
-					surrounding_light[11] = chunk->getLightPacked(glm::ivec3(i,j-1,k));
-					surrounding_light[12] = chunk->getLightPacked(glm::ivec3(i-1,j-1,k+1));
-					surrounding_light[13] = chunk->getLightPacked(glm::ivec3(i+1,j-1,k+1));
+					std::array<unsigned, 27> surrounding_light;
+					for (int l = 0; l < 27; ++l) {
+						glm::ivec3 offset((l % 3) - 1, //x component
+						                  (l / 9) - 1, //y component
+						                  ((l % 9) / 3) - 1); //y component
+						surrounding_light[l] = chunk->getLightPacked(glm::ivec3(i,j,k) + offset);
+					}
 					
 					
 					//build face attrib
