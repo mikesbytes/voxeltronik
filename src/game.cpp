@@ -113,12 +113,12 @@ void Game::loop() {
 
         activeScene->update(dTime);
         
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 		glDepthFunc(GL_GREATER);
 		glClearDepth(0.0f);
         
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         activeScene->draw(); //draw the scene
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
