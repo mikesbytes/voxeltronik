@@ -92,7 +92,8 @@ unsigned Chunk::getLightPacked(const glm::ivec3 &pos) {
 	if (isVoxelSolid(pos.x, pos.y, pos.z)) {
 		return 0x00000000;
 	}
-	if (getHeightMap()->getHeight(glm::ivec2(pos.x, pos.z)) > pos.y + (mPos.y * 16)) { //voxel is below ground
+	auto wPos = chunkPosToWorldPos(mPos, pos);
+	if (mLinkedWorld.getHeight(glm::ivec2(wPos.x, wPos.z)) > wPos.y) { //voxel is below ground
 		//std::cout << mLinkedWorld.getHeight(glm::ivec2(pos.x, pos.z)) << ", ";
 		return 0x000000AA;
 	}

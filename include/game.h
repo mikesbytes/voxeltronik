@@ -47,6 +47,8 @@ protected:
     Scene* activeScene;
     void cleanup();
     bool running;
+
+	GLuint mColor, mDepth, mFBO;
 };
 
 }

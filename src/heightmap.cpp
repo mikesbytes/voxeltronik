@@ -19,7 +19,7 @@ glm::ivec2 HeightMap::getPos() {
 
 int HeightMap::getHeight(const glm::ivec2 &pos) {
 	int index = pos.x + (16 * pos.y);
-	return mHeights[index].load();
+	return mHeights[index].load(std::memory_order_consume);
 }
 
 bool HeightMap::pushUpdate(const glm::ivec3 &pos, const bool &destroyed) {
@@ -65,7 +65,7 @@ void HeightMap::flushUpdates() {
 }
 
 void HeightMap::setHeight(const glm::ivec3& pos) {
-	mHeights[pos.x + (16 * pos.z)].store(pos.y);
+	mHeights[pos.x + (16 * pos.z)].store(pos.y, std::memory_order_release);
 }
 
 }
