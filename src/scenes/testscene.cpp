@@ -62,7 +62,7 @@ void TestScene::init() {
 	mSkyboxTask = new RenderTask(mSkybox, camera, linkedGame->window);
 
 	glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
-	glUniformMatrix4fv(projMatUni, 1, GL_FALSE, glm::value_ptr(linkedGame->window.getProjectionMatrix()));
+	glUniformMatrix4fv(projMatUni, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
 
 	//nanovg
 	vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
@@ -203,8 +203,9 @@ void TestScene::draw() {
 	mSkyboxTask->draw();
 
 	//draw world TODO: move this to rendertasks
-	gls::setShader(shaders);
+	glUseProgram(shaders);
 	glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
+	glUniformMatrix4fv(projMatUni, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
 	world.draw();
 
 	glDisable(GL_DEPTH_TEST);

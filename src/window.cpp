@@ -32,7 +32,10 @@ bool Window::create() {
     window = SDL_CreateWindow(title.c_str(),
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               mWidth, mHeight, SDL_WINDOW_OPENGL);
+    
     context = SDL_GL_CreateContext(window);
+
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
     return true;
 
 }

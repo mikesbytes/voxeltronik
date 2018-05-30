@@ -68,6 +68,7 @@ void Game::init() {
     glClearDepth(0.0f);
     glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
 
+    /*
     //depth buffer stuff
     glGenTextures(1, &mColor);
     glBindTexture(GL_TEXTURE_2D, mColor);
@@ -88,6 +89,7 @@ void Game::init() {
 		fprintf(stderr, "glCheckFramebufferStatus: %x\n", status);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    */
 
     running = false;
     gls::setTracking(true); // track OpenGL state changes
@@ -114,15 +116,16 @@ void Game::loop() {
         activeScene->update(dTime);
         
 
-        glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
+        //glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 		glDepthFunc(GL_GREATER);
 		glClearDepth(0.0f);
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         activeScene->draw(); //draw the scene
         
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        /*
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, mFBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // default FBO
 		glBlitFramebuffer(
@@ -130,6 +133,7 @@ void Game::loop() {
 			0, 0, conf->getValue<int>("graphics.res.x", 800), conf->getValue<int>("graphics.res.y", 600),
 			GL_COLOR_BUFFER_BIT, GL_LINEAR);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        */
 
         SDL_GL_SwapWindow(window.getWindow());
     }
