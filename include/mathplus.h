@@ -20,6 +20,11 @@
 
 namespace mp {
 
+inline constexpr int floor_div3(int a, int b) {
+	int d = a / b;
+	return d * b == a ? d : d - ((a < 0) ^ (b < 0));
+}
+
 //Convert value to one within min/max. Useful for angles n' shit
 template <typename T>
 T normalize(const T& value, const T& min, const T& max) {

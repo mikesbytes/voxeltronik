@@ -47,7 +47,20 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
-    return glm::infinitePerspective(mFOV, mAspectRatio, 0.1f);
+	const float zNear = 0.001f;
+	const float viewAngleVertical = 90.0f;
+	const float f = 1.0f / tan(viewAngleVertical / 2.0f); // 1.0 / tan(X) == cotangent(X)
+	const float aspect = mAspectRatio;
+
+	//infinite Perspective matrix reversed
+	glm::mat4 projectionMatrix = {
+	f/aspect, 0.0f,  0.0f,  0.0f,
+		0.0f,    f,  0.0f,  0.0f,
+		0.0f, 0.0f,  0.0f, -1.0f,
+		0.0f, 0.0f, zNear,  0.0f
+	};
+	return projectionMatrix;
+	//return glm::perspective(mFOV, mAspectRatio, -100000.0f, -0.01f);
 }
 
 glm::mat4 Camera::getAngleMatrix() {

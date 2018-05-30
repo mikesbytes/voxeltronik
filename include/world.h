@@ -37,6 +37,9 @@ public:
 
 	HeightMap* getHeightMap(const glm::ivec2& pos);
 
+	//get max height of world at pos(x,z)
+	int getHeight(const glm::ivec2& pos);
+
     void queueChunkUpdate(const int& x, const int& y, const int& z, const bool& highpriority = false);
     void queueChunkUpdate(const glm::ivec3& pos, const bool& highpriority = false);
 

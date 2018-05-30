@@ -17,6 +17,9 @@ enum class FaceDirection : unsigned int {
 
 typedef std::tuple<unsigned, unsigned, unsigned> uPos; //used for voxel positions
 
+glm::ivec3 worldPosToChunkPos(const glm::ivec3& pos);
+glm::ivec2 worldPosToChunkPos(const glm::ivec2& pos);
+
 /*
 //TODO: move this to cpp file
 constexpr glm::ivec3 FaceDirectionToVec(const FaceDirection& direction) {

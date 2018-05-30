@@ -13,6 +13,9 @@
 
 int main (int argc, char *argv[])
 {
+	glm::ivec3 test(-14, -18, -18);
+	std::cout << glm::ivec3(test / 16).x << std::endl;
+	
 	vtk::LoggerSetup lSetup;
 	lSetup.setup();
 	spdlog::get("general")->info("Starting Voxeltronik Engine...");

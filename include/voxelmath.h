@@ -36,6 +36,8 @@ public:
 
     iPos getChunkContaining(const int& x, const int& y, const int& z);
 
+
+
     World* linkedWorld;
 
 protected:

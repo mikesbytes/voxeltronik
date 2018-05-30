@@ -57,10 +57,8 @@ void TerrainGen::generateChunk(Chunk* chunk) {
 						} else {// block above is air
 							chunk->setVoxelType(i,j,k,1);
 					}
-					chunk->getHeightMap()->pushUpdate(glm::ivec3(i,(chunkPos.y * 16) + j, k),false);
+					chunk->getHeightMap()->blockHeight(glm::ivec3(i,(chunkPos.y * 16) + j, k));
 				} else {
-					chunk->getHeightMap()->pushUpdate(glm::ivec3(i,(chunkPos.y * 16) + j, k), true);
-					chunk->setVoxelType(i,j,k,0);
 				}
             }
         }

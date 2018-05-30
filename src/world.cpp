@@ -42,9 +42,7 @@ bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
 }
 
 bool World::setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& updateChunk) {
-	auto chunkPos = glm::ivec3(floor((float)x / (float)chunkSize),
-	                           floor((float)y / (float)chunkSize),
-	                           floor((float)z / (float)chunkSize));
+	auto chunkPos = worldPosToChunkPos(glm::ivec3(x,y,z)); 
 
 	auto chunk = getChunk(chunkPos);
 	if (!chunk) return false;
@@ -54,6 +52,10 @@ bool World::setVoxelType(const int& x, const int& y, const int& z, const unsigne
 	int relPosZ = z - chunkPos.z * chunkSize;
 
 	chunk->setVoxelType(relPosX, relPosY, relPosZ, type, updateChunk);
+	if (type != 0)
+		getHeightMap(glm::ivec2(chunkPos.x, chunkPos.z))->blockHeight(glm::ivec3(relPosX, y, relPosZ));
+	else
+		getHeightMap(glm::ivec2(chunkPos.x, chunkPos.z))->unblockHeight(glm::ivec3(relPosX, y, relPosZ));
 	return true;
 }
 
@@ -88,7 +90,7 @@ Chunk* World::makeChunk(const int& x, const int& y, const int& z, bool insertAft
 }
 
 bool World::generateChunk(const int& x, const int& y, const int& z) {
-	auto chunkMade = makeChunk(x,y,z, false);
+	auto chunkMade = makeChunk(x,y,z);
 	if (chunkMade != nullptr) {
 		terrain.generateChunk(chunkMade);
 		//queue this chunk for geometry update
@@ -132,6 +134,12 @@ HeightMap* World::getHeightMap(const glm::ivec2& pos) {
 	heightMap = new HeightMap(pos, *this);
 	mHeightMaps.insert(pos, heightMap);
 	return heightMap;
+}
+
+int World::getHeight(const glm::ivec2& pos) {
+	glm::ivec2 cPos = worldPosToChunkPos(pos);
+	return getHeightMap(cPos)->getHeight(pos - (cPos * 16));
+	std::cout << cPos.x << ", " << cPos.y << std::endl; 
 }
 
 void World::queueChunkUpdate(const int& x, const int& y, const int& z, const bool& highpriority) {

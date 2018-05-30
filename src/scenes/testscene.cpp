@@ -165,6 +165,7 @@ void TestScene::update(const float& dTime) {
 		world.voxelMath.rayCast(hitPos, hitNormal, success, camera.getPosition(), camera.getAngleVector(), 10);
 		if (success) {
 			std::cout << "Hit voxel at: " << hitPos.x << ", " << hitPos.y << ", " << hitPos.z << std::endl;
+			std::cout << "Height @ " << world.getHeight(glm::ivec2(hitPos.x + hitNormal.x, hitPos.z + hitNormal.z)) << std::endl;
 			if (handler.isActionDown("Place Voxel")) {
 				world.setVoxelType((int)(hitPos.x + hitNormal.x), (int)(hitPos.y + hitNormal.y), (int)(hitPos.z + hitNormal.z), voxelType, true);
 			} else {

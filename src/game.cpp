@@ -40,8 +40,8 @@ void Game::init() {
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     SDL_GL_SetSwapInterval(conf->getValue<int>("graphics.vsync", 0));
@@ -62,6 +62,11 @@ void Game::init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CW);
+
+    //needed for inverted depth buffer for long distance rendering
+    glDepthFunc(GL_GREATER);
+    glClearDepth(0.0f);
+    glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
 
     running = false;
     gls::setTracking(true); // track OpenGL state changes
