@@ -3,6 +3,7 @@
 #include "voxelutils.h"
 #include "chunkrenderer.h"
 #include "graphics/chunkmesh.h"
+#include "util/mobileatomic.h"
 
 #include <glm/glm.hpp>
 
@@ -35,7 +36,8 @@ protected:
 	void setQueuedForMeshRebuild(const bool& rebuild = true);
 	bool isQueuedForMeshRebuild();
 
-    std::array<unsigned, 4096> voxels;
+	std::array<util::MobileAtomic<unsigned>, 4096> mData;
+	//std::array<unsigned, 4096> voxels;
     World& mLinkedWorld;
     glm::ivec3 mPos;
 	std::atomic<bool> mLoaded;

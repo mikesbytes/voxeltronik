@@ -115,7 +115,6 @@ void Game::loop() {
 
         activeScene->update(dTime);
         
-
         //glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 		glDepthFunc(GL_GREATER);
 		glClearDepth(0.0f);

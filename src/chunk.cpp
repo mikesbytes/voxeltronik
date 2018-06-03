@@ -31,10 +31,10 @@ Chunk::Chunk(World& world) :
     renderer.linkedChunk = this;
 
     //fill voxels with 0
-    for (unsigned i = 0; i < 4096; i++) {
-        voxels[i] = 0;
+    for (unsigned i = 0; i < mData.size(); i++) {
+	    mData[i].store(0);
     }
-    mLoaded = true;
+    mLoaded.store(true);
 }
 
 bool Chunk::isLoaded() {
@@ -60,7 +60,7 @@ void Chunk::setVoxelType(const int& x, const int& y, const int& z, const unsigne
         std::cout << "CHUNK ACCESS ERROR (set voxel): Out of range, doing nothing\n";
         return;
     }
-    voxels[index] = type;
+    mData[index].store(type, std::memory_order_release);
 
     if (!update) return;
     mLinkedWorld.queueChunkUpdate(mPos);
@@ -72,7 +72,7 @@ unsigned Chunk::getVoxelType(const unsigned& x, const unsigned& y, const unsigne
         std::cout << "CHUNK ACCESS ERROR (get voxel): Out of range, returning type 0\n";
         return 0;
     }
-    return voxels[index];
+    return mData[index].load(std::memory_order_consume);
 }
 
 glm::ivec3 Chunk::getWorldCoords(const int& x, const int& y, const int& z) {
