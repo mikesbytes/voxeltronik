@@ -28,7 +28,6 @@ Chunk::Chunk(World& world) :
 	mQueuedForMeshRebuild(false)
 {
     mPos = glm::ivec3(0,0,0);
-    renderer.linkedChunk = this;
 
     //fill voxels with 0
     for (unsigned i = 0; i < mData.size(); i++) {
@@ -39,6 +38,68 @@ Chunk::Chunk(World& world) :
 
 bool Chunk::isLoaded() {
 	return mLoaded.load();
+}
+
+unsigned Chunk::breakVoxel(const glm::ivec3& pos) {
+	unsigned voxelType = getVoxelType(pos);
+	if (voxelType == 0) return voxelType; //return early if nothing broken
+
+	setVoxelType(pos, 0);
+
+	//update heightmap
+	mLinkedWorld.getHeightMap(glm::ivec2(mPos.x, mPos.z))
+		->unblockHeight(glm::ivec3(pos.x, pos.y + mPos.y * 16, pos.z));
+	mLinkedWorld.queueChunkUpdate(mPos);
+
+	//update the neightboring chunk if voxel lies along border
+	glm::ivec3 neighborPos(0,0,0);
+
+	if (pos.x == 0) neighborPos.x--;
+	else if (pos.x == 15) neighborPos.x++;
+
+	if (pos.y == 0) neighborPos.y--;
+	else if (pos.y == 15) neighborPos.y++;
+
+	if (pos.z == 0) neighborPos.z--;
+	else if (pos.z == 15) neighborPos.z++;
+	
+	if (neighborPos != glm::ivec3(0,0,0)) {
+		mLinkedWorld.queueChunkUpdate(mPos + neighborPos);
+	}
+
+	return voxelType;
+}
+
+bool Chunk::placeVoxel(const glm::ivec3& pos, const unsigned& type) {
+	unsigned curType = getVoxelType(pos);
+	if (curType != 0) // return false if the voxel is NOT air
+		return false;
+	setVoxelType(pos, type);
+
+	//update heightmap
+	mLinkedWorld.getHeightMap(glm::ivec2(mPos.x, mPos.z))
+		->blockHeight(glm::ivec3(pos.x, pos.y + mPos.y * 16, pos.z));
+
+	mLinkedWorld.queueChunkUpdate(mPos);
+
+
+	//update the neightboring chunk if voxel lies along border
+	glm::ivec3 neighborPos(0,0,0);
+
+	if (pos.x == 0) neighborPos.x--;
+	else if (pos.x == 15) neighborPos.x++;
+
+	if (pos.y == 0) neighborPos.y--;
+	else if (pos.y == 15) neighborPos.y++;
+
+	if (pos.z == 0) neighborPos.z--;
+	else if (pos.z == 15) neighborPos.z++;
+	
+	if (neighborPos != glm::ivec3(0,0,0)) {
+		mLinkedWorld.queueChunkUpdate(mPos + neighborPos);
+	}
+
+	return true;
 }
 
 bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
@@ -54,6 +115,10 @@ bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
     return !mLinkedWorld.voxelInfo.isTransparent(getVoxelType((unsigned)x, (unsigned)y, (unsigned)z));
 }
 
+void Chunk::setVoxelType(const glm::ivec3 &pos, const unsigned& type) {
+	setVoxelType(pos.x, pos.y, pos.z, type);
+}
+
 void Chunk::setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& update) {
     auto index = x + 16 * (y + 16 * z);
     if (index > 4095) {
@@ -66,8 +131,8 @@ void Chunk::setVoxelType(const int& x, const int& y, const int& z, const unsigne
     mLinkedWorld.queueChunkUpdate(mPos);
 }
 
-unsigned Chunk::getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z) {
-    auto index = x + 16 * (y + 16 * z);
+unsigned Chunk::getVoxelType(const glm::ivec3& pos) {
+    auto index = pos.x + 16 * (pos.y + 16 * pos.z);
     if (index > 4095) {
         std::cout << "CHUNK ACCESS ERROR (get voxel): Out of range, returning type 0\n";
         return 0;
@@ -75,6 +140,9 @@ unsigned Chunk::getVoxelType(const unsigned& x, const unsigned& y, const unsigne
     return mData[index].load(std::memory_order_consume);
 }
 
+unsigned Chunk::getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z) {
+	return getVoxelType(glm::ivec3(x,y,z));
+}
 glm::ivec3 Chunk::getWorldCoords(const int& x, const int& y, const int& z) {
     return glm::ivec3(mPos.x * 16 + x,
                       mPos.y * 16 + y,

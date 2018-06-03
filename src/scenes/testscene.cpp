@@ -167,9 +167,11 @@ void TestScene::update(const float& dTime) {
 			std::cout << "Hit voxel at: " << hitPos.x << ", " << hitPos.y << ", " << hitPos.z << std::endl;
 			std::cout << "Height @ " << world.getHeight(glm::ivec2(hitPos.x + hitNormal.x, hitPos.z + hitNormal.z)) << std::endl;
 			if (handler.isActionDown("Place Voxel")) {
-				world.setVoxelType((int)(hitPos.x + hitNormal.x), (int)(hitPos.y + hitNormal.y), (int)(hitPos.z + hitNormal.z), voxelType, true);
+				world.placeVoxel(hitPos + hitNormal, voxelType);
+				//world.setVoxelType((int)(hitPos.x + hitNormal.x), (int)(hitPos.y + hitNormal.y), (int)(hitPos.z + hitNormal.z), voxelType, true);
 			} else {
-				world.setVoxelType((int)(hitPos.x), (int)(hitPos.y), (int)(hitPos.z), 0, true);
+				world.breakVoxel(hitPos);
+				//world.setVoxelType((int)(hitPos.x), (int)(hitPos.y), (int)(hitPos.z), 0, true);
 			}
 		}
 	} else if (!(handler.isActionDown("Place Voxel") || handler.isActionDown("Delete Voxel")) && placeVoxel) {

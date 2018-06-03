@@ -23,6 +23,10 @@ class World {
 	friend class Chunk;
 public:
     World();
+
+	unsigned breakVoxel(const glm::ivec3& pos);
+	bool placeVoxel(const glm::ivec3& pos, const unsigned& id);
+	
     bool isVoxelSolid(const int& x, const int& y, const int& z);
 
     bool setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& updateChunk = false);

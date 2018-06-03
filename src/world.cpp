@@ -25,6 +25,28 @@ World::World() {
 	mLoadThreadActive = false;
 }
 
+unsigned World::breakVoxel(const glm::ivec3& pos) {
+	auto chunkPos = worldPosToChunkPos(pos);
+	auto chunk = getChunk(chunkPos);
+	if (!chunk) return 0;
+
+	return chunk->breakVoxel(glm::ivec3(pos.x - (chunkPos.x * 16),
+	                                    pos.y - (chunkPos.y * 16),
+	                                    pos.z - (chunkPos.z * 16)));
+}
+
+bool World::placeVoxel(const glm::ivec3 &pos, const unsigned int &id) {
+	auto chunkPos = worldPosToChunkPos(pos);
+	auto chunk = getChunk(chunkPos);
+	if (!chunk) return 0;
+
+	return chunk->placeVoxel(glm::ivec3(pos.x - (chunkPos.x * 16),
+	                                    pos.y - (chunkPos.y * 16),
+	                                    pos.z - (chunkPos.z * 16)),
+	                         id);
+
+}
+
 bool World::isVoxelSolid(const int& x, const int& y, const int& z) {
 	auto chunkPos = glm::ivec3(floor((float)x / (float)chunkSize),
 	                           floor((float)y / (float)chunkSize),
