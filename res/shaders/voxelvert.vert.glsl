@@ -1,4 +1,4 @@
-#version 330
+#version 450
 
 layout(location = 0) in uint position;
 layout(location = 1) in uint face_attrib;
@@ -27,10 +27,10 @@ void main() {
 
 	float tex_index = float(face_attrib >> 15u);
 	vec4 light_unpacked;
-	light_unpacked.x = float((light >> 24u) & 255u) / 255.0f;
-	light_unpacked.y = float((light >> 16u) & 255u) / 255.0f;
-	light_unpacked.z = float((light >> 8u) & 255u) / 255.0f;
-	light_unpacked.w = float((light) & 255u) / 255.0f;
+	light_unpacked.x = float((light >> 12u) & 15u) / 15.0f;
+	light_unpacked.y = float((light >> 8u) & 15u) / 15.0f;
+	light_unpacked.z = float((light >> 4u) & 15u) / 15.0f;
+	light_unpacked.w = float((light) & 15u) / 15.0f;
 
 	vec3 sun_color = vec3(1.0f, 1.0f, 1.0f) * light_unpacked.w;
 	vec3 light_color = vec3(max(light_unpacked.x, sun_color.x),

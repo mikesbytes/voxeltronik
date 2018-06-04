@@ -35,7 +35,7 @@ public:
 
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
 	unsigned getLightLevel(const glm::ivec3& pos);
-	unsigned getLightPacked(const glm::ivec3& pos);
+	unsigned short getLightPacked(const glm::ivec3& pos);
 	HeightMap* getHeightMap();
 
 	void setPos(const glm::ivec3& pos);
@@ -48,6 +48,7 @@ protected:
 	bool isQueuedForMeshRebuild();
 
 	std::array<util::MobileAtomic<unsigned>, 4096> mData;
+	std::array<util::MobileAtomic<unsigned short>, 4096> mLighting;
     World& mLinkedWorld;
     glm::ivec3 mPos;
 	std::atomic<bool> mLoaded;

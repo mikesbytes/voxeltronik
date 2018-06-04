@@ -37,7 +37,7 @@ ChunkMesh::ChunkMesh(World& world, glm::ivec3 chunkPos) :
 
 	//light
 	glBindBuffer(GL_ARRAY_BUFFER, mLightVBO);
-	glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, GL_FALSE, 0);
+	glVertexAttribIPointer(2, 1, GL_UNSIGNED_SHORT, GL_FALSE, 0);
 	glEnableVertexAttribArray(2);
 }
 
@@ -66,8 +66,9 @@ bool ChunkMesh::rebuildChunkGeometry() {
 			for (int k = 0; k < chunkSize; ++k) {
 				if (chunk->isVoxelSolid(i,j,k)) {
 					glm::ivec3 lpos(i,j,k);
-					std::array<unsigned, 27> surrounding_light;
+					std::array<unsigned short, 27> surrounding_light;
 					for (int l = 0; l < 27; ++l) {
+						//magic to iterate through the 27 voxels around in proper order
 						glm::ivec3 offset((l % 3) - 1, //x component
 						                  (l / 9) - 1, //y component
 						                  ((l % 9) / 3) - 1); //y component
@@ -85,7 +86,7 @@ bool ChunkMesh::rebuildChunkGeometry() {
 					//lambda expression for adding vertices
 					auto addFaceModel = [&](FaceDirection faceDirection) {
 						auto mesh = mVoxelModel.getFaceMesh(static_cast<unsigned>(faceDirection));
-						static std::vector<unsigned> faceLighting;
+						static std::vector<unsigned short> faceLighting;
 						faceLighting.clear();
 						mVoxelModel.getFaceLighting(faceLighting, faceDirection, surrounding_light, 0);
 						unsigned texIndex = mLinkedWorld.voxelInfo.getTextureIndex(chunk->getVoxelType(i,j,k), faceDirection);

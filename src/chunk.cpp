@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  chunk.cpp
- *
- *    Description:  Chunk
- *
- *        Version:  1.0
- *        Created:  04/04/2014 09:44:36 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 #include "chunk.h"
 #include "world.h"
 
@@ -30,9 +13,13 @@ Chunk::Chunk(World& world) :
     mPos = glm::ivec3(0,0,0);
 
     //fill voxels with 0
-    for (unsigned i = 0; i < mData.size(); i++) {
+    for (unsigned i = 0; i < mData.size(); ++i) {
 	    mData[i].store(0);
     }
+    for (unsigned i = 0; i < mLighting.size(); ++i) {
+	    mLighting[i].store(0);
+    }
+
     mLoaded.store(true);
 }
 
@@ -51,7 +38,7 @@ unsigned Chunk::breakVoxel(const glm::ivec3& pos) {
 		->unblockHeight(glm::ivec3(pos.x, pos.y + mPos.y * 16, pos.z));
 	mLinkedWorld.queueChunkUpdate(mPos);
 
-	//update the neightboring chunk if voxel lies along border
+	//update the neightboring chunks if voxel lies along border
 	glm::ivec3 neighborPos(0,0,0);
 
 	if (pos.x == 0) neighborPos.x--;
@@ -62,10 +49,19 @@ unsigned Chunk::breakVoxel(const glm::ivec3& pos) {
 
 	if (pos.z == 0) neighborPos.z--;
 	else if (pos.z == 15) neighborPos.z++;
-	
-	if (neighborPos != glm::ivec3(0,0,0)) {
-		mLinkedWorld.queueChunkUpdate(mPos + neighborPos);
-	}
+
+	if (neighborPos.x != 0)
+		mLinkedWorld.queueChunkUpdate(glm::ivec3(mPos.x + neighborPos.x,
+		                                         mPos.y,
+		                                         mPos.z));
+	if (neighborPos.y != 0)
+		mLinkedWorld.queueChunkUpdate(glm::ivec3(mPos.x,
+		                                         mPos.y + neighborPos.y,
+		                                         mPos.z));
+	if (neighborPos.z != 0)
+		mLinkedWorld.queueChunkUpdate(glm::ivec3(mPos.x,
+		                                         mPos.y,
+		                                         mPos.z + neighborPos.z));
 
 	return voxelType;
 }
@@ -83,7 +79,7 @@ bool Chunk::placeVoxel(const glm::ivec3& pos, const unsigned& type) {
 	mLinkedWorld.queueChunkUpdate(mPos);
 
 
-	//update the neightboring chunk if voxel lies along border
+	//update the neightboring chunks if voxel lies along border
 	glm::ivec3 neighborPos(0,0,0);
 
 	if (pos.x == 0) neighborPos.x--;
@@ -95,9 +91,18 @@ bool Chunk::placeVoxel(const glm::ivec3& pos, const unsigned& type) {
 	if (pos.z == 0) neighborPos.z--;
 	else if (pos.z == 15) neighborPos.z++;
 	
-	if (neighborPos != glm::ivec3(0,0,0)) {
-		mLinkedWorld.queueChunkUpdate(mPos + neighborPos);
-	}
+	if (neighborPos.x != 0)
+		mLinkedWorld.queueChunkUpdate(glm::ivec3(mPos.x + neighborPos.x,
+		                                         mPos.y,
+		                                         mPos.z));
+	if (neighborPos.y != 0)
+		mLinkedWorld.queueChunkUpdate(glm::ivec3(mPos.x,
+		                                         mPos.y + neighborPos.y,
+		                                         mPos.z));
+	if (neighborPos.z != 0)
+		mLinkedWorld.queueChunkUpdate(glm::ivec3(mPos.x,
+		                                         mPos.y,
+		                                         mPos.z + neighborPos.z));
 
 	return true;
 }
@@ -156,16 +161,16 @@ unsigned Chunk::getLightLevel(const glm::ivec3 &pos) {
 	return 15;
 }
 
-unsigned Chunk::getLightPacked(const glm::ivec3 &pos) {
+unsigned short Chunk::getLightPacked(const glm::ivec3 &pos) {
 	if (isVoxelSolid(pos.x, pos.y, pos.z)) {
-		return 0x00000000;
+		return 0x0000;
 	}
 	auto wPos = chunkPosToWorldPos(mPos, pos);
 	if (mLinkedWorld.getHeight(glm::ivec2(wPos.x, wPos.z)) > wPos.y) { //voxel is below ground
 		//std::cout << mLinkedWorld.getHeight(glm::ivec2(pos.x, pos.z)) << ", ";
-		return 0x000000AA;
+		return 0x000A;
 	}
-	return 0x000000FF;
+	return 0x000F;
 }
 
 HeightMap* Chunk::getHeightMap() {

@@ -29,7 +29,7 @@ public:
 	        
 	zero_weight controls how "smoothed" the lighting is. Read the function body for more info on how this works
 	*/
-	void  getFaceLighting(std::vector<unsigned>& lighting, const FaceDirection& face, const std::array<unsigned, 27>& surrounding_light, const unsigned& zero_weight);
+	void  getFaceLighting(std::vector<unsigned short>& lighting, const FaceDirection& face, const std::array<unsigned short, 27>& surrounding_light, const unsigned& zero_weight);
 protected:
 	// top bottom north south east west, special
 	std::array<std::vector<unsigned>, 7> mGeometry;

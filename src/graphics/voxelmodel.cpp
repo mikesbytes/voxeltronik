@@ -106,8 +106,9 @@ std::vector<unsigned>& VoxelModel::getFaceMesh(const int& face) {
 	return mGeometry[face];
 }
 
-void VoxelModel::getFaceLighting(std::vector<unsigned>& lighting, const FaceDirection& face, const std::array<unsigned, 27>& surrounding_light, const unsigned& zero_weight) {
+void VoxelModel::getFaceLighting(std::vector<unsigned short>& lighting, const FaceDirection& face, const std::array<unsigned short, 27>& surrounding_light, const unsigned& zero_weight) {
 
+	/*
 	auto blend = [](unsigned a, unsigned b, unsigned weight) {
 		unsigned aw = 7 - weight;
 		unsigned bw = weight;
@@ -125,24 +126,25 @@ void VoxelModel::getFaceLighting(std::vector<unsigned>& lighting, const FaceDire
 			         ((((b) & 0xFF) * bw) / 7u), 255u);
 		return newLight;
 		    };
+	*/
 
-	auto average4 = [](unsigned a, unsigned b, unsigned c, unsigned d) {
-		                unsigned avg = (((a >> 24) & 0xFF) +
-		                                ((b >> 24) & 0xFF) +
-		                                ((c >> 24) & 0xFF) +
-		                                ((d >> 24) & 0xFF)) / 4;
-		                avg = (avg << 8) | (((a >> 16) & 0xFF) +
-										    ((b >> 16) & 0xFF) +
-										    ((c >> 16) & 0xFF) +
-										    ((d >> 16) & 0xFF)) / 4;
-		                avg = (avg << 8) | (((a >> 8) & 0xFF) +
-										    ((b >> 8) & 0xFF) +
-										    ((c >> 8) & 0xFF) +
-										    ((d >> 8) & 0xFF)) / 4;
-		                avg = (avg << 8) | ((a & 0xFF) +
-										    (b & 0xFF) +
-										    (c & 0xFF) +
-										    (d & 0xFF)) / 4;
+	auto average4 = [](unsigned short a, unsigned short b, unsigned short c, unsigned short d) {
+		                unsigned short avg = (((a >> 12) & 0xF) +
+		                                      ((b >> 12) & 0xF) +
+		                                      ((c >> 12) & 0xF) +
+		                                      ((d >> 12) & 0xF)) / 4;
+		                avg = (avg << 8) | (((a >> 8) & 0xF) +
+										    ((b >> 8) & 0xF) +
+										    ((c >> 8) & 0xF) +
+										    ((d >> 8) & 0xF)) / 4;
+		                avg = (avg << 8) | (((a >> 4) & 0xF) +
+										    ((b >> 4) & 0xF) +
+										    ((c >> 4) & 0xF) +
+										    ((d >> 4) & 0xF)) / 4;
+		                avg = (avg << 8) | ((a & 0xF) +
+										    (b & 0xF) +
+										    (c & 0xF) +
+										    (d & 0xF)) / 4;
 
 		                return avg;
 	                };
