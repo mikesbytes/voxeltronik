@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  voxelinfo.h
- *
- *    Description:  Stores information about voxel types, like texture coordinates.
- *
- *        Version:  1.0
- *        Created:  04/06/2014 01:07:52 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #pragma once
 
 #include "voxelutils.h"
@@ -55,6 +37,7 @@ struct VoxelData{
 	std::map<FaceDirection, unsigned> faceTextures;
 
     bool transparent;
+	unsigned short emission;
 };
 
 class World;
@@ -75,6 +58,9 @@ public:
 	bool isTransparent(const unsigned& id);
 
     std::pair<float, float> getTexCoordFromID(const unsigned& id, const Face3D& face, const Corner2D& corner);
+
+	void setEmission(const unsigned& id, const unsigned short& emission);
+	unsigned short getEmission(const unsigned& id);
 
     World* linkedWorld;
 

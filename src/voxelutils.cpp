@@ -18,4 +18,16 @@ glm::ivec2 worldPosToChunkPos(const glm::ivec2& pos) {
 glm::ivec3 chunkPosToWorldPos(const glm::ivec3& cPos, const glm::ivec3& lPos) {
 	return glm::ivec3((cPos * 16) + lPos);
 }
+
+std::pair<glm::ivec3, glm::ivec3> worldPosToLocalPos(const glm::ivec3& pos) {
+	auto cPos = worldPosToChunkPos(pos);
+	auto lPos = pos - (16 * cPos);
+	return std::make_pair(cPos, lPos);
+}
+
+std::pair<glm::ivec3, glm::ivec3> localPosToLocalPos(const glm::ivec3& cPos, const glm::ivec3& lPos) {
+	glm::ivec3 wPos = chunkPosToWorldPos(cPos, lPos); // get world coords
+	return worldPosToLocalPos(wPos);
+	
+}
 }

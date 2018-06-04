@@ -23,6 +23,10 @@ glm::ivec2 worldPosToChunkPos(const glm::ivec2& pos);
 //takes chunk and local positions, returns a world position
 glm::ivec3 chunkPosToWorldPos(const glm::ivec3& cPos, const glm::ivec3& lPos);
 
+//takes a chunk/local pos and returns a chunk,local pos pair (works for out of bounds coords)
+std::pair<glm::ivec3, glm::ivec3> worldPosToLocalPos(const glm::ivec3& pos);
+std::pair<glm::ivec3, glm::ivec3> localPosToLocalPos(const glm::ivec3& cPos, const glm::ivec3& lPos);
+
 /*
 //TODO: move this to cpp file
 constexpr glm::ivec3 FaceDirectionToVec(const FaceDirection& direction) {

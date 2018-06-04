@@ -214,12 +214,9 @@ void World::update() {
 		auto updatefunc = [&]() {
 			glm::ivec3 pos;
 			glm::ivec2 hm_pos;
-			while (mHeightMapUpdateQueue.try_dequeue(hm_pos)) {
-				auto heightMap = getHeightMap(hm_pos);
-				heightMap->flushUpdates();
-			}
 			
 			while (mMeshUpdateQueueSoon.try_dequeue(pos)) {
+				getChunk(pos)->rebuildLighting();
 				ChunkMesh* mesh;
 				mChunkMeshes.find(pos, mesh);
 				if (mesh) {
@@ -229,6 +226,7 @@ void World::update() {
 			}
 			
 			while (mMeshUpdateQueue.try_dequeue(pos)) {
+				getChunk(pos)->rebuildLighting();
 				ChunkMesh* mesh;
 				mChunkMeshes.find(pos, mesh);
 				if (mesh) {

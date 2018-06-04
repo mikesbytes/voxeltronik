@@ -1,21 +1,3 @@
-
-/*
- * =====================================================================================
- *
- *       Filename:  voxelinfo.cpp
- *
- *    Description:  Voxelinfo source file
- *
- *        Version:  1.0
- *        Created:  04/06/2014 01:30:10 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 #include "voxelinfo.h"
 #include "world.h"
 
@@ -139,6 +121,14 @@ void VoxelInfo::setTransparent(const unsigned& id, const bool& transparent) {
 
 bool VoxelInfo::isTransparent(const unsigned& id) {
     return voxelDataMap[id].transparent;
+}
+
+void VoxelInfo::setEmission(const unsigned int &id, const unsigned short &emission) {
+	voxelDataMap[id].emission = emission;
+}
+
+unsigned short VoxelInfo::getEmission(const unsigned int &id) {
+	return voxelDataMap[id].emission;
 }
 
 }

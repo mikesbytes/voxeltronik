@@ -10,6 +10,8 @@ namespace vtk {
 class World;
 class HeightMap;
 
+typedef std::pair<short, unsigned short> LightIndexPair;
+
 class Chunk {
 	friend class World;
 public:
@@ -26,6 +28,7 @@ public:
 	bool placeVoxel(const glm::ivec3& pos, const unsigned& type);
 	
     bool isVoxelSolid(const int& x, const int& y, const int& z); //Is the voxel not a transparent type?
+	bool isVoxelSolid(const glm::ivec3& pos);
 
 	void setVoxelType(const glm::ivec3& pos, const unsigned& type);
 	void setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& update = false);
@@ -33,9 +36,11 @@ public:
 	unsigned getVoxelType(const glm::ivec3& pos);
     unsigned getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z);
 
+	void rebuildLighting();
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
 	unsigned getLightLevel(const glm::ivec3& pos);
 	unsigned short getLightPacked(const glm::ivec3& pos);
+	void setLightPacked(const glm::ivec3& pos, const unsigned short& light);
 	HeightMap* getHeightMap();
 
 	void setPos(const glm::ivec3& pos);
@@ -44,6 +49,7 @@ public:
 
 
 protected:
+	typedef std::tuple<short, Chunk*> LightIndexTup;
 	void setQueuedForMeshRebuild(const bool& rebuild = true);
 	bool isQueuedForMeshRebuild();
 

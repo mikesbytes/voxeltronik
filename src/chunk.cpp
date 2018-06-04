@@ -2,6 +2,7 @@
 #include "world.h"
 
 #include <iostream>
+#include <queue>
 
 namespace vtk {
 
@@ -17,7 +18,7 @@ Chunk::Chunk(World& world) :
 	    mData[i].store(0);
     }
     for (unsigned i = 0; i < mLighting.size(); ++i) {
-	    mLighting[i].store(0);
+	    mLighting[i].store(0xFFFF);
     }
 
     mLoaded.store(true);
@@ -76,10 +77,12 @@ bool Chunk::placeVoxel(const glm::ivec3& pos, const unsigned& type) {
 	mLinkedWorld.getHeightMap(glm::ivec2(mPos.x, mPos.z))
 		->blockHeight(glm::ivec3(pos.x, pos.y + mPos.y * 16, pos.z));
 
-	mLinkedWorld.queueChunkUpdate(mPos);
+	mLinkedWorld.queueChunkUpdate(mPos, true);
 
 
 	//update the neightboring chunks if voxel lies along border
+
+	// TODO: make this a function in voxelutils(voxelmath?)
 	glm::ivec3 neighborPos(0,0,0);
 
 	if (pos.x == 0) neighborPos.x--;
@@ -120,6 +123,10 @@ bool Chunk::isVoxelSolid(const int& x, const int& y, const int& z) {
     return !mLinkedWorld.voxelInfo.isTransparent(getVoxelType((unsigned)x, (unsigned)y, (unsigned)z));
 }
 
+bool Chunk::isVoxelSolid(const glm::ivec3& pos) {
+	return isVoxelSolid(pos.x, pos.y, pos.z);
+}
+
 void Chunk::setVoxelType(const glm::ivec3 &pos, const unsigned& type) {
 	setVoxelType(pos.x, pos.y, pos.z, type);
 }
@@ -148,6 +155,75 @@ unsigned Chunk::getVoxelType(const glm::ivec3& pos) {
 unsigned Chunk::getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z) {
 	return getVoxelType(glm::ivec3(x,y,z));
 }
+
+void Chunk::rebuildLighting() {
+	std::queue<LightIndexTup> sunBFSQueue;
+	//FIRST PASS, block out all solid blocks
+	for (short i = 0; i < 4096; ++i) {
+		glm::ivec3 pos(i % 16, (i / 16) % 16,(i / 256)); // get current coord
+		mLighting[i].store(0);
+		auto lightVal = mLinkedWorld.voxelInfo.getEmission(getVoxelType(pos));
+
+		//set sunlighting if at the top of chunk and above the ground
+		if(pos.y == 15 &&
+		   mLinkedWorld.getHeightMap(glm::ivec2(mPos.x, mPos.z))
+		   ->getHeight(glm::ivec2(pos.x, pos.z)) <=
+		   pos.y + mPos.y * 16)
+		{
+			lightVal = lightVal | 0xF; //max out the sun lighting
+		}
+		mLighting[i].store(lightVal);
+		
+		if ((lightVal & 0xF) != 0) {
+			sunBFSQueue.push(std::make_tuple(i,this));
+		}
+
+	}
+	//iterate through sunlight
+	while (!sunBFSQueue.empty()) {
+		short index;
+		Chunk* chunk;
+		unsigned short light;
+		std::tie(index, chunk) = sunBFSQueue.front();
+		light = light & 0xF; // so I don't have to remask every time
+		glm::ivec3 pos( index % 16,
+		               (index / 16) % 16,
+		                index / 256);
+		light = chunk->getLightPacked(pos) & 0xF;
+
+		auto propogateSun =
+			[&](glm::ivec3 nPos, Chunk* nChunk)
+			{
+				bool straightDown = (pos.y > nPos.y && light == 0xF);
+				auto checkPos = localPosToLocalPos(nChunk->getPos(), nPos);
+				nChunk = mLinkedWorld.getChunk(checkPos.first);
+				nPos = checkPos.second;
+				auto newLight = chunk->getLightPacked(nPos) & 0xF;
+				if (!chunk->isVoxelSolid(nPos)) {
+					if (light >= newLight + 2) {
+						if (straightDown) {
+							chunk->setLightPacked(nPos, (newLight & 0xFFF0) | 0xF);
+						}
+						chunk->setLightPacked(nPos, (newLight & 0xFFF0) | light - 1);
+						if (light - 1 > 1) {
+							sunBFSQueue.push(std::make_tuple((short)(nPos.x + 16 * (nPos.y + 16 * nPos.z)), chunk));
+						}
+					}
+				}
+			};
+		
+		//visit neighbors
+		propogateSun(glm::ivec3(pos.x-1, pos.y, pos.z), this);
+		propogateSun(glm::ivec3(pos.x+1, pos.y, pos.z), this);
+		propogateSun(glm::ivec3(pos.x, pos.y-1, pos.z), this);
+		propogateSun(glm::ivec3(pos.x, pos.y+1, pos.z), this);
+		propogateSun(glm::ivec3(pos.x, pos.y, pos.z-1), this);
+		propogateSun(glm::ivec3(pos.x, pos.y, pos.z+1), this);
+
+		sunBFSQueue.pop();
+	}
+}
+
 glm::ivec3 Chunk::getWorldCoords(const int& x, const int& y, const int& z) {
     return glm::ivec3(mPos.x * 16 + x,
                       mPos.y * 16 + y,
@@ -162,15 +238,25 @@ unsigned Chunk::getLightLevel(const glm::ivec3 &pos) {
 }
 
 unsigned short Chunk::getLightPacked(const glm::ivec3 &pos) {
-	if (isVoxelSolid(pos.x, pos.y, pos.z)) {
-		return 0x0000;
+	//checking if pos is inside current chunk
+	auto lPos = localPosToLocalPos(mPos, pos); //returns a chunk/local pos pair
+
+	if (lPos.first != mPos) { //if it's not THIS chunk
+		auto chunk = mLinkedWorld.getChunk(lPos.first);
+		if (chunk)
+			return chunk->getLightPacked(lPos.second);
+		else
+			return 0xFFFF;
 	}
-	auto wPos = chunkPosToWorldPos(mPos, pos);
-	if (mLinkedWorld.getHeight(glm::ivec2(wPos.x, wPos.z)) > wPos.y) { //voxel is below ground
-		//std::cout << mLinkedWorld.getHeight(glm::ivec2(pos.x, pos.z)) << ", ";
-		return 0x000A;
-	}
-	return 0x000F;
+	
+	int index = pos.x + 16 * (pos.y + 16 * pos.z);
+
+	return mLighting[index].load();
+}
+
+void Chunk::setLightPacked(const glm::ivec3& pos, const unsigned short& light) {
+	int index = pos.x + 16 * (pos.y + 16 * pos.z);
+	mLighting[index].store(light);
 }
 
 HeightMap* Chunk::getHeightMap() {
