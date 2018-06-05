@@ -92,20 +92,6 @@ void TestScene::init() {
 	handler.getEventSignal(SDL_QUIT       ).connect<Game     , &Game::stop     >(linkedGame);
 	handler.getEventSignal(SDL_MOUSEMOTION).connect<TestScene, &TestScene::look>(this);
 
-	world.voxelInfo.setTextureData(1, Face3D::RIGHT, Orientation2D::UP, 0.0f);
-	world.voxelInfo.setTextureData(1, Face3D::LEFT, Orientation2D::UP, 0.0f);
-	world.voxelInfo.setTextureData(1, Face3D::TOP, Orientation2D::UP, 0.0f);
-	world.voxelInfo.setTextureData(1, Face3D::BOTTOM, Orientation2D::UP, 0.0f);
-	world.voxelInfo.setTextureData(1, Face3D::FRONT, Orientation2D::UP, 0.0f);
-	world.voxelInfo.setTextureData(1, Face3D::BACK, Orientation2D::UP, 0.0f);
-
-	world.voxelInfo.setTextureData(2, Face3D::RIGHT, Orientation2D::UP, 1.0f);
-	world.voxelInfo.setTextureData(2, Face3D::LEFT, Orientation2D::UP, 1.0f);
-	world.voxelInfo.setTextureData(2, Face3D::TOP, Orientation2D::UP, 2.0f);
-	world.voxelInfo.setTextureData(2, Face3D::BOTTOM, Orientation2D::UP, 1.0f);
-	world.voxelInfo.setTextureData(2, Face3D::FRONT, Orientation2D::UP, 1.0f);
-	world.voxelInfo.setTextureData(2, Face3D::BACK, Orientation2D::UP, 1.0f);
-
 
 	world.voxelInfo.setAllTextureIndexes(1, 0);
 	world.voxelInfo.setAllTextureIndexes(2, 1);
@@ -115,9 +101,13 @@ void TestScene::init() {
 	world.voxelInfo.setTransparent(1, false);
 	world.voxelInfo.setTransparent(2, false);
 
+	world.voxelInfo.setEmission(0, 0);
+	world.voxelInfo.setEmission(1, 0xF000);
+	world.voxelInfo.setEmission(2, 0);
+
 	std::cout << std::endl;
 
-	world.queueChunkLoadsAroundPoint(glm::vec3(0.0,0.0,0.0), 16);
+	world.queueChunkLoadsAroundPoint(glm::vec3(0.0,0.0,0.0), 8);
 
 	//world.forceGlobalGeometryUpdate();
 

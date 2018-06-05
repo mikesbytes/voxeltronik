@@ -161,34 +161,34 @@ void Chunk::rebuildLighting() {
 	//FIRST PASS, block out all solid blocks
 	for (short i = 0; i < 4096; ++i) {
 		glm::ivec3 pos(i % 16, (i / 16) % 16,(i / 256)); // get current coord
-		mLighting[i].store(0);
 		auto lightVal = mLinkedWorld.voxelInfo.getEmission(getVoxelType(pos));
 
 		//set sunlighting if at the top of chunk and above the ground
 		if(pos.y == 15 &&
 		   mLinkedWorld.getHeightMap(glm::ivec2(mPos.x, mPos.z))
-		   ->getHeight(glm::ivec2(pos.x, pos.z)) <=
+		   ->getHeight(glm::ivec2(pos.x, pos.z)) <
 		   pos.y + mPos.y * 16)
 		{
 			lightVal = lightVal | 0xF; //max out the sun lighting
 		}
 		mLighting[i].store(lightVal);
-		
+
 		if ((lightVal & 0xF) != 0) {
 			sunBFSQueue.push(std::make_tuple(i,this));
 		}
 
 	}
+
 	//iterate through sunlight
 	while (!sunBFSQueue.empty()) {
 		short index;
 		Chunk* chunk;
-		unsigned short light;
 		std::tie(index, chunk) = sunBFSQueue.front();
-		light = light & 0xF; // so I don't have to remask every time
 		glm::ivec3 pos( index % 16,
 		               (index / 16) % 16,
 		                index / 256);
+
+		unsigned short light;
 		light = chunk->getLightPacked(pos) & 0xF;
 
 		auto propogateSun =
@@ -198,15 +198,19 @@ void Chunk::rebuildLighting() {
 				auto checkPos = localPosToLocalPos(nChunk->getPos(), nPos);
 				nChunk = mLinkedWorld.getChunk(checkPos.first);
 				nPos = checkPos.second;
-				auto newLight = chunk->getLightPacked(nPos) & 0xF;
-				if (!chunk->isVoxelSolid(nPos)) {
+				if (nChunk == nullptr) {
+					return;
+				}
+				auto newLight = nChunk->getLightPacked(nPos) & 0xF;
+				if (!nChunk->isVoxelSolid(nPos)) {
 					if (light >= newLight + 2) {
 						if (straightDown) {
-							chunk->setLightPacked(nPos, (newLight & 0xFFF0) | 0xF);
+							nChunk->setLightPacked(nPos, (newLight & 0xFFF0) | 0xF);
+						} else {
+							nChunk->setLightPacked(nPos, (newLight & 0xFFF0) | light - 1);
 						}
-						chunk->setLightPacked(nPos, (newLight & 0xFFF0) | light - 1);
 						if (light - 1 > 1) {
-							sunBFSQueue.push(std::make_tuple((short)(nPos.x + 16 * (nPos.y + 16 * nPos.z)), chunk));
+							sunBFSQueue.push(std::make_tuple((short)(nPos.x + 16 * (nPos.y + 16 * nPos.z)), nChunk));
 						}
 					}
 				}
