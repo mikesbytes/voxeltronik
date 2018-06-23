@@ -4,6 +4,7 @@
 #include "util/mobileatomic.h"
 
 #include <glm/glm.hpp>
+#include <queue>
 
 namespace vtk {
 
@@ -37,6 +38,10 @@ public:
     unsigned getVoxelType(const unsigned& x, const unsigned& y, const unsigned& z);
 
 	void rebuildLighting();
+	void addLight(const glm::ivec3& pos, const unsigned short& light);
+	void removeLight(const glm::ivec3& pos);
+
+
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
 	unsigned getLightLevel(const glm::ivec3& pos);
 	unsigned short getLightPacked(const glm::ivec3& pos);
@@ -47,9 +52,21 @@ public:
 	glm::ivec3 getPos();
 	World& getWorld();
 
+	//has no protections for out of bounds
+	unsigned short fastGetLightPacked(const glm::ivec3& pos);
 
 protected:
-	typedef std::tuple<short, Chunk*> LightIndexTup;
+
+	void propogateLight();
+	void propogateLightTask();
+
+	//conversion funcs for directly accessing data and lighting
+	short vecToIndex(const glm::ivec3& pos);
+	glm::ivec3 indexToVec(const short& index);
+
+	//index, mask, Chunk* tuple
+	typedef std::tuple<short, unsigned short, Chunk*> LightIndexTup;
+
 	void setQueuedForMeshRebuild(const bool& rebuild = true);
 	bool isQueuedForMeshRebuild();
 
@@ -57,8 +74,15 @@ protected:
 	std::array<util::MobileAtomic<unsigned short>, 4096> mLighting;
     World& mLinkedWorld;
     glm::ivec3 mPos;
+
+	//queue for lighting voxels with BFS
+	std::queue<LightIndexTup> mLightBFSQueue;
+	//queue for removing lights with BFS
+	std::queue<LightIndexTup> mDarkBFSQueue;
+
 	std::atomic<bool> mLoaded;
 	std::atomic<bool> mQueuedForMeshRebuild;
+	std::atomic<bool> mPropogating;
 };
 
 }

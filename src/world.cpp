@@ -115,6 +115,7 @@ bool World::generateChunk(const int& x, const int& y, const int& z) {
 	auto chunkMade = makeChunk(x,y,z);
 	if (chunkMade != nullptr) {
 		terrain.generateChunk(chunkMade);
+		chunkMade->rebuildLighting();
 		//queue this chunk for geometry update
 		queueChunkUpdate(x,y,z);
 
@@ -216,7 +217,6 @@ void World::update() {
 			glm::ivec2 hm_pos;
 			
 			while (mMeshUpdateQueueSoon.try_dequeue(pos)) {
-				getChunk(pos)->rebuildLighting();
 				ChunkMesh* mesh;
 				mChunkMeshes.find(pos, mesh);
 				if (mesh) {
@@ -226,7 +226,7 @@ void World::update() {
 			}
 			
 			while (mMeshUpdateQueue.try_dequeue(pos)) {
-				getChunk(pos)->rebuildLighting();
+				//getChunk(pos)->rebuildLighting();
 				ChunkMesh* mesh;
 				mChunkMeshes.find(pos, mesh);
 				if (mesh) {

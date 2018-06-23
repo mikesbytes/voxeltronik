@@ -45,6 +45,7 @@ void TestScene::init() {
 	tiles.updateTextureAt(0, "res/stone.png");
 	tiles.updateTextureAt(1, "res/dirt.png");
 	tiles.updateTextureAt(2, "res/grass.png");
+	tiles.updateTextureAt(3, "res/test.png");
 
 	//shaders
 	shaders = LoadShaders("res/shaders/voxelvert.vert.glsl", "res/shaders/voxelfrag.frag.glsl");
@@ -86,6 +87,7 @@ void TestScene::init() {
 	handler.setAction("Delete Voxel",  conf->getValue<std::string>("controls.bindings.action.delvoxel",   "Mouse Right"));
 	handler.setAction("Select Type 1", conf->getValue<std::string>("controls.bindings.typesel.type1",     "1"        ));
 	handler.setAction("Select Type 2", conf->getValue<std::string>("controls.bindings.typesel.type2",     "2"        ));
+	handler.setAction("Select Type 3", conf->getValue<std::string>("controls.bindings.typesel.type3",     "3"        ));
 	handler.setAction("Toggle Noclip", conf->getValue<std::string>("controls.bindings.noclip", "V"));
 
 	//set signals for handler
@@ -96,14 +98,18 @@ void TestScene::init() {
 	world.voxelInfo.setAllTextureIndexes(1, 0);
 	world.voxelInfo.setAllTextureIndexes(2, 1);
 	world.voxelInfo.setTextureIndex(2, FaceDirection::TOP, 2);
+	world.voxelInfo.setAllTextureIndexes(3, 3);
 
 	world.voxelInfo.setTransparent(0, true);
 	world.voxelInfo.setTransparent(1, false);
 	world.voxelInfo.setTransparent(2, false);
+	world.voxelInfo.setTransparent(3, false);
+
 
 	world.voxelInfo.setEmission(0, 0);
-	world.voxelInfo.setEmission(1, 0xF000);
+	world.voxelInfo.setEmission(1, 0);
 	world.voxelInfo.setEmission(2, 0);
+	world.voxelInfo.setEmission(3, 0xFFF0);
 
 	std::cout << std::endl;
 
@@ -137,6 +143,7 @@ void TestScene::update(const float& dTime) {
 
 	if (handler.isActionDown("Select Type 1")) voxelType = 1;
 	if (handler.isActionDown("Select Type 2")) voxelType = 2;
+	if (handler.isActionDown("Select Type 3")) voxelType = 3;
 	if (!mNoclipDebounce && handler.isActionDown("Toggle Noclip")) {
 		mNoclipDebounce = true;
 		mNoclip = !mNoclip;

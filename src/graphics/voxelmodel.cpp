@@ -133,15 +133,15 @@ void VoxelModel::getFaceLighting(std::vector<unsigned short>& lighting, const Fa
 		                                      ((b >> 12) & 0xF) +
 		                                      ((c >> 12) & 0xF) +
 		                                      ((d >> 12) & 0xF)) / 4;
-		                avg = (avg << 8) | (((a >> 8) & 0xF) +
+		                avg = (avg << 4) | (((a >> 8) & 0xF) +
 										    ((b >> 8) & 0xF) +
 										    ((c >> 8) & 0xF) +
 										    ((d >> 8) & 0xF)) / 4;
-		                avg = (avg << 8) | (((a >> 4) & 0xF) +
+		                avg = (avg << 4) | (((a >> 4) & 0xF) +
 										    ((b >> 4) & 0xF) +
 										    ((c >> 4) & 0xF) +
 										    ((d >> 4) & 0xF)) / 4;
-		                avg = (avg << 8) | ((a & 0xF) +
+		                avg = (avg << 4) | ((a & 0xF) +
 										    (b & 0xF) +
 										    (c & 0xF) +
 										    (d & 0xF)) / 4;
