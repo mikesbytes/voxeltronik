@@ -291,7 +291,7 @@ unsigned short Chunk::getLightPacked(const glm::ivec3 &pos) {
 	if (lPos.first != mPos) { //if it's not THIS chunk
 		auto chunk = mLinkedWorld.getChunk(lPos.first);
 		if (chunk)
-			return chunk->getLightPacked(lPos.second);
+			return chunk->fastGetLightPacked(lPos.second);
 		else
 			return 0xFFFF;
 	}
@@ -302,7 +302,19 @@ unsigned short Chunk::getLightPacked(const glm::ivec3 &pos) {
 }
 
 void Chunk::setLightPacked(const glm::ivec3& pos, const unsigned short& light) {
+	//checking if pos is inside current chunk
+	auto lPos = localPosToLocalPos(mPos, pos); //returns a chunk/local pos pair
+
+	if (lPos.first != mPos) { //if it's not THIS chunk
+		auto chunk = mLinkedWorld.getChunk(lPos.first);
+		if (chunk)
+			return chunk->setLightPacked(lPos.second, light);
+		else
+			return;
+	}
+	
 	int index = pos.x + 16 * (pos.y + 16 * pos.z);
+
 	mLighting[index].store(light, std::memory_order_release);
 }
 
@@ -357,7 +369,7 @@ void Chunk::propogateLightTask() {
 		mDarkBFSQueue.pop();
 
 		glm::ivec3 pos = indexToVec(index);
-		unsigned short light = chunk->fastGetLightPacked(pos);
+		unsigned short light = chunk->getLightPacked(pos);
 		chunk->setLightPacked(pos, light & (~ mask)); //mask out correct channel
 
 		auto propogateDark =
@@ -368,7 +380,7 @@ void Chunk::propogateLightTask() {
 				nPos = checkPos.second;
 				//return early if chunk doesn't exist or voxel is solid
 				if (nChunk == nullptr || nChunk->isVoxelSolid(nPos)) return;
-				auto newLight = nChunk->getLightPacked(nPos);
+				auto newLight = nChunk->fastGetLightPacked(nPos);
 				if ((newLight & mask) == 0) return;
 				
 				//sunglight (to handle special case with straight down
@@ -396,15 +408,6 @@ void Chunk::propogateLightTask() {
 				} else if (mask == 0x00F0) {
 					mLightBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
 				}
-				/*
-				if (mask == 0xF000 && newLight >> 12 < (light >> 12) + 1) {
-					if (((newLight & mask) >> 12) < ((light & mask) >> 12)) {
-						mDarkBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
-					} else {
-						mLightBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
-					}
-				}
-				*/
 			};
 
 		//visit neighbors
@@ -430,7 +433,7 @@ void Chunk::propogateLightTask() {
 		mLightBFSQueue.pop();
 
 		glm::ivec3 pos = indexToVec(index);
-		unsigned short light = chunk->fastGetLightPacked(pos);
+		unsigned short light = chunk->getLightPacked(pos);
 		//std::cout << light << std::endl;
 		//std::cout << pos.x << "," << pos.y << "," << pos.z << std::endl;
 
@@ -446,21 +449,21 @@ void Chunk::propogateLightTask() {
 
 				//red channel
 				if (mask == 0xF000 && (light >> 12) > (newLight >> 12) + 1) {
-					setLightPacked(nPos, ((newLight & (~ mask)) | (((light >> 12) - 1)) << 12)); //set new light level with proper masking
+					nChunk->setLightPacked(nPos, ((newLight & (~ mask)) | (((light >> 12) - 1)) << 12)); //set new light level with proper masking
 					if (((light & mask) >> 12) - 1 > 1) {
 						mLightBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
 					}
 				}
 				//green channel
 				if (mask == 0x0F00 && ((light >> 8) & 0xF) > ((newLight >> 8) & 0xF) + 1) {
-					setLightPacked(nPos, ((newLight & (~ mask)) | ((((light >> 8) & 0xF) - 1)) << 8)); //set new light level with proper masking
+					nChunk->setLightPacked(nPos, ((newLight & (~ mask)) | ((((light >> 8) & 0xF) - 1)) << 8)); //set new light level with proper masking
 					if (((light & mask) >> 8) - 1 > 1) {
 						mLightBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
 					}
 				}
 				//blue channel
 				if (mask == 0x00F0 && ((light >> 4) & 0xF) > ((newLight >> 4) & 0xF) + 1) {
-					setLightPacked(nPos, ((newLight & (~ mask)) | ((((light >> 4) & 0xF) - 1)) << 4)); //set new light level with proper masking
+					nChunk->setLightPacked(nPos, ((newLight & (~ mask)) | ((((light >> 4) & 0xF) - 1)) << 4)); //set new light level with proper masking
 					if (((light & mask) >> 4) - 1 > 1) {
 						mLightBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
 					}

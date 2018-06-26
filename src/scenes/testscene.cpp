@@ -46,6 +46,7 @@ void TestScene::init() {
 	tiles.updateTextureAt(1, "res/dirt.png");
 	tiles.updateTextureAt(2, "res/grass.png");
 	tiles.updateTextureAt(3, "res/test.png");
+	tiles.updateTextureAt(4, "res/test-blue.png");
 
 	//shaders
 	shaders = LoadShaders("res/shaders/voxelvert.vert.glsl", "res/shaders/voxelfrag.frag.glsl");
@@ -88,6 +89,7 @@ void TestScene::init() {
 	handler.setAction("Select Type 1", conf->getValue<std::string>("controls.bindings.typesel.type1",     "1"        ));
 	handler.setAction("Select Type 2", conf->getValue<std::string>("controls.bindings.typesel.type2",     "2"        ));
 	handler.setAction("Select Type 3", conf->getValue<std::string>("controls.bindings.typesel.type3",     "3"        ));
+	handler.setAction("Select Type 4", conf->getValue<std::string>("controls.bindings.typesel.type4",     "4"        ));
 	handler.setAction("Toggle Noclip", conf->getValue<std::string>("controls.bindings.noclip", "V"));
 
 	//set signals for handler
@@ -99,17 +101,20 @@ void TestScene::init() {
 	world.voxelInfo.setAllTextureIndexes(2, 1);
 	world.voxelInfo.setTextureIndex(2, FaceDirection::TOP, 2);
 	world.voxelInfo.setAllTextureIndexes(3, 3);
+	world.voxelInfo.setAllTextureIndexes(4, 4);
 
 	world.voxelInfo.setTransparent(0, true);
 	world.voxelInfo.setTransparent(1, false);
 	world.voxelInfo.setTransparent(2, false);
 	world.voxelInfo.setTransparent(3, false);
+	world.voxelInfo.setTransparent(4, false);
 
 
 	world.voxelInfo.setEmission(0, 0);
 	world.voxelInfo.setEmission(1, 0);
 	world.voxelInfo.setEmission(2, 0);
-	world.voxelInfo.setEmission(3, 0xFFF0);
+	world.voxelInfo.setEmission(3, 0xF4B0);
+	world.voxelInfo.setEmission(4, 0x00F0);
 
 	std::cout << std::endl;
 
@@ -144,6 +149,7 @@ void TestScene::update(const float& dTime) {
 	if (handler.isActionDown("Select Type 1")) voxelType = 1;
 	if (handler.isActionDown("Select Type 2")) voxelType = 2;
 	if (handler.isActionDown("Select Type 3")) voxelType = 3;
+	if (handler.isActionDown("Select Type 4")) voxelType = 4;
 	if (!mNoclipDebounce && handler.isActionDown("Toggle Noclip")) {
 		mNoclipDebounce = true;
 		mNoclip = !mNoclip;
