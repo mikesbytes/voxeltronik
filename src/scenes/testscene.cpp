@@ -118,7 +118,7 @@ void TestScene::init() {
 
 	std::cout << std::endl;
 
-	world.queueChunkLoadsAroundPoint(glm::vec3(0.0,0.0,0.0), 8);
+	world.queueChunkLoadsAroundPoint(glm::vec3(0.0,0.0,0.0), 20);
 
 	//world.forceGlobalGeometryUpdate();
 
@@ -184,7 +184,7 @@ void TestScene::update(const float& dTime) {
 	float distance = glm::distance(camera.getPosition(), mCamLastLoadPosition);
 	if (distance >= 16.0f) {
 		mCamLastLoadPosition = camera.getPosition();
-		world.queueChunkLoadsAroundPoint(camera.getPosition(), 16);
+		//world.queueChunkLoadsAroundPoint(camera.getPosition(), 16);
 	}
 
 	//player "physics"

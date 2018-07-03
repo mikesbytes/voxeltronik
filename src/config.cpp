@@ -1,21 +1,5 @@
-/*
- * =====================================================================================
- *
- *       Filename:  config.cpp
- *
- *    Description:  Specializations and shit
- *
- *        Version:  1.0
- *        Created:  03/27/2014 10:56:51 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 #include "config.h"
+#include "sol.hpp"
 
 template <>
 std::string Config::getValue<std::string>(const std::string& key, const std::string& fallback) {
@@ -25,3 +9,10 @@ std::string Config::getValue<std::string>(const std::string& key, const std::str
     return fallback;
 }
 
+void Config::registerScriptInterface(sol::state &lua) {
+	lua.new_usertype<Config>("config",
+	                         "load_from_file", &Config::loadConfigFromFile,
+	                         "get_value", &Config::getValue<std::string>,
+	                         "set_value", &Config::setValue<std::string>);
+	                         
+}

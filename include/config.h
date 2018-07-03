@@ -45,6 +45,10 @@ hierarchything {
 #include <vector>
 
 //Config stores values
+namespace sol {
+class state;
+}
+
 class Config {
 public:
     bool loadConfigFromFile(const std::string& fileName) { 
@@ -130,6 +134,8 @@ public:
             std::cout << i.first << " = " << i.second << std::endl;
         }
     }
+
+	static void registerScriptInterface(sol::state& lua);
 
 protected:
     std::map<std::string, std::string> values;

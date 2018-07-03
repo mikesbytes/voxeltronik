@@ -5,6 +5,7 @@
 #include "spdlog/spdlog.h"
 #include "loggersetup.h"
 #include "threadpool.h"
+#include "sol.hpp"
 
 #include <iostream>
 #include <vector>
@@ -29,11 +30,19 @@ int main (int argc, char *argv[])
 	conf->addArgumentRule("-h", "graphics.res.y");
 	conf->loadConfigFromArguments(argc, argv);
 
+	sol::state lua;
+	lua.open_libraries(sol::lib::base, sol::lib::package);
+	vtk::LoggerSetup::registerScriptInterface(lua);
+	Config::registerScriptInterface(lua);
+	lua.script_file("res/init.lua");
+
+	/*
 	vtk::Game game;
 	game.setConfig(conf);
 	game.init();
 	game.setScene(new vtk::TestScene);
 	game.start();
+	*/
 
 	return 0;
 }
