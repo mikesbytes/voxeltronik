@@ -1,22 +1,4 @@
 /*
- * =====================================================================================
- *
- *       Filename:  config.h
- *
- *    Description:  Processes command line arguments and config files in header only library
- *
- *        Version:  1.0
- *        Created:  03/26/2014 09:30:55 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Michael Porter
- *
- * =====================================================================================
- */
-
-/*
-
 EXAMPLE CONFIG:
 
 ;this is a comment
@@ -45,6 +27,8 @@ hierarchything {
 #include <vector>
 
 //Config stores values
+
+//forward declaration
 namespace sol {
 class state;
 }

@@ -1,26 +1,10 @@
-/*
- * =====================================================================================
- *
- *       Filename:  window.cpp
- *
- *    Description:  SDL window wrapper
- *
- *        Version:  1.0
- *        Created:  03/24/2014 11:15:10 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #include "window.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 #include <GL/gl.h>
+
+#include "sol.hpp"
 
 namespace vtk {
 
@@ -66,6 +50,11 @@ void Window::setFOV(const float& angle) {
 
 glm::mat4 Window::getProjectionMatrix() {
     return glm::perspective(glm::radians(fov), (float)getAspect(), 0.1f, 500.0f);
+}
+
+void Window::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<Window>("Window",
+	                         sol::base_classes, sol::bases<RenderTarget>());
 }
 
 }

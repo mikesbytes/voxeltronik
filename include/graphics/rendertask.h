@@ -4,6 +4,10 @@
 
 #pragma once
 
+namespace sol {
+class state;
+}
+
 namespace vtk {
 
 //forward declaration
@@ -20,6 +24,8 @@ public:
 	Drawable& getDrawable();
 	Camera& getCamera();
 	RenderTarget& getRenderTarget();
+
+	static void registerScriptInterface(::sol::state& lua);
 		
 protected:
 	Drawable& mDrawable;

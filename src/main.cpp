@@ -1,5 +1,6 @@
 #include "game.h"
 #include "scenes/testscene.h"
+#include "scenes/scriptscene.h"
 #include "config.h"
 #include "mathplus.h"
 #include "spdlog/spdlog.h"
@@ -14,9 +15,6 @@
 
 int main (int argc, char *argv[])
 {
-	glm::ivec3 test(-14, -18, -18);
-	std::cout << glm::ivec3(test / 16).x << std::endl;
-	
 	vtk::LoggerSetup lSetup;
 	lSetup.setup();
 	spdlog::get("general")->info("Starting Voxeltronik Engine...");
@@ -32,8 +30,22 @@ int main (int argc, char *argv[])
 
 	sol::state lua;
 	lua.open_libraries(sol::lib::base, sol::lib::package);
+
+	lua.new_usertype<glm::mat4>("mat4");
+	lua.new_usertype<glm::vec3>("vec3");
+	lua.new_usertype<glm::ivec3>("ivec3");
+	
 	vtk::LoggerSetup::registerScriptInterface(lua);
 	Config::registerScriptInterface(lua);
+	vtk::Scene::registerScriptInterface(lua);
+	vtk::Game::registerScriptInterface(lua);
+	vtk::Camera::registerScriptInterface(lua);
+	vtk::Drawable::registerScriptInterface(lua);
+	vtk::RenderTarget::registerScriptInterface(lua);
+	vtk::Window::registerScriptInterface(lua);
+	vtk::RenderTask::registerScriptInterface(lua);
+	vtk::Skybox::registerScriptInterface(lua);
+
 	lua.script_file("res/init.lua");
 
 	/*

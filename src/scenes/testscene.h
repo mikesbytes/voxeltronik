@@ -1,22 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  testscene.h
- *
- *    Description:  Scene for testing. It's full of funky bullshit, and should not be
-                    used for real things.
- *
- *        Version:  1.0
- *        Created:  03/24/2014 11:02:55 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #pragma once
 
 #include "scene.h"

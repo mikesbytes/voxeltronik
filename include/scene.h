@@ -1,23 +1,11 @@
-/*
- * =====================================================================================
- *
- *       Filename:  scene.h
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  03/24/2014 04:10:43 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 #pragma once
 
+
 #include <SDL2/SDL.h>
+#include <memory>
+
+#include "sol.hpp"
+
 
 namespace vtk {
 
@@ -26,13 +14,25 @@ class Game;
 class Scene {
 public:
     void link(Game* game);
-    virtual void init() = 0; // Called first time the scene is set
-    virtual void reInit() = 0; // Called when switching from another scene
-    virtual void update(const float& dTime) = 0; //Logic
-    virtual void draw() = 0; //Graphics
+    void init(); // Called first time the scene is set
+    void reInit(); // Called when switching from another scene
+    void update(const float& dTime); //Logic
+    void draw(); //Graphics
 
+	//set lua functions for game stuff
+	void setInitFn(sol::function f);
+	void setReInitFn(sol::function f);
+	void setUpdateFn(sol::function f);
+	void setDrawFn(sol::function f);
 
+	
+	static void registerScriptInterface(sol::state& lua);
+	static std::shared_ptr<Scene> newScene();
 protected:
+	sol::function mInitFn;
+	sol::function mReInitFn;
+	sol::function mUpdateFn;
+	sol::function mDrawFn;
     Game* linkedGame;
 };
 

@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  window.h
- *
- *    Description:  SDL window wrapper
- *
- *        Version:  1.0
- *        Created:  03/24/2014 11:14:49 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 #pragma once
 
 #include <string>
@@ -23,6 +6,10 @@
 #include <glm/glm.hpp>
 
 #include "graphics/rendertarget.h"
+
+namespace sol {
+class state;
+}
 
 namespace vtk {
 
@@ -36,6 +23,8 @@ public:
     void setFOV(const float& angle);
     glm::mat4 getProjectionMatrix();
     SDL_Window* getWindow();
+
+	static void registerScriptInterface(::sol::state& lua);
 
 protected:
     

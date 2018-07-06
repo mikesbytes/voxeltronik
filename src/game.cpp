@@ -1,26 +1,10 @@
-/*
- * =====================================================================================
- *
- *       Filename:  game.cpp
- *
- *    Description:  Game class source
- *
- *        Version:  1.0
- *        Created:  03/23/2014 11:33:25 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #include "game.h"
 #include "loadShader.h"
 #include "graphics/camera.h"
 #include "graphics/glstate.h"
 #include "scene.h"
+#include "scenes/scriptscene.h"
+#include "sol.hpp"
 
 //SPAGHETTI INCLUDES
 #define GLM_FORCE_RADIANS
@@ -113,11 +97,16 @@ void Game::cleanup() {
     SDL_Quit();
 }
 
-void Game::setScene(Scene* scene) {
+void Game::setScene(std::shared_ptr<Scene> scene) {
     activeScene = scene;
     scene->link(this);
     scene->init();
 }
+
+void Game::setScriptScene(ScriptScene *scene) {
+	//setScene((Scene*)scene);
+}
+
 
 void Game::setConfig(Config* conf) {
     this->conf = conf;
@@ -125,6 +114,19 @@ void Game::setConfig(Config* conf) {
 
 Config* Game::getConfig() {
     return conf;
+}
+
+Window& Game::getWindow() {
+	return window;
+}
+
+void Game::registerScriptInterface(sol::state &lua) {
+	lua.new_usertype<Game>("Game",
+	                       "set_config", &Game::setConfig,
+	                       "init", &Game::init,
+	                       "set_scene", &Game::setScene,
+	                       "start", &Game::start,
+	                       "get_window", &Game::getWindow);
 }
 
 };

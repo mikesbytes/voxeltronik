@@ -1,22 +1,6 @@
-/*
- * =====================================================================================
- *
- *       Filename:  camera.cpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  03/24/2014 04:58:22 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 #include "graphics/camera.h"
 #include "window.h"
+#include "sol.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -122,6 +106,21 @@ void Camera::moveRelative(const glm::vec3& offset) {
 void Camera::rotate(const float& x, const float& y) {
     pitchDelta += y;
     yawDelta += x;
+}
+
+void Camera::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<Camera>("Camera",
+	                         "get_view_matrix", &Camera::getViewMatrix,
+	                         "get_angle_matrix", &Camera::getAngleMatrix,
+	                         "get_projection_matrix", &Camera::getProjectionMatrix,
+	                         "update", &Camera::update,
+	                         "set_position", &Camera::setPosition,
+	                         "get_position", &Camera::getPosition,
+	                         "set_aspect_ration", &Camera::setAspectRatio,
+	                         "get_angle_vector", &Camera::getAngleVector,
+	                         "move", &Camera::move,
+	                         "move_relative", &Camera::moveRelative,
+	                         "rotate", &Camera::rotate);
 }
 
 

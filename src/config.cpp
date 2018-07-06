@@ -10,7 +10,7 @@ std::string Config::getValue<std::string>(const std::string& key, const std::str
 }
 
 void Config::registerScriptInterface(sol::state &lua) {
-	lua.new_usertype<Config>("config",
+	lua.new_usertype<Config>("Config",
 	                         "load_from_file", &Config::loadConfigFromFile,
 	                         "get_value", &Config::getValue<std::string>,
 	                         "set_value", &Config::setValue<std::string>);

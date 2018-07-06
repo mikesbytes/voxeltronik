@@ -20,6 +20,10 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
+namespace sol {
+class state;
+}
+
 namespace vtk {
 
   class Window;
@@ -43,6 +47,7 @@ public:
     void moveRelative(const glm::vec3& offset);
     void rotate(const float& x, const float& y);
 
+	static void registerScriptInterface(::sol::state& lua);
 private:
     glm::vec3 up;
     glm::vec3 position;

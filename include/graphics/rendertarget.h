@@ -4,14 +4,20 @@
 
 #pragma once
 
+namespace sol {
+class state;
+}
+
 namespace vtk {
 
 class RenderTarget {
 public:
-	virtual void activate() = 0;
+	virtual void activate() {};
 	double getAspect();
 	int width();
 	int height();
+
+	static void registerScriptInterface(::sol::state& lua);
 protected:
 	int mWidth;
 	int mHeight;

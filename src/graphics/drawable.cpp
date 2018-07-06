@@ -1,4 +1,5 @@
 #include "graphics/drawable.h"
+#include "sol.hpp"
 
 namespace vtk {
 
@@ -12,6 +13,11 @@ void Drawable::setShader(std::shared_ptr<Shader> shader) {
 
 std::shared_ptr<Shader> Drawable::getShader() {
 	return mLinkedShader;
+
+}
+
+void Drawable::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<Drawable>("Drawable");
 }
 
 }

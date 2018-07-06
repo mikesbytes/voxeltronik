@@ -12,6 +12,11 @@
 #include <glm/vec4.hpp>
 #include <glm/vec3.hpp>
 
+//forward declaration
+namespace sol {
+class state;
+}
+
 namespace vtk {
 
 //forward declaration
@@ -31,6 +36,7 @@ public:
 	GLuint loadShader(const std::string& code, const GLenum& shaderType);
 	ShaderUniform getUniform(const std::string& name);
 
+	//static void registerScriptInterface(::sol::state& lua);
 protected:
 	GLuint mShaderID;
 
