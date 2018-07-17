@@ -1,34 +1,46 @@
 #pragma once
 
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <unordered_map>
+#include <vector>
+#include <deque>
+#include <glm/glm.hpp>
+
 #include "voxelutils.h"
 #include "voxelinfo.h"
 #include "voxelmath.h"
 #include "terraingen.h"
 #include "heightmap.h"
 #include "graphics/chunkmesh.h"
+#include "graphics/drawable.h"
+#include "graphics/rendertask.h"
 
 #include "cuckoohash_map.hh"
 #include "concurrentqueue.h"
 
-#include <unordered_map>
-#include <vector>
-#include <deque>
-#include <glm/glm.hpp>
+//forward declarations
+namespace sol {
+class state;
+}
 
 namespace vtk {
 
 class Chunk;
 
-class World {
+class World : public Drawable {
 	friend class Chunk;
 public:
     World();
 
+	//break and place voxels, handles all chunk updating automatically
 	unsigned breakVoxel(const glm::ivec3& pos);
 	bool placeVoxel(const glm::ivec3& pos, const unsigned& id);
 	
     bool isVoxelSolid(const int& x, const int& y, const int& z);
 
+	//sets voxel type. does NOT automatically update ANYTHING, mostly for internal use or writing
+	//youjr own break and place funcs
     bool setVoxelType(const int& x, const int& y, const int& z, const unsigned& type, const bool& updateChunk = false);
 
     unsigned getVoxelType(const glm::ivec3& pos);
@@ -49,11 +61,13 @@ public:
 
 	void queueChunkLoad(const glm::ivec3& pos);
 
-    void draw();
+    void draw(RenderTask& task);
     void update();
 
 
 	void queueChunkLoadsAroundPoint(const glm::vec3& point, const int& chunkRadius);
+
+	static void registerScriptInterface(::sol::state& lua);
 
 	//std::unordered_map<glm::ivec3, Chunk*, ivec3Hash> mChunks;
 	cuckoohash_map<glm::ivec3, Chunk*, ivec3Hash> mChunks; //chunks
@@ -79,6 +93,12 @@ public:
     VoxelMath voxelMath;
     bool rebuildThreadActive;
 	bool mLoadThreadActive;
+
+protected:
+	GLuint mShader;
+	GLuint mViewMat;
+	GLuint mProjMat;
+	GLuint mModelMat;
 };
 
 }

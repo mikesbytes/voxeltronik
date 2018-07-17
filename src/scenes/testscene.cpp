@@ -1,20 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  testscene.cpp
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  03/24/2014 11:06:32 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (),
- *   Organization:
- *
- * =====================================================================================
- */
 #include "testscene.h"
 #include "loadShader.h"
 #include "game.h"
@@ -211,7 +194,7 @@ void TestScene::draw() {
 	glUseProgram(shaders);
 	glUniformMatrix4fv(viewMatUni, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
 	glUniformMatrix4fv(projMatUni, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
-	world.draw();
+	//world.draw();
 
 	glDisable(GL_DEPTH_TEST);
 

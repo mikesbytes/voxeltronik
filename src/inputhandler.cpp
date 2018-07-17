@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  inputhandler.cpp
- *
- *    Description:  Source for inputhandler
- *
- *        Version:  1.0
- *        Created:  03/28/2014 06:19:17 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #include "inputhandler.h"
 #include <iostream>
 namespace vtk {
@@ -24,6 +6,9 @@ void InputHandler::update() {
     while (SDL_PollEvent(&event) ) {
         if (events.find(event.type) != events.end()) {
             events[event.type]();
+        }
+        if (mEventFns.find(event.type) != mEventFns.end()) {
+            mEventFns[event.type]();
         }
     }
     mouseButtons = SDL_GetMouseState(NULL, NULL);
@@ -91,8 +76,20 @@ bool InputHandler::setAction(const std::string& actionName, const std::string& a
     return true;
 }
 
+void InputHandler::setEventFn(const Uint32 &type, sol::function f) {
+	mEventFns[type] = f;
+}
+
 Nano::signal<void()>& InputHandler::getEventSignal(const Uint32& type) {
     return events[type];
 }
 
+void InputHandler::registerScriptInterface(sol::state &lua) {
+	lua.new_usertype<InputHandler>("InputHandler",
+	                               "update", &InputHandler::update,
+	                               "is_action_down", &InputHandler::isActionDown,
+	                               "set_action", &InputHandler::setAction,
+	                               "set_event_fn", &InputHandler::setEventFn);
+	                               
+}
 }

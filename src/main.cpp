@@ -7,6 +7,7 @@
 #include "loggersetup.h"
 #include "threadpool.h"
 #include "sol.hpp"
+#include "scriptsystem.h"
 
 #include <iostream>
 #include <vector>
@@ -22,6 +23,11 @@ int main (int argc, char *argv[])
 
 	vtk::ThreadPool::getInstance().addThreads(2);
 
+
+	vtk::ScriptSystem scriptSys;
+	scriptSys.registerAllInterfaces();
+	scriptSys.runScript("res/init.lua");
+	/*
 	auto conf = new Config;
 	conf->loadConfigFromFile("res/config.conf");
 	conf->addArgumentRule("-w", "graphics.res.x");
@@ -48,7 +54,6 @@ int main (int argc, char *argv[])
 
 	lua.script_file("res/init.lua");
 
-	/*
 	vtk::Game game;
 	game.setConfig(conf);
 	game.init();

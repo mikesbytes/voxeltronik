@@ -116,7 +116,7 @@ void Camera::registerScriptInterface(::sol::state &lua) {
 	                         "update", &Camera::update,
 	                         "set_position", &Camera::setPosition,
 	                         "get_position", &Camera::getPosition,
-	                         "set_aspect_ration", &Camera::setAspectRatio,
+	                         "set_aspect_ratio", &Camera::setAspectRatio,
 	                         "get_angle_vector", &Camera::getAngleVector,
 	                         "move", &Camera::move,
 	                         "move_relative", &Camera::moveRelative,

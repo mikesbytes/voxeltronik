@@ -6,6 +6,10 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+namespace sol {
+class state;
+}
+
 namespace vtk {
 
 enum class Corner2D {
@@ -64,6 +68,7 @@ public:
 
     World* linkedWorld;
 
+	static void registerScriptInterface(::sol::state &lua);
 protected:
 
     std::map<unsigned, VoxelData> voxelDataMap;

@@ -1,24 +1,10 @@
-/*
- * =====================================================================================
- *
- *       Filename:  tileset.h
- *
- *    Description:  Tileset using OpenGL array texture
- *
- *        Version:  1.0
- *        Created:  04/02/2014 10:37:18 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #pragma once
 
 #include <map>
+
+namespace sol {
+class state;
+}
 
 namespace vtk {
 
@@ -33,6 +19,7 @@ public:
     void buildTexture();
     void deleteTexture();
 
+	static void registerScriptInterface(::sol::state& lua);
 protected:
     std::map<std::string, std::string> textureFiles; //filename, texturename
     std::map<std::string, int> textureIndexes; //texturename, index

@@ -1,6 +1,8 @@
 #include "voxelinfo.h"
 #include "world.h"
 
+#include "sol.hpp"
+
 namespace vtk {
 
 void VoxelInfo::pushTexCoordFromWorldCoords(std::vector<float>& data, const glm::ivec3& pos, const Face3D& face, const Corner2D& corner) {
@@ -131,5 +133,12 @@ unsigned short VoxelInfo::getEmission(const unsigned int &id) {
 	return voxelDataMap[id].emission;
 }
 
+void VoxelInfo::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<VoxelInfo>("VoxelInfo",
+	                            "set_all_texture_indexes", &VoxelInfo::setAllTextureIndexes,
+	                            "set_texture_index", &VoxelInfo::setTextureIndex,
+	                            "set_transparent", &VoxelInfo::setTransparent,
+	                            "set_emission", &VoxelInfo::setEmission);
+}
 }
 

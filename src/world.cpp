@@ -1,6 +1,9 @@
 #include "world.h"
 #include "chunk.h"
 #include "threadpool.h"
+#include "sol.hpp"
+#include "graphics/camera.h"
+#include "loadShader.h"
 
 #include <cmath>
 #include <iostream>
@@ -23,6 +26,11 @@ World::World() {
 	voxelMath.linkedWorld = this;
 	rebuildThreadActive = false;
 	mLoadThreadActive = false;
+
+	mShader = LoadShaders("res/shaders/voxel.vert", "res/shaders/voxel.frag");
+	mViewMat = glGetUniformLocation(mShader, "view");
+	mProjMat = glGetUniformLocation(mShader, "proj");
+	mModelMat = glGetUniformLocation(mShader, "model");
 }
 
 unsigned World::breakVoxel(const glm::ivec3& pos) {
@@ -193,7 +201,15 @@ void World::queueChunkLoad(const glm::ivec3 &pos) {
 	mChunkLoadQueue.push_back(pos);
 }
 
-void World::draw() {
+void World::draw(RenderTask& task) {
+	auto camera = task.getCamera();
+	auto viewMat = camera.getViewMatrix();
+	auto projMat = camera.getProjectionMatrix();
+
+	glUseProgram(mShader);
+	glUniformMatrix4fv(mViewMat, 1, GL_FALSE, glm::value_ptr(viewMat));
+	glUniformMatrix4fv(mProjMat, 1, GL_FALSE, glm::value_ptr(projMat));
+	
 	auto lt = mChunkMeshes.lock_table();
 
 	//naively iterate through all chunks and draw them
@@ -203,7 +219,7 @@ void World::draw() {
 		                                                           (float)i.first.z * 16
 		                                                           ));
 
-		glUniformMatrix4fv(modelMatUni, 1, GL_FALSE, glm::value_ptr(modelMat));
+		glUniformMatrix4fv(mModelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
 		i.second->draw();
 	}
 }
@@ -247,6 +263,7 @@ void World::update() {
 			while (!mChunkLoadQueue.empty()) {
 				auto& pos = mChunkLoadQueue.back();
 				generateChunk(pos.x, pos.y, pos.z);
+				std::cout << "whack" << std::endl;
 				mChunkLoadQueue.pop_back();
 			}
 			mLoadThreadActive = false;
@@ -268,6 +285,14 @@ void World::queueChunkLoadsAroundPoint(const glm::vec3 &point, const int &chunkR
 			}
 		}
 	}
+}
+
+void World::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<World>("World",
+	                        sol::base_classes, sol::bases<Drawable>(),
+	                        "voxel_info", &World::voxelInfo,
+	                        "update", &World::update,
+	                        "queue_chunk_loads_around_point", &World::queueChunkLoadsAroundPoint);
 }
 
 }

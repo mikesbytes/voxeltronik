@@ -54,6 +54,7 @@ glm::mat4 Window::getProjectionMatrix() {
 
 void Window::registerScriptInterface(::sol::state &lua) {
 	lua.new_usertype<Window>("Window",
+	                         "get_aspect_ratio", &Window::getAspect,
 	                         sol::base_classes, sol::bases<RenderTarget>());
 }
 

@@ -126,6 +126,7 @@ void Game::registerScriptInterface(sol::state &lua) {
 	                       "init", &Game::init,
 	                       "set_scene", &Game::setScene,
 	                       "start", &Game::start,
+	                       "stop", &Game::stop,
 	                       "get_window", &Game::getWindow);
 }
 

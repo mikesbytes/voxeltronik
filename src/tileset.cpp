@@ -1,22 +1,6 @@
-/*
- * =====================================================================================
- *
- *       Filename:  tileset.cpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  04/02/2014 11:21:50 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
 #include "tileset.h"
 #include "bitmap.h"
+#include "sol.hpp"
 
 #include <SDL2/SDL_opengl.h>
 #include <iostream>
@@ -76,6 +60,14 @@ void Tileset::buildTexture() {
 
 void Tileset::deleteTexture() {
 
+}
+
+void Tileset::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<Tileset>("Tileset",
+	                          "bind", &Tileset::bind,
+	                          "update_texture_at", &Tileset::updateTextureAt,
+	                          "get_texture_index", &Tileset::getTextureIndex,
+	                          "build_texture", &Tileset::buildTexture);
 }
 
 }
