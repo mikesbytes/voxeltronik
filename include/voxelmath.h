@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  voxelmath.h
- *
- *    Description:  Voxel math class used in world
- *
- *        Version:  1.0
- *        Created:  04/07/2014 03:44:24 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #pragma once
 
 

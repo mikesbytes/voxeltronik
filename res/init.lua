@@ -28,9 +28,18 @@ function init_scene()
    handler:set_event_fn(SDL_EventType.SDL_MOUSEMOTION, look)
 
    handler:set_action("Move Forward", "W")
+   handler:set_action("Move Backward", "S")
+   handler:set_action("Move Left", "A")
+   handler:set_action("Move Right", "D")
+   handler:set_action("Move Up", "Space")
+   handler:set_action("Move Down", "Left Ctrl")
+
+   handler:set_action("Break Voxel", "Mouse Left")
+   handler:set_action("Place Voxel", "Mouse Right")
 
    sdl_relative_mouse_mode(1)
    camera:set_aspect_ratio(n_game:get_window():get_aspect_ratio())
+   camera:set_position(vec3.new(0,70,0))
    skybox_task = RenderTask.new(skybox, camera, n_game:get_window())
    world_task = RenderTask.new(world, camera, n_game:get_window())
 
@@ -55,6 +64,12 @@ function init_scene()
    world.voxel_info:set_all_texture_indexes(3, 3)
    world.voxel_info:set_all_texture_indexes(4, 4)
 
+   world.voxel_info:set_emission(0, 0)
+   world.voxel_info:set_emission(1, 0)
+   world.voxel_info:set_emission(2, 0)
+   world.voxel_info:set_emission(3, 0xF4B0)
+   world.voxel_info:set_emission(4, 0x00F0)
+   
    world:queue_chunk_loads_around_point(vec3.new(0,0,0), 16)
 end
 
@@ -72,6 +87,37 @@ function update(delta) -- called every frame
    if handler:is_action_down("Move Forward") then
 	  camera:move_relative(vec3.new(0,0,1 * delta * 16));
    end
+   if handler:is_action_down("Move Backward") then
+	  camera:move_relative(vec3.new(0,0,-1 * delta * 16));
+   end
+   if handler:is_action_down("Move Left") then
+	  camera:move_relative(vec3.new(-1 * delta * 16, 0, 0));
+   end
+   if handler:is_action_down("Move Right") then
+	  camera:move_relative(vec3.new(1 * delta * 16,0,0));
+   end
+   if handler:is_action_down("Move Up") then
+	  camera:move_relative(vec3.new(0, 1 * delta * 16,0));
+   end
+   if handler:is_action_down("Move Down") then
+	  camera:move_relative(vec3.new(0, -1 * delta * 16,0));
+   end
+
+   if handler:is_action_down("Break Voxel") then
+	  raycast = RayCast.new(world)
+	  success, h_p, h_n = raycast:cast(camera:get_position(), camera:get_angle_vector(), 10)
+	  if success then
+		 world:break_voxel(ivec3.new(h_p.x, h_p.y, h_p.z))
+	  end
+   end
+   if handler:is_action_down("Place Voxel") then
+	  raycast = RayCast.new(world)
+	  success, h_p, h_n = raycast:cast(camera:get_position(), camera:get_angle_vector(), 10)
+	  if success then
+		 world:place_voxel(ivec3.new(h_p.x + h_n.x, h_p.y + h_n.y, h_p.z + h_n.z), 1)
+	  end
+   end
+   
 end
 
 function draw()

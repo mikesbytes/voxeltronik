@@ -15,6 +15,7 @@
 #include "voxelutils.h"
 #include "voxelinfo.h"
 #include "world.h"
+#include "raycast.h"
 
 
 namespace vtk {
@@ -65,6 +66,7 @@ void ScriptSystem::registerAllInterfaces() {
 	vtk::Tileset::registerScriptInterface(mLua);
 	vtk::VoxelInfo::registerScriptInterface(mLua);
 	vtk::World::registerScriptInterface(mLua);
+	RayCast::registerScriptInterface(mLua);
 
 	//utilities
 	mLua["FaceDirection"] = mLua.create_table_with("TOP", FaceDirection::TOP,

@@ -263,7 +263,6 @@ void World::update() {
 			while (!mChunkLoadQueue.empty()) {
 				auto& pos = mChunkLoadQueue.back();
 				generateChunk(pos.x, pos.y, pos.z);
-				std::cout << "whack" << std::endl;
 				mChunkLoadQueue.pop_back();
 			}
 			mLoadThreadActive = false;
@@ -292,7 +291,9 @@ void World::registerScriptInterface(::sol::state &lua) {
 	                        sol::base_classes, sol::bases<Drawable>(),
 	                        "voxel_info", &World::voxelInfo,
 	                        "update", &World::update,
-	                        "queue_chunk_loads_around_point", &World::queueChunkLoadsAroundPoint);
+	                        "queue_chunk_loads_around_point", &World::queueChunkLoadsAroundPoint,
+	                        "break_voxel", &World::breakVoxel,
+	                        "place_voxel", &World::placeVoxel);
 }
 
 }

@@ -1,16 +1,24 @@
-#include "voxelmath.h"
+#include "raycast.h"
+
 #include "world.h"
 #include "mathplus.h"
-
-#include <cmath>
-#include <iostream>
+#include "sol.hpp"
 
 namespace vtk {
 
-void VoxelMath::rayCast(glm::vec3& hitPos, glm::vec3& hitNormal, bool& success, 
-                        const glm::vec3& origin, const glm::vec3& direction, const float& radius) {
+RayCast::RayCast(World& world) :
+	mWorld(world)
+{
 
-    glm::vec3 adjustedOrigin = origin * linkedWorld->voxelSize;
+}
+
+std::tuple<bool, glm::vec3, glm::vec3> RayCast::cast(const glm::vec3& origin, const glm::vec3& direction, const float& radius) {
+	bool success;
+	glm::vec3 hitPos;
+	glm::vec3 hitNormal;
+
+
+    glm::vec3 adjustedOrigin = origin * mWorld.voxelSize;
     glm::vec3 voxelLoc(floor(adjustedOrigin.x),
                        floor(adjustedOrigin.y),
                        floor(adjustedOrigin.z));
@@ -31,7 +39,7 @@ void VoxelMath::rayCast(glm::vec3& hitPos, glm::vec3& hitNormal, bool& success,
 
     if (direction.x == 0 && direction.y == 0 && direction.z == 0) {
         success = false;
-        return;
+        return std::make_tuple(success,hitPos,hitNormal);
     }
 
     while (true) {
@@ -93,19 +101,19 @@ void VoxelMath::rayCast(glm::vec3& hitPos, glm::vec3& hitNormal, bool& success,
             }
         }
 
-        if (linkedWorld->isVoxelSolid((int)voxelLoc.x, (int)voxelLoc.y, (int)voxelLoc.z)) {
+        if (mWorld.isVoxelSolid((int)voxelLoc.x, (int)voxelLoc.y, (int)voxelLoc.z)) {
             success = true;
             hitPos = voxelLoc;
             break;
         }
     }
-    
+	return std::make_tuple(success,hitPos,hitNormal);
 }
 
-iPos VoxelMath::getChunkContaining(const int& x, const int& y, const int& z) {
-    return std::make_tuple(floor((float)x / (float)linkedWorld->chunkSize), 
-                           floor((float)y / (float)linkedWorld->chunkSize), 
-                           floor((float)z / (float)linkedWorld->chunkSize));
+void RayCast::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<RayCast>("RayCast",
+	                          sol::constructors<RayCast(World&)>(),
+	                          "cast", &RayCast::cast);
 }
 
 }
