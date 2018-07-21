@@ -2,7 +2,13 @@
 
 #include <string>
 
+#include "nanovg.h"
 #include "sol.hpp"
+
+namespace sol {
+template <>
+struct is_automagical<NVGcontext> : std::false_type {};
+}
 
 namespace vtk {
 

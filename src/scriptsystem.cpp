@@ -17,8 +17,33 @@
 #include "world.h"
 #include "raycast.h"
 
+#include "nanovg.h"
+#define NANOVG_GL3_IMPLEMENTATION
+#include "nanovg_gl.h"
+
+#include <GL/glew.h>
+#include <GL/gl.h>
 
 namespace vtk {
+
+struct WrappedNVGcontext {
+	std::unique_ptr<NVGcontext> ctx;
+};
+
+struct NVGDeleter {
+	void operator()( NVGcontext* nvgcontext ) {
+		     nvgDeleteGL3(nvgcontext);
+    }
+};
+
+template <typename T>
+void freak_out_if_called(T*) {
+    assert("YOU SCREWED UP, FAM");
+}
+
+NVGcontext* createNVGcontext() {
+	return nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
+}
 
 ScriptSystem::ScriptSystem() {
 	mLua.open_libraries(sol::lib::base, sol::lib::package);
@@ -34,10 +59,15 @@ void ScriptSystem::registerAllInterfaces() {
 	                             "z", &glm::vec3::z
 	                             );
 	mLua.new_usertype<glm::ivec3>("ivec3",
-	                              sol::constructors<glm::ivec3(), glm::ivec3(int, int, int)>(),
+	                              sol::constructors<glm::ivec3(), glm::ivec3(int, int, int), glm::ivec3(glm::vec3)>(),
 								"x", &glm::ivec3::x,
 								"y", &glm::ivec3::y,
 								"z", &glm::ivec3::z
+								);
+	mLua.new_usertype<glm::ivec2>("ivec2",
+	                              sol::constructors<glm::ivec2(), glm::ivec2(int, int)>(),
+								"x", &glm::ivec2::x,
+								"y", &glm::ivec2::y
 								);
 
 	//SDL functions
@@ -75,6 +105,36 @@ void ScriptSystem::registerAllInterfaces() {
 	                                               "SOUTH", FaceDirection::SOUTH,
 	                                               "EAST", FaceDirection::EAST,
 	                                               "WEST", FaceDirection::WEST);
+	
+	//nanovg
+	auto nvgTable = mLua.create_named_table("NVG");
+	nvgTable.set_function(	
+	                      "create", [](){return std::unique_ptr<NVGcontext, NVGDeleter>
+			                      (nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES));}
+		);
+	nvgTable.set_function("create_font", &nvgCreateFont);
+	nvgTable.set_function("rgba", &nvgRGBA);
+	nvgTable.set_function("begin_frame", &nvgBeginFrame);
+	nvgTable.set_function("font_size", &nvgFontSize);
+	nvgTable.set_function("font_face", &nvgFontFace);
+	nvgTable.set_function("fill_color", &nvgFillColor);
+	nvgTable.set_function("text", [](NVGcontext* vg, const float& x, const float& y, const std::string& text){
+		                              nvgText(vg, x, y, text.data(), NULL);});
+	nvgTable.set_function("begin_path", &nvgBeginPath);
+	nvgTable.set_function("rect", &nvgRect);
+	nvgTable.set_function("fill", &nvgFill);
+	nvgTable.set_function("end_frame", &nvgEndFrame);
+
+	//TODO: nanovg metatable madness
+
+	//OpenGL
+	mLua["GL"] = mLua.create_table_with("CULL_FACE", GL_CULL_FACE,
+	                                    "DEPTH_TEST", GL_DEPTH_TEST,
+	                                    "CW", GL_CW,
+	                                    "CCW", GL_CCW);
+	sol::table glTable = mLua["GL"];
+	glTable.set_function("enable", &glEnable);
+	glTable.set_function("front_face", &glFrontFace);
 }
 
 void ScriptSystem::runScript(const std::string &fileName) {

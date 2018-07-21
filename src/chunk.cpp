@@ -277,13 +277,6 @@ glm::ivec3 Chunk::getWorldCoords(const int& x, const int& y, const int& z) {
                       mPos.z * 16 + z);
 }
 
-unsigned Chunk::getLightLevel(const glm::ivec3 &pos) {
-	if (isVoxelSolid(pos.x, pos.y, pos.z)) {
-		return 0;
-	}
-	return 15;
-}
-
 unsigned short Chunk::getLightPacked(const glm::ivec3 &pos) {
 	//checking if pos is inside current chunk
 	auto lPos = localPosToLocalPos(mPos, pos); //returns a chunk/local pos pair
@@ -316,6 +309,14 @@ void Chunk::setLightPacked(const glm::ivec3& pos, const unsigned short& light) {
 	int index = pos.x + 16 * (pos.y + 16 * pos.z);
 
 	mLighting[index].store(light, std::memory_order_release);
+}
+
+int Chunk::getLightLevel(const glm::ivec3& pos) {
+	auto light = getLightPacked(pos);
+	int lightLevel = std::max(light >> 12, (light >> 8) & 0xF);
+	lightLevel = std::max(lightLevel, (light >> 4) & 0xF);
+	lightLevel = std::max(lightLevel, light & 0xF);
+	return lightLevel;
 }
 
 HeightMap* Chunk::getHeightMap() {
@@ -384,6 +385,7 @@ void Chunk::propogateLightTask() {
 				if ((newLight & mask) == 0) return;
 				
 				//sunglight (to handle special case with straight down
+				//if newLight is less than light or (old pos is higher than new pos and light == 15)
 				if (mask == 0x000F && ((newLight & 0xF) < (light & 0xF) || (pos.y + chunk->getPos().y * 16 > nPos.y + nChunk->getPos().y * 16 && (light & 0xF) == 0xF))) {
 					mDarkBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
 				} else if (mask == 0x000F) {
@@ -470,24 +472,26 @@ void Chunk::propogateLightTask() {
 				}
 				
 				//sunglight channel
-				if (mask == 0x000F && (light & 0xF) > (newLight & 0xF) + 1) {
+				if (mask == 0x000F) {
 					//handle straight down propogation
+					//if pos is higher than nPos && light level == 15
 					if (pos.y + chunk->getPos().y * 16 > nPos.y + nChunk->getPos().y * 16 && (light & 0xF) == 0xF) {
 						nChunk->setLightPacked(nPos, newLight | 0xF);
-					} else {
-						nChunk->setLightPacked(nPos, (((newLight & (~ mask)) | (light & 0xF)) - 1));
-					}
- 					if ((light & mask) - 1 > 1) {
 						mLightBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
+					} else if ((light & 0xF) > (newLight & 0xF) + 1) {
+						nChunk->setLightPacked(nPos, (((newLight & (~ mask)) | (light & 0xF)) - 1));
+						if ((light & mask) - 1 > 1) {
+							mLightBFSQueue.push(std::make_tuple(vecToIndex(nPos), mask, nChunk));
+						}
 					}
 				}
 			};
 
 		//visit neighbors
-		propogateLight(glm::ivec3(pos.x-1, pos.y, pos.z), chunk);
-		propogateLight(glm::ivec3(pos.x+1, pos.y, pos.z), chunk);
 		propogateLight(glm::ivec3(pos.x, pos.y-1, pos.z), chunk);
 		propogateLight(glm::ivec3(pos.x, pos.y+1, pos.z), chunk);
+		propogateLight(glm::ivec3(pos.x-1, pos.y, pos.z), chunk);
+		propogateLight(glm::ivec3(pos.x+1, pos.y, pos.z), chunk);
 		propogateLight(glm::ivec3(pos.x, pos.y, pos.z-1), chunk);
 		propogateLight(glm::ivec3(pos.x, pos.y, pos.z+1), chunk);
 	}

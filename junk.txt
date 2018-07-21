@@ -1,0 +1,220 @@
+[  2%] Building CXX object CMakeFiles/vtk.dir/src/scriptsystem.cpp.o
+/home/user/dev/voxeltronik/src/scriptsystem.cpp: In member function ‘void vtk::ScriptSystem::registerAllInterfaces()’:
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:100:1: error: expected ‘;’ before ‘void’
+ void ScriptSystem::runScript(const std::string &fileName) {
+ ^
+/home/user/dev/voxeltronik/src/scriptsystem.cpp: At global scope:
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:104:1: error: expected ‘}’ at end of input
+ }
+ ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:30:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/usertype.hpp: In instantiation of ‘sol::usertype<T>::usertype(sol::detail::verified_tag, Args&& ...) [with Args = {const sol::no_construction&}; T = NVGcontext]’:
+/home/user/dev/voxeltronik/external/sol2/sol/usertype.hpp:53:190:   required from ‘sol::usertype<T>::usertype(sol::detail::check_destructor_tag, Args&& ...) [with Args = {const sol::no_construction&}; T = NVGcontext]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype.hpp:59:211:   required from ‘sol::usertype<T>::usertype(Args&& ...) [with Args = {const sol::no_construction&}; T = NVGcontext]’
+/home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:383:53:   required from ‘sol::basic_table_core<<anonymous>, T>& sol::basic_table_core<<anonymous>, T>::new_usertype(const string&, Args&& ...) [with Class = NVGcontext; Args = {const sol::no_construction&}; bool top_level = true; base_type = sol::basic_reference<false>; std::__cxx11::string = std::__cxx11::basic_string<char>]’
+/home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:533:4:   required from ‘sol::state_view& sol::state_view::new_usertype(const string&, Args&& ...) [with Class = NVGcontext; Args = {const sol::no_construction&}; std::__cxx11::string = std::__cxx11::basic_string<char>]’
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:85:51:   required from here
+/home/user/dev/voxeltronik/external/sol2/sol/usertype.hpp:43:4: error: static assertion failed: this type does not have an explicit destructor declared; please pass a custom destructor function wrapped in sol::destruct, especially if the type does not have an accessible (private) destructor
+    static_assert(detail::has_destructor<Args...>::value, "this type does not have an explicit destructor declared; please pass a custom destructor function wrapped in sol::destruct, especially if the type does not have an accessible (private) destructor");
+    ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/stack_check.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/stack.hpp:30,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/function.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/stack_check_unqualified.hpp: In instantiation of ‘static bool sol::stack::checker<T, (sol::type)3, typename std::enable_if<std::is_integral<_Tp>::value, void>::type>::check(lua_State*, int, Handler&&, sol::stack::record&) [with Handler = int (&)(lua_State*, int, sol::type, sol::type, const char*) noexcept; T = int; lua_State = lua_State]’:
+/home/user/dev/voxeltronik/external/sol2/sol/stack_core.hpp:714:69:   required from ‘bool sol::stack::check(lua_State*, int, Handler&&, sol::stack::record&) [with T = int; Handler = int (&)(lua_State*, int, sol::type, sol::type, const char*) noexcept; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/stack_core.hpp:853:26:   required from ‘static bool sol::stack::stack_detail::check_types<b>::check(sol::types<Base, Args ...>, lua_State*, int, Handler&&, sol::stack::record&) [with T = int; Args = {int, int}; Handler = int (&)(lua_State*, int, sol::type, sol::type, const char*) noexcept; bool b = true; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/call.hpp:147:9:   required from ‘int sol::call_detail::overload_detail::overload_match_arity(sol::types<Arg, Args ...>, std::index_sequence<I, In ...>, std::index_sequence<Is ...>, Match&&, lua_State*, int, int, Args&& ...) [with Fx = void(int, int, int); Fxs = {}; long unsigned int I = 1ul; long unsigned int ...In = {}; long unsigned int ...M = {}; Match = sol::call_detail::constructor_match<glm::tvec3<int, (glm::precision)0u>, false, true>; Args = {}; std::index_sequence<I, In ...> = std::integer_sequence<long unsigned int, 1ul>; std::index_sequence<Is ...> = std::integer_sequence<long unsigned int>; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/call.hpp:180:33:   required from ‘int sol::call_detail::overload_detail::overload_match_arity_single(sol::types<Fx, Fx1, Fxs ...>, std::index_sequence<I, I1, In ...>, std::index_sequence<M ...>, Match&&, lua_State*, int, int, Args&& ...) [with Fx = void(); Fx1 = void(int, int, int); Fxs = {}; long unsigned int I = 0ul; long unsigned int I1 = 1ul; long unsigned int ...In = {}; long unsigned int ...M = {}; Match = sol::call_detail::constructor_match<glm::tvec3<int, (glm::precision)0u>, false, true>; Args = {}; std::index_sequence<I, I1, In ...> = std::integer_sequence<long unsigned int, 0ul, 1ul>; std::index_sequence<M ...> = std::integer_sequence<long unsigned int>; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/call.hpp:195:55:   required from ‘int sol::call_detail::overload_match_arity(Match&&, lua_State*, int, int, Args&& ...) [with Functions = {void(), void(int, int, int)}; Match = sol::call_detail::constructor_match<glm::tvec3<int, (glm::precision)0u>, false, true>; Args = {}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/call.hpp:207:75:   [ skipping 8 instantiation contexts, use -ftemplate-backtrace-limit=0 to disable ]
+/home/user/dev/voxeltronik/external/sol2/sol/usertype.hpp:48:87:   required from ‘sol::usertype<T>::usertype(sol::detail::add_destructor_tag, Args&& ...) [with Args = {const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[4], sol::constructor_list<glm::tvec3<int, (glm::precision)0u>(), glm::tvec3<int, (glm::precision)0u>(int, int, int)>&}; T = glm::tvec3<int, (glm::precision)0u>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype.hpp:53:190:   required from ‘sol::usertype<T>::usertype(sol::detail::check_destructor_tag, Args&& ...) [with Args = {const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[4], sol::constructor_list<glm::tvec3<int, (glm::precision)0u>(), glm::tvec3<int, (glm::precision)0u>(int, int, int)>&}; T = glm::tvec3<int, (glm::precision)0u>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype.hpp:64:97:   required from ‘sol::usertype<T>::usertype(sol::constructor_list<Lists ...>, Args&& ...) [with Args = {const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*}; CArgs = {glm::tvec3<int, (glm::precision)0u>(), glm::tvec3<int, (glm::precision)0u>(int, int, int)}; T = glm::tvec3<int, (glm::precision)0u>]’
+/home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:396:59:   required from ‘sol::basic_table_core<<anonymous>, T>& sol::basic_table_core<<anonymous>, T>::new_usertype(const string&, sol::constructor_list<Lists ...>, Args&& ...) [with Class = glm::tvec3<int, (glm::precision)0u>; CArgs = {glm::tvec3<int, (glm::precision)0u>(), glm::tvec3<int, (glm::precision)0u>(int, int, int)}; Args = {const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*}; bool top_level = true; base_type = sol::basic_reference<false>; std::__cxx11::string = std::__cxx11::basic_string<char>]’
+/home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:545:4:   required from ‘sol::state_view& sol::state_view::new_usertype(const string&, sol::constructor_list<Args ...>, Args&& ...) [with Class = glm::tvec3<int, (glm::precision)0u>; CArgs = {glm::tvec3<int, (glm::precision)0u>(), glm::tvec3<int, (glm::precision)0u>(int, int, int)}; Args = {const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*, const char (&)[2], int glm::tvec3<int, (glm::precision)0u>::*}; std::__cxx11::string = std::__cxx11::basic_string<char>]’
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:45:9:   required from here
+/home/user/dev/voxeltronik/external/sol2/sol/stack_check_unqualified.hpp:143:21: warning: unused variable ‘v’ [-Wunused-variable]
+    const lua_Number v = lua_tonumberx(L, index, &isnum);
+                     ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp: In substitution of ‘template<class T, class U> using supports_op_less = decltype (sol::meta::meta_detail::supports_op_less_test(declval<T&>(), declval<U&>())) [with T = NVGcontext; U = NVGcontext]’:
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_core.hpp:216:76:   required from ‘void sol::usertype_detail::insert_default_registrations(std::true_type, Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&; std::true_type = std::integral_constant<bool, true>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_core.hpp:244:35:   required from ‘void sol::usertype_detail::insert_default_registrations(Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:445:52:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:722:5:   required from ‘static int sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::push(lua_State*, sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t&&) [with T = NVGcontext; long unsigned int ...I = {}; Args = {const sol::no_construction&}; lua_State = lua_State; sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>]’
+/home/user/dev/voxeltronik/external/sol2/sol/stack_core.hpp:666:99:   required from ‘int sol::stack::push(lua_State*, T&&, Args&& ...) [with T = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>; Args = {}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:673:22:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::push_um(lua_State*) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:104:1:   required from here
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:514:71: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_op_less = decltype(meta_detail::supports_op_less_test(std::declval<T&>(), std::declval<U&>()));
+                                                                       ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:514:71: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_op_less = decltype(meta_detail::supports_op_less_test(std::declval<T&>(), std::declval<U&>()));
+                                                                       ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp: In substitution of ‘template<class T, class U> using supports_op_less_equal = decltype (sol::meta::meta_detail::supports_op_less_equal_test(declval<T&>(), declval<U&>())) [with T = NVGcontext; U = NVGcontext]’:
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_core.hpp:220:88:   required from ‘void sol::usertype_detail::insert_default_registrations(std::true_type, Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&; std::true_type = std::integral_constant<bool, true>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_core.hpp:244:35:   required from ‘void sol::usertype_detail::insert_default_registrations(Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:445:52:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:722:5:   required from ‘static int sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::push(lua_State*, sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t&&) [with T = NVGcontext; long unsigned int ...I = {}; Args = {const sol::no_construction&}; lua_State = lua_State; sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>]’
+/home/user/dev/voxeltronik/external/sol2/sol/stack_core.hpp:666:99:   required from ‘int sol::stack::push(lua_State*, T&&, Args&& ...) [with T = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>; Args = {}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:673:22:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::push_um(lua_State*) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:104:1:   required from here
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:518:83: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_op_less_equal = decltype(meta_detail::supports_op_less_equal_test(std::declval<T&>(), std::declval<U&>()));
+                                                                                   ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:518:83: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_op_less_equal = decltype(meta_detail::supports_op_less_equal_test(std::declval<T&>(), std::declval<U&>()));
+                                                                                   ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp: In instantiation of ‘void sol::usertype_detail::insert_default_registrations(std::true_type, Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&; std::true_type = std::integral_constant<bool, true>]’:
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_core.hpp:244:35:   required from ‘void sol::usertype_detail::insert_default_registrations(Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:445:52:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:722:5:   required from ‘static int sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::push(lua_State*, sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t&&) [with T = NVGcontext; long unsigned int ...I = {}; Args = {const sol::no_construction&}; lua_State = lua_State; sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>]’
+/home/user/dev/voxeltronik/external/sol2/sol/stack_core.hpp:666:99:   required from ‘int sol::stack::push(lua_State*, T&&, Args&& ...) [with T = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>; Args = {}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:673:22:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::push_um(lua_State*) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:104:1:   required from here
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:516:73: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_op_equal = decltype(meta_detail::supports_op_equal_test(std::declval<T&>(), std::declval<U&>()));
+                                                                         ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:516:73: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_op_equal = decltype(meta_detail::supports_op_equal_test(std::declval<T&>(), std::declval<U&>()));
+                                                                         ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp: In instantiation of ‘struct sol::is_to_stringable<NVGcontext>’:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:132:69:   required by substitution of ‘template<class Condition, class Then, class Else> using condition = std::conditional_t<Condition:: value, Then, Else> [with Condition = sol::is_to_stringable<NVGcontext>; Then = sol::meta::all<>; Else = std::integral_constant<bool, false>]’
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:138:10:   required from ‘struct sol::meta::all<sol::is_to_stringable<NVGcontext> >’
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:129:23:   required by substitution of ‘template<class T, class Supports, class Regs, typename std::enable_if<std::integral_constant<bool, (! sol::meta::all<Supports>::value)>::value, sol::meta::enable_t>::type <anonymous> > void sol::usertype_detail::make_to_string_op(Regs&, int&) [with T = NVGcontext; Supports = sol::is_to_stringable<NVGcontext>; Regs = std::array<luaL_Reg, 32ul>; typename std::enable_if<std::integral_constant<bool, (! sol::meta::all<Supports>::value)>::value, sol::meta::enable_t>::type <anonymous> = <missing>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_core.hpp:235:63:   required from ‘void sol::usertype_detail::insert_default_registrations(std::true_type, Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&; std::true_type = std::integral_constant<bool, true>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_core.hpp:244:35:   required from ‘void sol::usertype_detail::insert_default_registrations(Regs&, int&, Fx&&) [with T = NVGcontext; Regs = std::array<luaL_Reg, 32ul>; Fx = sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]::<lambda(sol::meta_function)>&]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:445:52:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::finish_regs(sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t&, int&) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::regs_t = std::array<luaL_Reg, 32ul>]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:722:5:   required from ‘static int sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::push(lua_State*, sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t&&) [with T = NVGcontext; long unsigned int ...I = {}; Args = {const sol::no_construction&}; lua_State = lua_State; sol::stack::pusher<sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...> >::umt_t = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>]’
+/home/user/dev/voxeltronik/external/sol2/sol/stack_core.hpp:666:99:   required from ‘int sol::stack::push(lua_State*, T&&, Args&& ...) [with T = sol::usertype_metatable<NVGcontext, std::integer_sequence<long unsigned int>, const sol::no_construction&>; Args = {}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/external/sol2/sol/usertype_metatable.hpp:673:22:   required from ‘int sol::usertype_metatable<T, std::integer_sequence<long unsigned int, I ...>, Tn ...>::push_um(lua_State*) [with T = NVGcontext; long unsigned int ...I = {}; Tn = {const sol::no_construction&}; lua_State = lua_State]’
+/home/user/dev/voxeltronik/src/scriptsystem.cpp:104:1:   required from here
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:522:78: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_adl_to_string = decltype(meta_detail::supports_adl_to_string(std::declval<T&>()));
+                                                                              ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+In file included from /home/user/dev/voxeltronik/external/sol2/sol/proxy.hpp:27:0,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table_core.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/table.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state_view.hpp:28,
+                 from /home/user/dev/voxeltronik/external/sol2/sol/state.hpp:27,
+                 from /home/user/dev/voxeltronik/external/sol2/sol.hpp:55,
+                 from /home/user/dev/voxeltronik/./include/scriptsystem.h:6,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/external/sol2/sol/traits.hpp:520:72: error: invalid use of incomplete type ‘struct NVGcontext’
+   using supports_ostream_op = decltype(meta_detail::supports_ostream_op(std::declval<T&>(), std::declval<U&>()));
+                                                                        ^
+In file included from /home/user/dev/voxeltronik/./include/scriptsystem.h:5:0,
+                 from /home/user/dev/voxeltronik/src/scriptsystem.cpp:1:
+/home/user/dev/voxeltronik/./include/nanovg.h:33:16: note: forward declaration of ‘struct NVGcontext’
+ typedef struct NVGcontext NVGcontext;
+                ^
+CMakeFiles/vtk.dir/build.make:710: recipe for target 'CMakeFiles/vtk.dir/src/scriptsystem.cpp.o' failed
+make[2]: *** [CMakeFiles/vtk.dir/src/scriptsystem.cpp.o] Error 1
+CMakeFiles/Makefile2:67: recipe for target 'CMakeFiles/vtk.dir/all' failed
+make[1]: *** [CMakeFiles/vtk.dir/all] Error 2
+Makefile:83: recipe for target 'all' failed
+make: *** [all] Error 2

@@ -10,3 +10,6 @@
 [submodule "external/sol2"]
 	path = external/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "external/nanovg"]
+	path = external/nanovg
+	url = https://github.com/memononen/nanovg.git

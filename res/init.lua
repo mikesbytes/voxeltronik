@@ -1,3 +1,40 @@
+--vec3 operators
+function vec3:__add(rhs)
+   return vec3.new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z) 
+end
+
+function vec3:add(rhs)
+   self.x = self.x + rhs.x
+   self.y = self.y + rhs.y
+   self.z = self.z + rhs.z
+end
+
+function vec3:__sub(rhs)
+   return vec3.new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
+end
+
+function vec3:sub(rhs)
+   self.x = self.x - rhs.x
+   self.y = self.y - rhs.y
+   self.z = self.z - rhs.z
+end
+
+function vec3:__mul(rhs)
+   return vec3.new(self.x * rhs.x, self.y * rhs.y, self.z * rhs.z)
+end
+
+function vec3:mul(rhs)
+   self.x = self.x * rhs.x
+   self.y = self.y * rhs.y
+   self.z = self.z * rhs.z
+end
+   
+function vec3:__tostring()
+   return self.x .. ", " .. self.y .. ", " .. self.z
+end
+
+print(vec3.new(1,1,0) * vec3.new(5,2,1))
+
 conf = Config.new()
 conf:load_from_file('res/config.conf')
 
@@ -12,6 +49,27 @@ skybox = Skybox.new()
 handler = InputHandler.new()
 tileset = Tileset.new()
 world = World.new()
+vg = NVG.create()
+NVG.create_font(vg, "mono", "res/fonts/DejaVuSansMono.ttf")
+current_fps = 0
+local looking_at = {
+   block_type = 0,
+   height = 0,
+   light = 0
+}
+local place_voxel = false
+local break_voxel = false
+
+local grass_block = {
+   tag = "vtk:sod",
+   name = "Sod",
+   transparent = false,
+   emission = 0,
+   textures = {
+	  all = "res/dirt.png",
+	  top = "res/grass.png"
+   }
+}
 
 function look()
    -- mouse movement
@@ -51,25 +109,57 @@ function init_scene()
    tileset:update_texture_at(3, "res/test.png")
    tileset:update_texture_at(4, "res/test-blue.png")
 
-   --voxel info
-   world.voxel_info:set_transparent(0, true);
-   world.voxel_info:set_transparent(1, false);
-   world.voxel_info:set_transparent(2, false);
-   world.voxel_info:set_transparent(3, false);
-   world.voxel_info:set_transparent(4, false);
+   world.voxel_info:new_type({
+		 tag = "vtk:stone",
+		 name = "Stone",
+		 transparent = false,
+		 emission = 0,
+		 textures = {
+			all = 0
+		 }
+   })
 
-   world.voxel_info:set_all_texture_indexes(1, 0)
-   world.voxel_info:set_all_texture_indexes(2, 1)
-   world.voxel_info:set_texture_index(2, FaceDirection.TOP, 2)
-   world.voxel_info:set_all_texture_indexes(3, 3)
-   world.voxel_info:set_all_texture_indexes(4, 4)
+   world.voxel_info:new_type({
+		 tag = "vtk:dirt",
+		 name = "Dirt",
+		 transparent = false,
+		 emission = 0,
+		 textures = {
+			all = 1,
+		 }
+   })
 
-   world.voxel_info:set_emission(0, 0)
-   world.voxel_info:set_emission(1, 0)
-   world.voxel_info:set_emission(2, 0)
-   world.voxel_info:set_emission(3, 0xF4B0)
-   world.voxel_info:set_emission(4, 0x00F0)
-   
+   world.voxel_info:new_type({
+		 tag = "vtk:sod",
+		 name = "Sod",
+		 transparent = false,
+		 emission = 0,
+		 textures = {
+			all = 1,
+			top = 2
+		 }
+   })
+
+   world.voxel_info:new_type({
+		 tag = "vtk:pinklight",
+		 name = "Pink Light",
+		 transparent = false,
+		 emission = 0xF4B0,
+		 textures = {
+			all = 3
+		 }
+   })
+
+   world.voxel_info:new_type({
+		 tag = "vtk:bluelight",
+		 name = "Blue Light",
+		 transparent = false,
+		 emission = 0x00F0,
+		 textures = {
+			all = 4
+		 }
+   })
+
    world:queue_chunk_loads_around_point(vec3.new(0,0,0), 16)
 end
 
@@ -97,32 +187,72 @@ function update(delta) -- called every frame
 	  camera:move_relative(vec3.new(1 * delta * 16,0,0));
    end
    if handler:is_action_down("Move Up") then
-	  camera:move_relative(vec3.new(0, 1 * delta * 16,0));
+	  camera:move(vec3.new(0, 1 * delta * 16,0));
    end
    if handler:is_action_down("Move Down") then
-	  camera:move_relative(vec3.new(0, -1 * delta * 16,0));
+	  camera:move(vec3.new(0, -1 * delta * 16,0));
    end
 
-   if handler:is_action_down("Break Voxel") then
-	  raycast = RayCast.new(world)
-	  success, h_p, h_n = raycast:cast(camera:get_position(), camera:get_angle_vector(), 10)
+   raycast = RayCast.new(world)
+   success, h_p, h_n = raycast:cast(camera:get_position(), camera:get_angle_vector(), 10)
+   local normal_hitpos = ivec3.new(h_p + h_n)
+   looking_at.block_type = world:get_voxel_type(ivec3.new(h_p))
+   looking_at.height = world:get_height(ivec2.new(h_p.x, h_p.z))
+   looking_at.light = world:get_light_level(normal_hitpos)
+   
+   
+   if handler:is_action_down("Break Voxel") and not break_voxel then
 	  if success then
-		 world:break_voxel(ivec3.new(h_p.x, h_p.y, h_p.z))
+		 break_voxel = true
+		 world:break_voxel(ivec3.new(h_p))
 	  end
+   elseif break_voxel and not handler:is_action_down("Break Voxel") then
+	  break_voxel = false
    end
-   if handler:is_action_down("Place Voxel") then
-	  raycast = RayCast.new(world)
-	  success, h_p, h_n = raycast:cast(camera:get_position(), camera:get_angle_vector(), 10)
+   
+   if handler:is_action_down("Place Voxel") and not place_voxel then
 	  if success then
-		 world:place_voxel(ivec3.new(h_p.x + h_n.x, h_p.y + h_n.y, h_p.z + h_n.z), 1)
+		 place_voxel = true
+		 world:place_voxel(ivec3.new(h_p + h_n), 1)
 	  end
-   end
+   elseif place_voxel and not handler:is_action_down("Place Voxel") then
+	  place_voxel = false
+   end   
    
 end
 
 function draw()
    skybox_task:draw()
    world_task:draw()
+
+   NVG.begin_frame(vg, 1920, 1080, 1)
+   NVG.font_size(vg, 14)
+   NVG.font_face(vg, "mono")
+   NVG.fill_color(vg, NVG.rgba(0,0,0,190))
+   local debug_line_index = 19
+   local function debug_line(text)
+	  NVG.text(vg, 5, debug_line_index, text)
+	  debug_line_index = debug_line_index + 17
+   end
+   debug_line("FPS: " .. current_fps)
+   debug_line("Camera Pos: " .. camera:get_position():__tostring())
+   debug_line("Block Type: " .. looking_at.block_type)
+   debug_line("Max Height: " .. looking_at.height)
+   debug_line("Light Level: " .. looking_at.light)
+
+   NVG.begin_path(vg)
+   NVG.rect(vg, (1920 / 2) - 25, (1080 / 2) - 3, 15, 6)
+   NVG.fill_color(vg, NVG.rgba(153, 0, 204, 80))
+   NVG.fill(vg);
+
+   NVG.begin_path(vg)
+   NVG.rect(vg, (1920 / 2) + 10, (1080 / 2) - 3, 15, 6)
+   NVG.fill(vg)
+   
+   NVG.end_frame(vg);
+   GL.front_face(GL.CW);
+   GL.enable(GL.DEPTH_TEST)
+   GL.enable(GL.CULL_FACE)
 end
 
 n_scene:set_init_fn(init_scene)

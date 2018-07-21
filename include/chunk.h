@@ -43,7 +43,7 @@ public:
 
 
     glm::ivec3 getWorldCoords(const int& x, const int& y, const int& z);
-	unsigned getLightLevel(const glm::ivec3& pos);
+	int getLightLevel(const glm::ivec3& pos);
 	unsigned short getLightPacked(const glm::ivec3& pos);
 	void setLightPacked(const glm::ivec3& pos, const unsigned short& light);
 	HeightMap* getHeightMap();

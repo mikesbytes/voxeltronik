@@ -173,6 +173,13 @@ int World::getHeight(const glm::ivec2& pos) {
 	std::cout << cPos.x << ", " << cPos.y << std::endl; 
 }
 
+int World::getLightLevel(const glm::ivec3 &pos) {
+	auto chunk = getChunk(worldPosToChunkPos(pos));
+	if (chunk == nullptr) return 0;
+
+	chunk->getLightLevel(worldPosToLocalPos(pos).second);
+}
+
 void World::queueChunkUpdate(const int& x, const int& y, const int& z, const bool& highpriority) {
 	queueChunkUpdate(glm::ivec3(x,y,z));
 }
@@ -230,7 +237,6 @@ void World::update() {
 	                              mMeshUpdateQueue.size_approx() > 0)) {
 		auto updatefunc = [&]() {
 			glm::ivec3 pos;
-			glm::ivec2 hm_pos;
 			
 			while (mMeshUpdateQueueSoon.try_dequeue(pos)) {
 				ChunkMesh* mesh;
@@ -293,7 +299,10 @@ void World::registerScriptInterface(::sol::state &lua) {
 	                        "update", &World::update,
 	                        "queue_chunk_loads_around_point", &World::queueChunkLoadsAroundPoint,
 	                        "break_voxel", &World::breakVoxel,
-	                        "place_voxel", &World::placeVoxel);
+	                        "place_voxel", &World::placeVoxel,
+	                        "get_voxel_type", &World::getVoxelType,
+	                        "get_height", &World::getHeight,
+	                        "get_light_level", &World::getLightLevel);
 }
 
 }

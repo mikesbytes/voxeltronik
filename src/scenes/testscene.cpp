@@ -14,8 +14,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "nanovg.h"
-#define NANOVG_GL3_IMPLEMENTATION
-#include "nanovg_gl.h"
 
 #include <iostream>
 
@@ -50,7 +48,7 @@ void TestScene::init() {
 	glUniformMatrix4fv(projMatUni, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
 
 	//nanovg
-	vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
+	//vg = nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES);
 	nvgCreateFont(vg, "mono", "res/fonts/DejaVuSansMono.ttf");
 
 	//sdl mouse settings

@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  terraingen.cpp
- *
- *    Description:  Terrain generator source
- *
- *        Version:  1.0
- *        Created:  05/08/2014 06:45:02 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
- *
- * =====================================================================================
- */
-
 #include "terraingen.h"
 #include "chunk.h"
 #include "mathplus.h"
