@@ -1,5 +1,7 @@
 #include "terrain/ygradient.h"
 
+#include "sol.hpp"
+
 namespace vtk { namespace noise {
 
 YGradient::YGradient() {
@@ -26,4 +28,10 @@ double YGradient::get3D(const double& x, const double& y, const double& z) {
 	else if (factor <= 0.0) return -1.0;
 	return (factor * 2.0) - 1.0;
 }
-  }}
+
+void YGradient::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<YGradient>("YGradient",
+	                            sol::constructors<YGradient(), YGradient(const double&, const double&)>(),
+	                            sol::base_classes, sol::bases<NoiseModule>());
+}
+}}

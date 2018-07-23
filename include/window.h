@@ -23,11 +23,14 @@ public:
     void setFOV(const float& angle);
     glm::mat4 getProjectionMatrix();
     SDL_Window* getWindow();
+	bool saveScreenshot(const std::string& fileName);
 
 	static void registerScriptInterface(::sol::state& lua);
 
 protected:
-    
+
+	SDL_Surface* flipVert(SDL_Surface* sfc);
+	
     float fov;
 
     std::string title;

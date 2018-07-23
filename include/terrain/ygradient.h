@@ -6,6 +6,10 @@
 
 #include "terrain/noisemodule.h"
 
+namespace sol {
+class state;
+}
+
 namespace vtk { namespace noise {
 
 class YGradient : public NoiseModule {
@@ -18,6 +22,7 @@ public:
 
 	double get3D(const double& x, const double& y, const double& z);
 
+	static void registerScriptInterface(::sol::state& lua);
 protected:
 	double mStart;
 	double mEnd;

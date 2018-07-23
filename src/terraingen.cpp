@@ -1,4 +1,5 @@
 #include "terraingen.h"
+#include "world.h"
 #include "chunk.h"
 #include "mathplus.h"
 #include "terrain/noise.h"
@@ -12,12 +13,10 @@
 
 namespace vtk {
 
-TerrainGen::TerrainGen() {
-	std::shared_ptr<noise::NoiseModule> noise = std::make_shared<noise::Noise>(6969696);
-	std::shared_ptr<noise::NoiseModule> yGrad = std::make_shared<noise::YGradient>(0.0, 128.0);
-	mNoise = std::make_shared<noise::YTurbulence>(yGrad, noise, 15.0);
-
-	mTerrainScale = 32.0;
+TerrainGen::TerrainGen() :
+	mDecorator(nullptr),
+	mTerrainScale(32.0)
+{
 }
 
 void TerrainGen::generateChunk(Chunk* chunk) {
@@ -26,6 +25,24 @@ void TerrainGen::generateChunk(Chunk* chunk) {
     for (int i = 0; i < 16; i++) { //x
         for (int j = 0; j < 16; j++) { //y
             for (int k = 0; k < 16; k++) { //z
+	            //mGenFunc();
+	            /*
+	            unsigned type = mGenFunc((double)(chunkPos.x * 16 + i),
+	                                     (double)(chunkPos.y * 16 + j),
+	                                     (double)(chunkPos.z * 16 + k));
+	            */
+
+	            unsigned type = 0;
+	            if (mDecorator != nullptr) {
+		            type = mDecorator->get3D(glm::ivec3(i,j,k) + chunkPos * 16);
+	            }
+
+				chunk->setVoxelType(i, j, k, type);
+				if (!chunk->getWorld().voxelInfo.isTransparent(type)) {
+					chunk->getHeightMap()->blockHeight(glm::ivec3(i,(chunkPos.y * 16) + j, k));
+				}
+					
+				/* 
 				double nVal = mNoise->get3D(
 						(double)(chunkPos.x * 16 + i),
 						(double)(chunkPos.y * 16 + j),
@@ -35,15 +52,26 @@ void TerrainGen::generateChunk(Chunk* chunk) {
 					                  (double)(chunkPos.y * 16 + j + 1),
 					                  (double)(chunkPos.z * 16 + k)) >= 0.0)
 						{
-							chunk->setVoxelType(i, j, k, 2);
+							chunk->setVoxelType(i, j, k, 3);
 						} else {// block above is air
 							chunk->setVoxelType(i,j,k,1);
 					}
 					chunk->getHeightMap()->blockHeight(glm::ivec3(i,(chunkPos.y * 16) + j, k));
 				} 
+				*/
             }
         }
     }
+}
+
+void TerrainGen::setDecorator(noise::Decorator *dec) {
+	mDecorator = dec;
+}
+
+
+void TerrainGen::registerScriptInterface(sol::state &lua) {
+	lua.new_usertype<TerrainGen>("TerrainGen",
+	                             "set_decorator", &TerrainGen::setDecorator);
 }
 
 }

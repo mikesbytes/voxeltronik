@@ -26,6 +26,7 @@ int main (int argc, char *argv[])
 
 	vtk::ScriptSystem scriptSys;
 	scriptSys.registerAllInterfaces();
+	scriptSys.runScript("res/extended_interface.lua");
 	scriptSys.runScript("res/init.lua");
 	/*
 	auto conf = new Config;

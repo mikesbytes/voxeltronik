@@ -1,40 +1,3 @@
---vec3 operators
-function vec3:__add(rhs)
-   return vec3.new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z) 
-end
-
-function vec3:add(rhs)
-   self.x = self.x + rhs.x
-   self.y = self.y + rhs.y
-   self.z = self.z + rhs.z
-end
-
-function vec3:__sub(rhs)
-   return vec3.new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
-end
-
-function vec3:sub(rhs)
-   self.x = self.x - rhs.x
-   self.y = self.y - rhs.y
-   self.z = self.z - rhs.z
-end
-
-function vec3:__mul(rhs)
-   return vec3.new(self.x * rhs.x, self.y * rhs.y, self.z * rhs.z)
-end
-
-function vec3:mul(rhs)
-   self.x = self.x * rhs.x
-   self.y = self.y * rhs.y
-   self.z = self.z * rhs.z
-end
-   
-function vec3:__tostring()
-   return self.x .. ", " .. self.y .. ", " .. self.z
-end
-
-print(vec3.new(1,1,0) * vec3.new(5,2,1))
-
 conf = Config.new()
 conf:load_from_file('res/config.conf')
 
@@ -49,9 +12,16 @@ skybox = Skybox.new()
 handler = InputHandler.new()
 tileset = Tileset.new()
 world = World.new()
+
+--local terrain_gen = require("res.terraingen")
+noise = Noise.new(os.time()) 
+bdec = BinaryDecorator.new(noise, 0, 1, 0)
+world.terrain_gen:set_decorator(bdec)
+
 vg = NVG.create()
 NVG.create_font(vg, "mono", "res/fonts/DejaVuSansMono.ttf")
 current_fps = 0
+
 local looking_at = {
    block_type = 0,
    height = 0,
@@ -59,17 +29,7 @@ local looking_at = {
 }
 local place_voxel = false
 local break_voxel = false
-
-local grass_block = {
-   tag = "vtk:sod",
-   name = "Sod",
-   transparent = false,
-   emission = 0,
-   textures = {
-	  all = "res/dirt.png",
-	  top = "res/grass.png"
-   }
-}
+local voxel_type = 1
 
 function look()
    -- mouse movement
@@ -92,8 +52,16 @@ function init_scene()
    handler:set_action("Move Up", "Space")
    handler:set_action("Move Down", "Left Ctrl")
 
+   handler:set_action("Type 1", "1")
+   handler:set_action("Type 2", "2")
+   handler:set_action("Type 3", "3")
+   handler:set_action("Type 4", "4")
+   handler:set_action("Type 5", "5")
+
    handler:set_action("Break Voxel", "Mouse Left")
    handler:set_action("Place Voxel", "Mouse Right")
+
+   handler:set_action("Screenshot", "F1")
 
    sdl_relative_mouse_mode(1)
    camera:set_aspect_ratio(n_game:get_window():get_aspect_ratio())
@@ -125,7 +93,7 @@ function init_scene()
 		 transparent = false,
 		 emission = 0,
 		 textures = {
-			all = 1,
+			all = 1
 		 }
    })
 
@@ -160,7 +128,8 @@ function init_scene()
 		 }
    })
 
-   world:queue_chunk_loads_around_point(vec3.new(0,0,0), 16)
+   world:queue_chunk_loads_around_point(vec3.new(0,0,0), 8)
+   log_info("Initialized Scene")
 end
 
 function reinit_scene()
@@ -193,13 +162,23 @@ function update(delta) -- called every frame
 	  camera:move(vec3.new(0, -1 * delta * 16,0));
    end
 
+   if handler:is_action_down("Type 1") then
+	  voxel_type = 1
+   elseif handler:is_action_down("Type 2") then
+	  voxel_type = 2
+   elseif handler:is_action_down("Type 3") then
+	  voxel_type = 3
+   elseif handler:is_action_down("Type 4") then
+	  voxel_type = 4
+   elseif handler:is_action_down("Type 5") then
+	  voxel_type = 5
+   end
+
    raycast = RayCast.new(world)
    success, h_p, h_n = raycast:cast(camera:get_position(), camera:get_angle_vector(), 10)
-   local normal_hitpos = ivec3.new(h_p + h_n)
    looking_at.block_type = world:get_voxel_type(ivec3.new(h_p))
    looking_at.height = world:get_height(ivec2.new(h_p.x, h_p.z))
-   looking_at.light = world:get_light_level(normal_hitpos)
-   
+   looking_at.light = world:get_light_level(ivec3.new(h_p + h_n))
    
    if handler:is_action_down("Break Voxel") and not break_voxel then
 	  if success then
@@ -213,11 +192,17 @@ function update(delta) -- called every frame
    if handler:is_action_down("Place Voxel") and not place_voxel then
 	  if success then
 		 place_voxel = true
-		 world:place_voxel(ivec3.new(h_p + h_n), 1)
+		 world:place_voxel(ivec3.new(h_p + h_n), voxel_type)
 	  end
    elseif place_voxel and not handler:is_action_down("Place Voxel") then
 	  place_voxel = false
    end   
+
+
+   -- screenshot
+   if handler:is_action_down("Screenshot") then
+	  n_game:get_window():save_screenshot("screenshots/capture_" .. os.time() .. ".bmp")
+   end
    
 end
 
@@ -239,6 +224,7 @@ function draw()
    debug_line("Block Type: " .. looking_at.block_type)
    debug_line("Max Height: " .. looking_at.height)
    debug_line("Light Level: " .. looking_at.light)
+   debug_line("Selected Type: " .. world.voxel_info:get_type_by_id(voxel_type).name)
 
    NVG.begin_path(vg)
    NVG.rect(vg, (1920 / 2) - 25, (1080 / 2) - 3, 15, 6)

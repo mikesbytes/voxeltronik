@@ -34,7 +34,14 @@ bool VoxelInfo::newType(sol::table table) {
 	if (newType.tag == "") return false;
 
 	newType.name = table.get_or<std::string>("name", "");
-	//newType.transparent = table.get_or<bool>("transparent", false);
+	//newType.transparent = table.get_or<bool>("transparent", (bool)false);
+	auto trans = table.get<sol::optional<bool>>("transparent");
+	if(trans) {
+		newType.transparent = trans.value();
+	} else {
+		newType.transparent = false;
+	}
+	
 	newType.emission = table.get_or<unsigned short>("emission", 0x0);
 
 	sol::table texTab = table["textures"];
@@ -203,10 +210,16 @@ unsigned short VoxelInfo::getEmission(const unsigned int &id) {
 void VoxelInfo::registerScriptInterface(::sol::state &lua) {
 	lua.new_usertype<VoxelInfo>("VoxelInfo",
 	                            "new_type", &VoxelInfo::newType,
+	                            "get_type_by_id", &VoxelInfo::getTypeByID,
+	                            "get_type_by_tag", &VoxelInfo::getTypeByTag,
 	                            "set_all_texture_indexes", &VoxelInfo::setAllTextureIndexes,
 	                            "set_texture_index", &VoxelInfo::setTextureIndex,
 	                            "set_transparent", &VoxelInfo::setTransparent,
 	                            "set_emission", &VoxelInfo::setEmission);
+
+	lua.new_usertype<VoxelType>("VoxelType",
+	                            "tag", &VoxelType::tag,
+	                            "name", &VoxelType::name);
 }
 }
 

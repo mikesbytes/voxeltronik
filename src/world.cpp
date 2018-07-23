@@ -284,7 +284,7 @@ void World::queueChunkLoadsAroundPoint(const glm::vec3 &point, const int &chunkR
 	for (int z = -chunkRadius; z <= chunkRadius; ++z) {
 		for (int x = -chunkRadius; x <= chunkRadius; ++x) {
 			if (z*z + x*x <= chunkRadius * chunkRadius) {
-				for (int y = 0; y < 8; ++y) {
+				for (int y = 7; y >= 0; --y) {
 					queueChunkLoad(glm::ivec3(x + chunkPoint.x, y, z + chunkPoint.z));
 				}
 			}
@@ -296,6 +296,7 @@ void World::registerScriptInterface(::sol::state &lua) {
 	lua.new_usertype<World>("World",
 	                        sol::base_classes, sol::bases<Drawable>(),
 	                        "voxel_info", &World::voxelInfo,
+	                        "terrain_gen", &World::terrain,
 	                        "update", &World::update,
 	                        "queue_chunk_loads_around_point", &World::queueChunkLoadsAroundPoint,
 	                        "break_voxel", &World::breakVoxel,
@@ -303,6 +304,7 @@ void World::registerScriptInterface(::sol::state &lua) {
 	                        "get_voxel_type", &World::getVoxelType,
 	                        "get_height", &World::getHeight,
 	                        "get_light_level", &World::getLightLevel);
+
 }
 
 }

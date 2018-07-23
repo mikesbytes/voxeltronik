@@ -4,7 +4,9 @@
 #include <utility>
 #include <memory>
 
-#include "terrain/noisemodule.h"
+#include "terrain/decorator.h"
+
+#include "sol.hpp"
 
 namespace vtk {
 
@@ -15,9 +17,11 @@ public:
     TerrainGen();
 
     void generateChunk(Chunk* chunk);
+	void setDecorator(noise::Decorator* dec);
 
+	static void registerScriptInterface(sol::state& lua);
 protected:
-	std::shared_ptr<noise::NoiseModule> mNoise;
+	noise::Decorator* mDecorator;
 
     //variables (replace by config)
     double mTerrainScale;

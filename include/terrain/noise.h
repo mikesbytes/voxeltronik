@@ -7,6 +7,10 @@
 #include "terrain/open_simplex_noise.h"
 #include "terrain/noisemodule.h"
 
+namespace sol {
+class state;
+}
+
 namespace vtk { namespace noise {
 
 class Noise : public NoiseModule {
@@ -18,6 +22,7 @@ public:
 	double get3D(const double& x, const double& y, const double& z);
 	void setScale(const double& scale);
 
+	static void registerScriptInterface(::sol::state& lua);
 protected:
 	double mScale;
 	struct osn_context* mCtx;

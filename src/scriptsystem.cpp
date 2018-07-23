@@ -16,6 +16,13 @@
 #include "voxelinfo.h"
 #include "world.h"
 #include "raycast.h"
+#include "terraingen.h"
+#include "terrain/open_simplex_noise.h"
+#include "terrain/noisemodule.h"
+#include "terrain/noise.h"
+#include "terrain/decorator.h"
+#include "terrain/binarydecorator.h"
+#include "terrain/ygradient.h"
 
 #include "nanovg.h"
 #define NANOVG_GL3_IMPLEMENTATION
@@ -46,7 +53,7 @@ NVGcontext* createNVGcontext() {
 }
 
 ScriptSystem::ScriptSystem() {
-	mLua.open_libraries(sol::lib::base, sol::lib::package);
+	mLua.open_libraries(sol::lib::base, sol::lib::os, sol::lib::package);
 }
 
 void ScriptSystem::registerAllInterfaces() {
@@ -97,6 +104,12 @@ void ScriptSystem::registerAllInterfaces() {
 	vtk::VoxelInfo::registerScriptInterface(mLua);
 	vtk::World::registerScriptInterface(mLua);
 	RayCast::registerScriptInterface(mLua);
+	TerrainGen::registerScriptInterface(mLua);
+	noise::NoiseModule::registerScriptInterface(mLua);
+	noise::Noise::registerScriptInterface(mLua);
+	noise::YGradient::registerScriptInterface(mLua);
+	noise::Decorator::registerScriptInterface(mLua);
+	noise::BinaryDecorator::registerScriptInterface(mLua);
 
 	//utilities
 	mLua["FaceDirection"] = mLua.create_table_with("TOP", FaceDirection::TOP,
@@ -105,6 +118,16 @@ void ScriptSystem::registerAllInterfaces() {
 	                                               "SOUTH", FaceDirection::SOUTH,
 	                                               "EAST", FaceDirection::EAST,
 	                                               "WEST", FaceDirection::WEST);
+	mLua.set_function("RGBD", [](unsigned char r,
+	                             unsigned char g,
+	                             unsigned char b,
+	                             unsigned char d) {
+		                          unsigned char light = r << 12;
+		                          light = light | g << 8;
+		                          light = light | b << 4;
+		                          light = light | d;
+		                          return light;
+	                          });
 	
 	//nanovg
 	auto nvgTable = mLua.create_named_table("NVG");

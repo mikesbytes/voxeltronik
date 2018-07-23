@@ -1,4 +1,5 @@
 #include "terrain/noise.h"
+#include "sol.hpp"
 
 namespace vtk { namespace noise {
 
@@ -29,5 +30,14 @@ void Noise::setScale(const double& scale) {
 	mScale = scale;
 }
 
-  }}
+void Noise::registerScriptInterface(::sol::state &lua) {
+	lua.new_usertype<Noise>("Noise",
+	                        sol::constructors<Noise(const int64_t&)>(),
+	                        "get_2d", &Noise::get2D,
+	                        "get_3d", &Noise::get3D,
+	                        "set_scale", &Noise::setScale,
+	                        sol::base_classes, sol::bases<NoiseModule>());
+}
+
+}}
 	
